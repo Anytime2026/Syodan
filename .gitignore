@@ -1,0 +1,9 @@
+# ========================================
+# Environment Variables（環境変数）
+# ========================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test

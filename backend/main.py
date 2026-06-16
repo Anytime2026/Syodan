@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-from ai_agent import RuleBasedAIAgent
+from ai_agent import LLMSalesRoleplayAgent
 
 app = FastAPI(title="営業ヒアリングロープレAI")
 
@@ -15,7 +15,7 @@ app.add_middleware(
 )
 
 # メモリ上でセッションを管理（プロトタイプ用）
-sessions: dict[str, RuleBasedAIAgent] = {}
+sessions: dict[str, LLMSalesRoleplayAgent] = {}
 
 
 class Message(BaseModel):
@@ -42,10 +42,10 @@ class ResetRequest(BaseModel):
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     if request.session_id not in sessions:
-        sessions[request.session_id] = RuleBasedAIAgent()
+        sessions[request.session_id] = LLMSalesRoleplayAgent()
 
     agent = sessions[request.session_id]
-    result = agent.get_response(
+    result = await agent.get_response(
         request.message,
         [m.model_dump() for m in request.history],
     )
