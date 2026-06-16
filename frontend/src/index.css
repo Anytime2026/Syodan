@@ -1,0 +1,28 @@
+:root {
+  --color-sky: #4aa8e0;
+  --color-sky-light: #eaf6fd;
+  --color-sky-dark: #2f7fb3;
+  --color-orange: #ff8c42;
+  --color-orange-dark: #e8721f;
+  --color-white: #ffffff;
+  --color-text: #2b3a42;
+  --color-text-light: #6b7b85;
+  --color-border: #d8ebf5;
+
+  font: 16px/1.6 system-ui, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+  color: var(--color-text);
+  background: var(--color-sky-light);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
