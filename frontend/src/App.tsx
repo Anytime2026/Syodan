@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
-import PhaseIndicator from "./components/PhaseIndicator";
 import ChatWindow from "./components/ChatWindow";
 import InputBar from "./components/InputBar";
 import IndustrySelect from "./components/IndustrySelect";
@@ -140,7 +139,6 @@ function App() {
         ttsSupported={ttsSupported}
         onToggleMute={handleToggleMute}
       />
-      <PhaseIndicator phase={phase} />
       <ChatWindow messages={messages} loading={loading} aiName={INDUSTRY_META[industry!].personName.split(" ")[0]} />
       <InputBar
         onSend={handleSend}
