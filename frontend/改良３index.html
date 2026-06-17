@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>営業ヒアリングロープレAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  background: linear-gradient(135deg, #1C75BC, #5CC0EF);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 共通カード */
+.card {
+  background: #fff;
+  width: 420px;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* ボタン共通 */
+.btn {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.02);
+}
+
+/* 色定義 */
+.primary { background:#1C75BC; color:#fff; }
+.secondary { background:#5CC0EF; color:#fff; }
+.cta { background:#F9A638; color:#fff; font-weight:bold; }
+
+/* 画面切替 */
+.page { display:none; }
+.active { display:block; }
+
+/* 入力 */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 16px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+/* チャット */
+.chat {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.msg {
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  max-width: 80%;
+}
+
+.ai { background:#eaf4ff; align-self:flex-start; }
+.user { background:#dff7ff; align-self:flex-end; margin-left:auto; }
+
+.small {
+  font-size: 12px;
+  color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= ホーム ================= -->
+<div id="home" class="card page active">
+
+  <h2>営業ヒアリングロープレ</h2>
+  <p class="small">トレーニングを選択してください</p>
+
+  <button class="btn primary" onclick="go('setup')">▶ スタート</button>
+  <button class="btn secondary" onclick="go('setup')">⏱ 途中から開始</button>
+  <button class="btn primary" onclick="go('history')">📊 評価履歴</button>
+</div>
+
+<!-- ================= 設定 ================= -->
+<div id="setup" class="card page">
+
+  <h2>ロープレ設定</h2>
+
+  <label>分野</label>
+  <select>
+    <option>新規営業</option>
+    <option>既存顧客</option>
+    <option>提案営業</option>
+  </select>
+
+  <label>ヒアリング回数</label>
+  <input type="number" value="5">
+
+  <label>今回のゴール</label>
+  <textarea placeholder="例：顧客課題の深掘り"></textarea>
+
+  <label>人物設定</label>
+  <select>
+    <option>中堅担当者</option>
+    <option>決裁者</option>
+    <option>慎重な顧客</option>
+  </select>
+
+  <button class="btn cta" onclick="go('chat')">▶ 開始</button>
+  <button class="btn secondary" onclick="go('home')">戻る</button>
+</div>
+
+<!-- ================= チャット ================= -->
+<div id="chat" class="card page">
+
+  <h2>ロープレ中</h2>
+
+  <div class="chat" id="chatBox">
+    <div class="msg ai">今日はどのようなご相談でしょうか？</div>
+  </div>
+
+  <input id="input" placeholder="入力してください">
+  <button class="btn cta" onclick="sendMsg()">送信</button>
+
+  <button class="btn secondary" onclick="go('result')">終了する</button>
+  <button class="btn secondary" onclick="go('home')">戻る</button>
+</div>
+
+<!-- ================= 評価 ================= -->
+<div id="result" class="card page">
+
+  <h2>先輩からの評価</h2>
+
+  <p><b>ヒアリングの深さ：</b> 3.5 / 5</p>
+  <p><b>質問の質：</b> 4 / 5</p>
+  <p><b>信頼構築：</b> 3 / 5</p>
+
+  <p style="margin-top:15px;">
+    コメント：もう一歩踏み込んだ課題確認ができると良いです。
+  </p>
+
+  <button class="btn secondary" onclick="go('home')">戻る</button>
+</div>
+
+<!-- ================= 履歴 ================= -->
+<div id="history" class="card page">
+  <h2>評価履歴</h2>
+  <p class="small">過去のロープレ一覧</p>
+
+  <div class="msg ai">・新規営業ロープレ（3/5）</div>
+  <div class="msg ai">・既存提案（4/5）</div>
+
+  <button class="btn secondary" onclick="go('home')">戻る</button>
+</div>
+
+<script>
+function go(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+}
+
+function sendMsg(){
+  const input = document.getElementById("input");
+  const chat = document.getElementById("chatBox");
+
+  if(!input.value) return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "msg user";
+  userMsg.textContent = input.value;
+  chat.appendChild(userMsg);
+
+  const aiMsg = document.createElement("div");
+  aiMsg.className = "msg ai";
+  aiMsg.textContent = "（AI応答）" + input.value + "について確認しました。";
+  chat.appendChild(aiMsg);
+
+  input.value = "";
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
