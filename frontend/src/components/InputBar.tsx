@@ -6,12 +6,14 @@ interface InputBarProps {
   onSend: (text: string) => void;
   disabled: boolean;
   onBeforeListen?: () => void;
+  personLabel: string;
 }
 
 export default function InputBar({
   onSend,
   disabled,
   onBeforeListen,
+  personLabel,
 }: InputBarProps) {
   const [text, setText] = useState("");
   const baseTextRef = useRef("");
@@ -59,7 +61,7 @@ export default function InputBar({
       <div className="input-bar">
         <textarea
           className="input-bar__textarea"
-          placeholder="田中社長への質問を入力してください（Enterで送信、Shift+Enterで改行）"
+          placeholder={`${personLabel}への質問を入力してください（Enterで送信、Shift+Enterで改行）`}
           value={text}
           onChange={(e) => {
             setText(e.target.value);

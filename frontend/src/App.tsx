@@ -141,11 +141,12 @@ function App() {
         onToggleMute={handleToggleMute}
       />
       <PhaseIndicator phase={phase} />
-      <ChatWindow messages={messages} loading={loading} />
+      <ChatWindow messages={messages} loading={loading} aiName={INDUSTRY_META[industry!].personName.split(" ")[0]} />
       <InputBar
         onSend={handleSend}
         disabled={loading}
         onBeforeListen={stopSpeaking}
+        personLabel={`${INDUSTRY_META[industry!].personName.split(" ")[0]}${INDUSTRY_META[industry!].honorific}`}
       />
     </div>
   );
