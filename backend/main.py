@@ -14,7 +14,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# メモリ上でセッションを管理（プロトタイプ用）
 sessions: dict[str, LLMSalesRoleplayAgent] = {}
 
 
@@ -27,6 +26,7 @@ class ChatRequest(BaseModel):
     session_id: str
     message: str
     history: List[Message]
+    industry: str
 
 
 class ChatResponse(BaseModel):
@@ -42,7 +42,7 @@ class ResetRequest(BaseModel):
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     if request.session_id not in sessions:
-        sessions[request.session_id] = LLMSalesRoleplayAgent()
+        sessions[request.session_id] = LLMSalesRoleplayAgent(industry=request.industry)
 
     agent = sessions[request.session_id]
     result = await agent.get_response(

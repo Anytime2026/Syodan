@@ -1,4 +1,8 @@
+import type { Industry } from "../types";
+import { INDUSTRY_META } from "../types";
+
 interface HeaderProps {
+  industry: Industry;
   onReset: () => void;
   muted: boolean;
   speaking: boolean;
@@ -7,18 +11,20 @@ interface HeaderProps {
 }
 
 export default function Header({
+  industry,
   onReset,
   muted,
   speaking,
   ttsSupported,
   onToggleMute,
 }: HeaderProps) {
+  const meta = INDUSTRY_META[industry];
   return (
     <header className="app-header">
       <div className="app-header__title">
         <span className="app-header__logo">営業ヒアリングロープレAI</span>
         <span className="app-header__subtitle">
-          商談相手：田中金属加工株式会社 代表取締役社長 田中 誠一 様
+          {meta.company}　{meta.role}　{meta.personName} 様
         </span>
       </div>
       <div className="app-header__actions">
@@ -35,7 +41,7 @@ export default function Header({
           </button>
         )}
         <button className="app-header__reset" onClick={onReset}>
-          商談をリセット
+          業界選択に戻る
         </button>
       </div>
     </header>
