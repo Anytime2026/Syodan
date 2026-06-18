@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
 :root {
-  font-family: system-ui, sans-serif;
+  font-family: "Noto Sans JP", sans-serif;
   line-height: 1.5;
   color: #111;
-  background-color: #f7f6f3;
 }
 
 * {
@@ -12,8 +13,160 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background: linear-gradient(135deg, #1C75BC, #5CC0EF);
+  font-family: "Noto Sans JP", sans-serif;
+  line-height: 1.5;
+  color: #111;
 }
 
-a {
-  color: inherit;
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 共通カード */
+.card {
+  background: #fff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  margin: 20px;
+}
+
+/* ボタン共通 */
+.btn {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: 0.2s;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn:hover {
+  transform: scale(1.02);
+}
+
+/* 色定義 */
+.primary { background:#1C75BC; color:#fff; }
+.secondary { background:#5CC0EF; color:#fff; }
+.cta { background:#F9A638; color:#fff; font-weight:bold; }
+
+/* 入力 */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 16px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-family: inherit;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+.small {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 入力グループ */
+.input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-group input {
+  margin: 0;
+  flex: 1;
+}
+
+.mic-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.mic-btn:hover {
+  background: #f0f0f0;
+}
+
+.mic-btn.active {
+  background: #ff4b4b;
+  color: #fff;
+  border-color: #ff4b4b;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* チャット */
+.chat {
+  height: 350px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  background: #fafafa;
+}
+
+.msg {
+  padding: 10px 14px;
+  margin: 8px 0;
+  border-radius: 12px;
+  max-width: 85%;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ai { 
+  background:#fff; 
+  align-self:flex-start; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-bottom-left-radius: 2px;
+}
+
+.user { 
+  background:#dff7ff; 
+  align-self:flex-end; 
+  margin-left:auto; 
+  border-bottom-right-radius: 2px;
 }
