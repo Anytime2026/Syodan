@@ -10,7 +10,7 @@ export function HomePage() {
           <Link to="/settings">ペルソナ・ユーザー設定</Link>
         </li>
         <li>
-          <Link to="/roleplay">ロープレを開始</Link>
+          <Link to="/roleplay/setup">ロープレを開始</Link>
         </li>
         <li>
           <Link to="/evaluations">過去の評価を見る</Link>

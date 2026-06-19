@@ -15,7 +15,7 @@ export function Layout() {
           <NavLink to="/settings" className={navLinkClass}>
             設定
           </NavLink>
-          <NavLink to="/roleplay" className={navLinkClass}>
+          <NavLink to="/roleplay/setup" className={navLinkClass}>
             ロープレ
           </NavLink>
           <NavLink to="/evaluations" className={navLinkClass}>

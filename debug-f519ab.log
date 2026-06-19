@@ -1,0 +1,2 @@
+{"sessionId": "f519ab", "hypothesisId": "H1", "location": "main.py:lifespan", "message": "db_startup_attempt", "data": {"db_kind": "sqlite", "app_env": "development"}, "timestamp": 1781757780138}
+{"sessionId": "f519ab", "hypothesisId": "H1", "location": "main.py:lifespan", "message": "db_startup_ok", "data": {"db_kind": "sqlite"}, "timestamp": 1781757780202}
