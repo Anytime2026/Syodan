@@ -1,9 +1,7 @@
 import asyncio
 import json
 import logging
-import time
 from datetime import UTC, datetime
-from pathlib import Path
 from uuid import UUID
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -18,27 +16,6 @@ from app.api.routes import sessions as sessions_routes
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["websocket"])
-
-_DEBUG_LOG = Path(__file__).resolve().parents[3] / "debug-4c07bd.log"
-
-
-def _agent_log(location: str, message: str, data: dict, hypothesis_id: str) -> None:
-    # #region agent log
-    try:
-        payload = {
-            "sessionId": "4c07bd",
-            "location": location,
-            "message": message,
-            "data": data,
-            "timestamp": int(time.time() * 1000),
-            "hypothesisId": hypothesis_id,
-            "runId": "pre-fix",
-        }
-        with open(_DEBUG_LOG, "a", encoding="utf-8") as f:
-            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
-    except OSError:
-        pass
-    # #endregion
 
 
 @router.websocket("/ws/sessions/{session_id}/hearing")
@@ -89,20 +66,7 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
 
             if msg_type == "ptt_end":
                 ptt_active = False
-                buffer_len = len(audio_buffer)
-                _agent_log(
-                    "hearing.py:ptt_end",
-                    "ptt_end received",
-                    {"buffer_len": buffer_len, "media_format": data.get("media_format", "webm")},
-                    "A",
-                )
                 if not audio_buffer:
-                    _agent_log(
-                        "hearing.py:ptt_end",
-                        "empty audio buffer",
-                        {},
-                        "A",
-                    )
                     await websocket.send_json({"type": "error", "message": "No audio received"})
                     await websocket.send_json({"type": "turn_complete"})
                     continue
@@ -116,30 +80,11 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                     remaining = _remaining_seconds(session)  # type: ignore[arg-type]
 
                 system = pipeline.build_system_prompt(profile, state, session.goal, remaining)  # type: ignore[arg-type]
-                try:
-                    user_text, ai_text, audio_out = await asyncio.to_thread(
-                        pipeline.process_turn,
-                        bytes(audio_buffer),
-                        system,
-                        media_format,
-                    )
-                except Exception as exc:
-                    _agent_log(
-                        "hearing.py:process_turn",
-                        "pipeline failed",
-                        {"error": type(exc).__name__, "detail": str(exc)[:200]},
-                        "D",
-                    )
-                    raise
-                _agent_log(
-                    "hearing.py:process_turn",
-                    "pipeline ok",
-                    {
-                        "user_text_len": len(user_text),
-                        "ai_text_len": len(ai_text),
-                        "audio_out_len": len(audio_out),
-                    },
-                    "B",
+                user_text, ai_text, audio_out = await asyncio.to_thread(
+                    pipeline.process_turn,
+                    bytes(audio_buffer),
+                    system,
+                    media_format,
                 )
                 audio_buffer = bytearray()
 

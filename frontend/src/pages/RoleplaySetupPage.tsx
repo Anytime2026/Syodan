@@ -26,9 +26,6 @@ export function RoleplaySetupPage() {
       navigate(`/roleplay/${session.id}`)
     } catch (err) {
       const message = err instanceof Error ? err.message : '開始に失敗しました'
-      // #region agent log
-      fetch('http://127.0.0.1:7710/ingest/8f9dd29b-f72f-45b0-934b-d4c329cf521d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4c07bd'},body:JSON.stringify({sessionId:'4c07bd',location:'RoleplaySetupPage.tsx:handleSubmit',message:'setup failed',data:{error:message},timestamp:Date.now(),hypothesisId:'F',runId:'post-fix'})}).catch(()=>{});
-      // #endregion
       setError(message)
     } finally {
       setLoading(false)

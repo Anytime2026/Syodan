@@ -32,12 +32,12 @@ class CustomerProfile(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     program_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("programs.id"), unique=True)
-    industry: Mapped[str] = mapped_column(String(128))
-    company_size: Mapped[str] = mapped_column(String(64))
-    role_title: Mapped[str] = mapped_column(String(128))
+    industry: Mapped[str] = mapped_column(Text)
+    company_size: Mapped[str] = mapped_column(Text)
+    role_title: Mapped[str] = mapped_column(Text)
     surface_need: Mapped[str] = mapped_column(Text)
     true_challenge: Mapped[str] = mapped_column(Text)
-    personality_type: Mapped[str] = mapped_column(String(128))
+    personality_type: Mapped[str] = mapped_column(Text)
     initial_awareness: Mapped[int] = mapped_column(Integer, default=20)
 
     program: Mapped["Program"] = relationship(back_populates="customer_profile")
