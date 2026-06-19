@@ -1,227 +1,230 @@
-# Aaply — Style Reference
-> Digital sketchpad with electric highlighter
+# Lpalo — Style Reference
+> A children's storybook spread on warm peach paper — one slab-serif headline shouting through scattered crayon doodles.
 
 **Theme:** light
 
-Aaply reads as a digital sketchpad on a light gray canvas: everything is flat, everything is rounded, and electric yellow carries the energy while black anchors the structure. The headline itself behaves like a whiteboard — bold black type interrupted by colorful emoji and icon stickers, signaling that this is a tool for creative work. Surfaces float as soft white cards on a cool gray field with a faint dot-grid texture, never relying on shadows for depth. Brand color appears as generous fills (buttons, accent shapes, logo marks) rather than thin strokes or tinted backgrounds. The overall feeling is energetic but unpretentious — a working surface, not a gallery.
+La puce à l'oreille reads like a children's storybook spread across warm peach paper — a playful podcast platform where chunky black slab-serif headlines anchor the page while vivid color accents and floating line-art illustrations dance around them. The visual rhythm is generous and unhurried: a soft peach canvas (#f6e0db) holds scattered doodles, pill-shaped containers float with thick black borders, and a single oversized headline (Alfa Slab One at near-120px) does the heavy lifting for brand voice. Components feel handmade rather than engineered — black-outlined white cards, 47px pill radii, no shadows, no gradients. Color is treated as a palette of crayons pulled from a single box: every hue is saturated and flat, used as decorative punctuation on surfaces, icons, and section backgrounds rather than as functional UI states. The contrast between the type's serious slab-serif weight and the whimsical illustrations creates the site's identity tension — authoritative voice, childlike delivery.
 
 ## Tokens — Colors
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Highlighter Yellow | `#e6e51e` | `--color-highlighter-yellow` | Primary brand accent — logo mark, filled pill buttons, accent shapes inside product mockups, highlight washes on feature cards |
-| Annotation Red | `#f34646` | `--color-annotation-red` | Red supporting accent for decorative details and low-frequency emphasis |
-| Signal Blue | `#466cf3` | `--color-signal-blue` | Product mockup logos, icon accents, connector arrows inside the flow diagram — the cool counterweight to warm yellow |
-| Peach Wash | `#ff8562` | `--color-peach-wash` | Soft tinted background blocks behind product mockup clusters — warm secondary surface that softens the gray canvas |
-| Carbon | `#000000` | `--color-carbon` | Primary text, dark filled buttons, icon strokes — the structural ink of the entire system |
-| Paper White | `#ffffff` | `--color-paper-white` | Card surfaces, navigation bar background, product mockup canvas — every elevated surface |
-| Graphite Mist | `#f2f2f2` | `--color-graphite-mist` | Page canvas background — the cool gray field that makes white cards appear to float |
-| Hairline Gray | `#e6e6e6` | `--color-hairline-gray` | Subtle borders, secondary surface fills, dividers between content sections |
-| Shadow Gray | `#cccccc` | `--color-shadow-gray` | Single soft drop shadow color (used at 20% opacity as rgba), muted text on dark surfaces |
-| Sunbeam | `#fff705` | `--color-sunbeam` | Brighter yellow variant for highlighted feature containers — the outer glow on flow-diagram cards |
+| Peach Paper | `#f6e0db` | `--color-peach-paper` | Page canvas — the warm pastel ground that makes every black border and colored accent pop |
+| Charcoal Ink | `#000000` | `--color-charcoal-ink` | Primary text, hairlines, card borders, nav outlines — the structural skeleton at 1400+ border occurrences |
+| Snow | `#ffffff` | `--color-snow` | Primary page canvas and white card surfaces. Do not promote it to the primary CTA color |
+| Ember Orange | `#ef724f` | `--color-ember-orange` | Decorative accent and warm card surfaces — a crayon-orange that carries the most frequency of any chromatic color across the UI |
+| Magenta Pop | `#981082` | `--color-magenta-pop` | Decorative accent, nav highlight, and vivid card fills — a saturated fuchsia used as bold punctuation on the peach canvas |
+| Sunbeam Yellow | `#e7db4c` | `--color-sunbeam-yellow` | Yellow wash for highlight backgrounds, decorative bands, and soft emphasis behind content |
+| Mint Wash | `#ace2df` | `--color-mint-wash` | Decorative accent and soft card surface — a desaturated teal that cools the warm palette without breaking its energy |
+| Powder Blue | `#84bfff` | `--color-powder-blue` | Decorative accent and card surface — a mid-saturation sky blue appearing in the largest non-black count (60 fills), used for illustration washes |
+| Lilac Tint | `#e69dff` | `--color-lilac-tint` | Decorative accent and card surface — a soft pastel pink-violet that lightens the magenta without competing |
+| Lime Zest | `#6ed311` | `--color-lime-zest` | Decorative accent — high-chroma green used sparingly as playful punctuation among illustrations |
+| Cobalt Spark | `#5196ff` | `--color-cobalt-spark` | Decorative accent — a single vivid blue dot in the illustration palette |
 
 ## Tokens — Typography
 
-### Times — Times — detected in extracted data but not described by AI · `--font-times`
+### Alfa Slab One — Display and editorial headlines — a single-weight chunky slab serif that carries the entire brand voice; the 46px size with tight 1.09 leading is the signature 'shouting headline' treatment, while 16px serves emphasized inline text · `--font-alfa-slab-one`
+- **Substitute:** Bowlby One, Roboto Slab 900, or Recoleta Black
 - **Weights:** 400
-- **Sizes:** 16px
-- **Line height:** 1.2
-- **Role:** Times — detected in extracted data but not described by AI
+- **Sizes:** 16px, 35px, 46px
+- **Line height:** 1.09–1.20
+- **Role:** Display and editorial headlines — a single-weight chunky slab serif that carries the entire brand voice; the 46px size with tight 1.09 leading is the signature 'shouting headline' treatment, while 16px serves emphasized inline text
 
-### Poppins — Display and heading family — weight 700 for the hero headline and section titles, weight 500 for sub-headings. Its geometric roundness echoes the pill buttons and rounded cards, making type and shape feel like one material. Tight negative tracking at large sizes pulls letters together into a confident block. · `--font-poppins`
-- **Substitute:** DM Sans, Nunito Sans
-- **Weights:** 400, 500, 700
-- **Sizes:** 14px, 27px, 34px, 52px, 57px
-- **Line height:** 1.00, 1.05, 1.33, 1.35, 1.57
-- **Letter spacing:** -0.0740em at display sizes, -0.0190em at heading, -0.0180em at heading-sm
-- **Role:** Display and heading family — weight 700 for the hero headline and section titles, weight 500 for sub-headings. Its geometric roundness echoes the pill buttons and rounded cards, making type and shape feel like one material. Tight negative tracking at large sizes pulls letters together into a confident block.
-
-### Inter — Body and UI text — nav links, button labels, descriptions, form text. Inter's humanist proportions provide readable density at small sizes while weight 700 can punch up to match Poppins in nav and button contexts. · `--font-inter`
-- **Substitute:** system-ui, -apple-system, Segoe UI
-- **Weights:** 300, 400, 500, 700
-- **Sizes:** 15px, 16px, 18px, 27px, 31px
-- **Line height:** 1.40, 1.44, 1.53, 1.55, 1.56
-- **Letter spacing:** -0.0740em at large sizes, -0.0280em at 18px, normal at 16px and below
-- **Role:** Body and UI text — nav links, button labels, descriptions, form text. Inter's humanist proportions provide readable density at small sizes while weight 700 can punch up to match Poppins in nav and button contexts.
+### Manrope — UI text, navigation, body copy, and large display alternates — geometric sans used for everything that isn't an Alfa Slab headline; weight 500 for nav labels, 700-800 for emphasized UI text, 400 for body; the 120px extreme is a secondary display tier · `--font-manrope`
+- **Substitute:** Inter, Outfit, or Plus Jakarta Sans
+- **Weights:** 400, 500, 700, 800
+- **Sizes:** 12px, 25px, 34px, 50px, 120px
+- **Line height:** 1.00–1.60
+- **Role:** UI text, navigation, body copy, and large display alternates — geometric sans used for everything that isn't an Alfa Slab headline; weight 500 for nav labels, 700-800 for emphasized UI text, 400 for body; the 120px extreme is a secondary display tier
 
 ### Type Scale
 
 | Role | Size | Line Height | Letter Spacing | Token |
 |------|------|-------------|----------------|-------|
-| caption | 14px | 1.57 | — | `--text-caption` |
-| body | 16px | 1.53 | — | `--text-body` |
-| subheading | 18px | 1.4 | -0.5px | `--text-subheading` |
-| heading-sm | 27px | 1.33 | -0.49px | `--text-heading-sm` |
-| heading | 34px | 1.05 | -0.65px | `--text-heading` |
-| heading-lg | 52px | 1 | -3.85px | `--text-heading-lg` |
-| display | 57px | 1.05 | -4.22px | `--text-display` |
+| caption | 12px | 1.5 | — | `--text-caption` |
+| body | 16px | 1.6 | — | `--text-body` |
+| heading-sm | 25px | 1.24 | — | `--text-heading-sm` |
+| subheading | 34px | 1.16 | — | `--text-subheading` |
+| heading | 46px | 1.09 | — | `--text-heading` |
+| heading-lg | 50px | 1.12 | — | `--text-heading-lg` |
+| display | 120px | 1 | — | `--text-display` |
 
 ## Tokens — Spacing & Shapes
 
 **Density:** comfortable
 
+### Spacing Scale
+
+| Name | Value | Token |
+|------|-------|-------|
+| 4 | 4px | `--spacing-4` |
+| 8 | 8px | `--spacing-8` |
+| 10 | 10px | `--spacing-10` |
+| 13 | 13px | `--spacing-13` |
+| 15 | 15px | `--spacing-15` |
+| 16 | 16px | `--spacing-16` |
+| 17 | 17px | `--spacing-17` |
+| 20 | 20px | `--spacing-20` |
+| 24 | 24px | `--spacing-24` |
+| 25 | 25px | `--spacing-25` |
+| 27 | 27px | `--spacing-27` |
+| 30 | 30px | `--spacing-30` |
+| 38 | 38px | `--spacing-38` |
+| 40 | 40px | `--spacing-40` |
+| 46 | 46px | `--spacing-46` |
+| 80 | 80px | `--spacing-80` |
+
 ### Border Radius
 
 | Element | Value |
 |---------|-------|
-| nav | 30px |
-| tags | 3000px |
-| cards | 30-40px |
-| inputs | 16px |
-| buttons | 3000px |
-| productFrame | 16px |
-
-### Shadows
-
-| Name | Value | Token |
-|------|-------|-------|
-| md | `rgba(0, 0, 0, 0.2) 0px 10px 10px -5px` | `--shadow-md` |
+| nav | 47px |
+| cards | 40-47px |
+| small | 10px |
+| buttons | 47px |
 
 ### Layout
 
 - **Page max-width:** 1200px
-- **Section gap:** 80-120px
-- **Card padding:** 32-48px
-- **Element gap:** 16-24px
+- **Section gap:** 46-64px
+- **Card padding:** 24-40px
+- **Element gap:** 8-16px
 
 ## Components
 
-### Filled Yellow Pill Button
-**Role:** Primary brand accent button
+### Pill Navigation Button
+**Role:** Top-bar nav item
 
-#e6e51 background, #000000 text, border-radius 3000px, padding 16px 32px, Inter weight 500 at 16px. The highest-energy button in the system — used for the main conversion moment. Black text on yellow achieves 15.6:1 contrast.
+White fill, 2px black border, 47px border-radius (fully pill-shaped), 10px vertical / 20px horizontal padding, Manrope 500 at 16px, black text. Active state swaps to a colored fill (orange, magenta, or teal). Appears in clusters of 4-5 across the header.
 
-### Filled Black Pill Button
-**Role:** Secondary high-emphasis button
+### Pill Dropdown Trigger
+**Role:** Nav item with caret
 
-#000000 background, #ffffff text, border-radius 3000px, padding 16px 32px, Inter weight 500 at 16px. Used for the darker companion CTA beside the yellow button. Maximum contrast and weight.
+Identical to Pill Navigation Button but includes a small orange triangle (▾) suffix indicating an expandable menu. Sits as the leftmost primary nav item.
 
-### Ghost Pill Button
-**Role:** Low-emphasis navigation action
+### Outline Content Card
+**Role:** General-purpose content card
 
-Transparent background, #000000 1px border, border-radius 3000px, padding 12px 24px, Inter weight 500 at 15px. Used for 'Log in' in the nav bar — present but quiet.
+White (#ffffff) fill, 2px solid black border, 40-47px border-radius, 24-40px padding, no shadow. Uses Alfa Slab One for the card title and Manrope for body text. The thick black outline on white is the signature card treatment.
 
-### Navigation Bar Card
-**Role:** Top-level site navigation
+### Flat Color Card
+**Role:** Bold panel for featured content
 
-White #ffffff surface on the gray canvas, border-radius 30px, horizontal padding 24px, vertically centered logo + link group + button group. Floats with a single soft drop shadow (rgba(0,0,0,0.2) 0px 10px 10px -5px). Max-width aligns with page content.
+Single vivid fill (Ember Orange, Magenta Pop, or Sunbeam Yellow), no border, 40-47px border-radius, 24-40px padding. Black text on top. Used sparingly as visual punctuation between white card sections.
 
-### Product Screenshot Frame
-**Role:** Browser-style product preview container
+### Display Headline Block
+**Role:** Hero or section title
 
-White card with border-radius 16px, three colored traffic-light dots (red/yellow/blue) in the top-left corner to simulate a browser window. Contains a dot-grid background pattern and nested UI mockups.
+Alfa Slab One 400 at 46-120px, line-height 1.09-1.20, black on peach canvas. No gradient, no color treatment — the slab-serif weight alone carries impact. Often multi-line with manual line breaks creating a 'shout' rhythm.
 
-### Phone Mockup Card
-**Role:** Individual screen preview in a flow diagram
+### Line-Art Illustration
+**Role:** Decorative floating graphic
 
-White rounded rectangle (~16px radius) with a bold blue #466cf3 zigzag 'N' mark at the top, screen label text below (Inter 14px). Connected to adjacent mockups by thin lines with small arrowheads.
+Thin black-stroke line drawings (robots, headphones, cameras, cassette tapes, faces) scattered across the peach canvas at varied rotations. Each is a standalone SVG, outlined only, no fill or minimal flat fill. Functions as visual breathing room around text.
 
-### Flow Connector Line
-**Role:** Visual link between product screens
+### Tilted Content Card
+**Role:** Featured episode or highlight card
 
-Thin #000000 1px line with a small arrowhead or node dot at the endpoint. Black-on-white, no fill — the lines are the diagram's grammar.
+A white card rotated 2-4 degrees with a slight teal or lavender offset behind it, creating a hand-placed scrapbook effect. 40px radius, black border, Manrope body text, Alfa Slab One title.
 
-### Annotation Tag
-**Role:** Callout label on product mockups
+### Tag Pill
+**Role:** Category or filter label
 
-#f34646 background, #ffffff text, border-radius 3000px, padding 6px 14px, Inter weight 500 at 13px. Small, saturated, attention-grabbing — points to specific features inside the product preview.
+Small pill (47px radius), 8px vertical / 16px horizontal padding, Manrope 700 at 12-14px. Fill can be any brand accent color with black text, or white with black border.
 
-### Highlight Feature Container
-**Role:** Yellow-bordered flow card grouping related screens
+### Footer Link Group
+**Role:** Secondary navigation block
 
-Outer container with a #fff705 border (2-3px), border-radius ~30px, wrapping a group of 2-3 phone mockup cards. Functions as a visual 'chapter' boundary within the product preview.
+Manrope 500 at 16px, black text, minimal spacing (8-10px between items). No borders or background — sits directly on the peach canvas.
 
-### Avatar Stack
-**Role:** Social proof / collaboration indicator
+### Event Card
+**Role:** Date-specific listing card
 
-Circular user avatars (24-32px diameter) with 2px white border, stacked with negative horizontal offset. Positioned on the right edge of the product preview to suggest multi-user activity.
+White fill, black border, 40px radius, 15-16px padding. Features a date marker (Alfa Slab One large numerals), event title (Manrope 700), and location/meta (Manrope 400). 2-3 cards arranged in a horizontal row.
 
-### Brand Logo Mark
-**Role:** Brand identity in nav and footer
+### Amplified Poster Card
+**Role:** Featured visual content card
 
-Yellow #e6e51 rounded square (~20px) with a simple 'A' or mountain-like glyph in black, paired with 'aaply' wordmark in Poppins 500 at 18px, #000000.
+Large card with image-first layout: full-bleed illustration or poster at top, title in Alfa Slab One 35px, description in Manrope 16px, black border 2px, 47px radius. Acts as a 'magazine cover' within the content flow.
 
-### Emoji/Illustration Accent
-**Role:** Decorative element embedded in headlines
+### Section Divider
+**Role:** Visual separator between content blocks
 
-Full-color emoji or flat icon illustrations placed inline within the hero headline. They sit at baseline and break the text rhythm — a signature device that makes the headline feel hand-assembled rather than typeset.
+A wide, thin band of solid color (alternating between Ember Orange, Mint Wash, Sunbeam Yellow, or Lilac Tint) stretching edge-to-edge, 60-100px tall. No text — pure color rhythm.
 
 ## Do's and Don'ts
 
 ### Do
-- Use border-radius 3000px for all buttons, tags, and small interactive elements
-- Use Poppins weight 700 with tight negative tracking (-0.0740em) for display and hero headlines
-- Pair every yellow filled button with a black filled button as a high-contrast companion
-- Embed emoji or flat icon illustrations directly inside headlines — not beside them
-- Use the dot-grid texture on product preview backgrounds to signal 'this is a working canvas'
-- Set card border-radius between 30-40px for feature cards; 16px only for small UI mockups
-- Keep all text #000000 on white/light surfaces — the system runs on maximum contrast
+- Set display headlines in Alfa Slab One at 46px or above with line-height ≤ 1.20 — the tight leading is what makes the slab serif feel like it's shouting.
+- Use 47px border-radius on all primary containers (nav, cards, buttons) and 10px only for small nested elements; never use 0px or 4px radii.
+- Default to the peach canvas (#f6e0db) for every section; introduce a colored card surface only when breaking visual rhythm is intentional.
+- Pair 2px black borders with white fills for cards — this is the signature outlined-card language; never use shadows for elevation.
+- Scatter line-art illustrations at varied rotations around text blocks rather than aligning them to a grid; asymmetry is part of the storybook feel.
+- Use Manrope 500 for nav and 400 for body; reserve 700-800 for inline emphasis only — the default weight should feel conversational, not heavy.
+- Pick one vivid accent color per content block (orange, magenta, yellow, teal, blue, lilac) and let it saturate a whole card or band rather than mixing hues within a single component.
 
 ### Don't
-- Do not stack multiple shadow layers — the system uses one shadow, on the nav bar, and nothing else
-- Do not introduce new accent hues beyond the four-color palette (yellow, red, blue, peach)
-- Do not use light or thin font weights for headlines — Poppins 700 is the floor for display text
-- Do not use sharp corners on buttons, tags, or cards — every interactive element is fully rounded
-- Do not separate the yellow and black buttons with other styles — they always appear as a matched pair
-- Do not use emoji or illustrations as standalone decorations outside of headlines and product mockups
-- Do not apply the peach #ff8562 as a full background section — it stays as a soft wash behind mockup clusters only
+- Don't apply drop shadows, inner shadows, or any elevation effects — the design is intentionally flat with borders doing the structural work.
+- Don't use gradients — all color is flat and saturated, like crayon on paper.
+- Don't set Alfa Slab One below 16px — at small sizes the slab serifs become illegible noise; switch to Manrope for anything under 16px.
+- Don't center-align body paragraphs — body text in Manrope reads left-aligned; centering is reserved for headlines and short labels.
+- Don't use neutral grays for borders or text — all structural lines are pure black (#000000); any gray breaks the storybook ink-on-paper metaphor.
+- Don't mix more than two accent colors within a single card or button — the palette is crayon-box broad, but each component should pick one crayon.
+- Don't add a traditional CTA button with a solid colored fill and white text; primary actions are pill-shaped with black borders on white, or colored-fill cards, not a conventional 'Buy now' button.
 
 ## Surfaces
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 0 | Canvas | `#f2f2f2` | Page background — cool gray field with dot-grid texture |
-| 1 | Card | `#ffffff` | Navigation bar, feature cards, product mockup containers |
-| 2 | Tinted Accent | `#ff8562` | Peach wash behind mockup clusters, subtle warmth |
-| 3 | Highlight Frame | `#fff705` | Yellow-bordered feature containers that frame the hero product flow |
+| 0 | Peach Canvas | `#f6e0db` | Full-page background — warm pastel base for all sections |
+| 1 | Snow Card | `#ffffff` | Primary card and button fill, outlined by black borders |
+| 2 | Color Card | `#ef724f` | Vivid flat card surface in orange — same color as accent, used as a bold panel |
+| 3 | Mint Card | `#ace2df` | Soft teal card surface for variety within content sections |
+| 4 | Lilac Card | `#e69dff` | Pastel pink-violet card surface for softer content panels |
 
 ## Elevation
 
-- **Navigation bar:** `rgba(0, 0, 0, 0.2) 0px 10px 10px -5px`
+The design intentionally avoids all shadows. Elevation is communicated exclusively through 2px black borders on white surfaces and through color contrast (vivid fills against the peach canvas). This is a deliberate flat-illustration aesthetic — depth would break the storybook metaphor. Components sit ON the page, not ABOVE it.
 
 ## Imagery
 
-The visual language is dominated by product mockups and flat illustration, not photography. The hero contains a large browser-style screenshot of the actual product — a flowchart editor with phone-shaped screen cards connected by arrows on a dot-grid background. Inside the mockup, phone screens show the app's own onboarding flow (log in, company name, sign up) rendered in miniature. The page background carries a faint dot-grid texture, reinforcing the whiteboard/canvas metaphor. The only other visual elements are emoji and small flat icons (speech bubbles, flags, zigzags) placed directly inside the headline text. No stock photography, no 3D renders, no lifestyle imagery — the product IS the hero.
+The visual language is hand-drawn line illustration over flat color. Illustrations are thin-stroke black outlines (headphones, robots, cassette tapes, cameras, abstract faces, musical notes) scattered at irregular rotations around text — they function as decorative atmosphere, not as explanatory content. Cards occasionally feature full-bleed illustrated posters with a children's-book quality. No photography is present. The peach canvas with floating doodles creates a scrapbook or zine feel where the page itself is the artwork. Icons are mono-line, black-stroke only, matching the illustration style.
 
 ## Layout
 
-Centered max-width layout (~1200px) on a light gray canvas. The hero is a centered headline stack with two pill buttons below, followed by a full-width product screenshot that bleeds edge-to-edge within the content container. Sections are separated by generous vertical rhythm (80-120px) rather than visual dividers. The navigation bar floats as a rounded white card with a single soft shadow. The product preview itself uses a Z-pattern: mockups flow left-to-right with connector arrows, then the flow continues in a second row slightly below. Content is text-light and visual-heavy — the product screenshot occupies more vertical space than all text combined above it.
+The page is full-bleed with no fixed max-width container — content breathes from edge to edge on the peach canvas, broken by colored bands. The hero is a centered oversized Alfa Slab One headline (multi-line, tight leading) with illustrations orbiting it on all sides at different distances and rotations. Navigation sits as a horizontal row of pill-shaped buttons in the top-left third, not spanning full width. Content sections alternate between white-outlined card grids (2-3 columns) and full-bleed colored bands that act as visual rest stops. Cards are loosely arranged with slight rotations, not locked to a rigid grid. The rhythm is spacious: 46-64px between sections, generous whitespace inside cards. Footer is minimal — a few link groups on the peach canvas with no background change. The overall density is comfortable and editorial, not information-dense.
 
 ## Agent Prompt Guide
 
-**Quick Color Reference**
+## Quick Color Reference
 - text: #000000
-- background: #f2f2f2 (page) / #ffffff (card)
-- border: #e6e6e6
-- accent (brand): #e6e51e
-- annotation/callout: #f34646
-- mockup icon/connector: #466cf3
-- soft tint wash: #ff8562
+- background (canvas): #f6e0db
+- card surface: #ffffff
+- border: #000000 (2px solid)
+- accent (warm): #ef724f (Ember Orange)
+- accent (cool): #ace2df (Mint Wash)
 - primary action: no distinct CTA color
 
-**Example Component Prompts**
-1. Create a hero headline: Poppins weight 700, 57px, #000000, line-height 1.05, letter-spacing -4.22px. Center-aligned on #f2f2f2 background. Include 2-3 inline emoji or flat icon illustrations at baseline level. Below: a yellow pill button (#e6e51e, #000000 text, 3000px radius, 16px 32px padding) and a black pill button (#000000, #ffffff text, same shape) side by side with 16px gap.
+## Example Component Prompts
+1. **Hero Headline Block**: Render a 4-line headline in Alfa Slab One 400 at 50px, line-height 1.12, color #000000, centered on a #f6e0db canvas. Surround with 3-5 scattered line-art SVG illustrations (headphones, robot, cassette) at varied rotations between -15° and +15°.
 
-2. Create a product preview card: white #ffffff surface, 16px border-radius, with three small traffic-light dots (red #f34646, yellow #e6e51e, blue #466cf3) in the top-left corner at 8px from edges. Interior background is a repeating dot-grid pattern in #e6e6e6 at 20px spacing. Contains 3-4 phone-shaped mockup cards (white, 16px radius, each with a blue #466cf3 zigzag mark at top and Inter 14px label below) connected by thin black lines with small arrowheads.
+2. **Outlined Content Card**: White (#ffffff) fill, 2px solid #000000 border, 40px border-radius, 32px padding. Title in Alfa Slab One 400 at 25px black, body in Manrope 400 at 16px black with 1.6 line-height. No shadow.
 
-3. Create a navigation bar: white #ffffff background, 30px border-radius, single shadow rgba(0,0,0,0.2) 0px 10px 10px -5px. Left: yellow logo mark (rounded square #e6e51e, 20px, with black glyph) + 'aaply' wordmark in Poppins 500 18px #000000. Center: 4 nav links in Inter 500 15px #000000, 24px gap. Right: ghost pill button (transparent, 1px #000000 border, 3000px radius, 'Log in') + filled black pill button (#000000 bg, #ffffff text, 3000px radius, 'Sign up').
+3. **Pill Navigation Button**: White fill, 2px #000000 border, 47px border-radius, 10px vertical / 20px horizontal padding. Label in Manrope 500 at 16px #000000. 8px gap between adjacent pills.
 
-## Signature Devices
+4. **Flat Color Band**: Full-bleed horizontal band, 80px tall, fill #ef724f (Ember Orange). No text, no border — pure color break between content sections.
 
-Three patterns define Aaply's visual identity and should be repeated across every new page:
+5. **Tilted Feature Card**: White card rotated 3°, 47px radius, 2px black border, 24px padding. Behind it, a slightly offset #ace2df rectangle (same dimensions) at 0° rotation, creating a scrapbook layered effect. Title in Alfa Slab One 35px, body in Manrope 16px.
 
-1. **The Emoji-In-Headline Pattern**: Display headlines are interrupted by inline emoji or flat icon stickers that sit at text baseline. The icons are full-color and bold, not monochrome or line-art. They are part of the sentence, not adjacent to it.
-
-2. **The Yellow-Black Button Pair**: Conversion moments always offer two pill buttons — yellow first (the primary brand accent), black second (the high-contrast alternative). Never split them apart or substitute other styles.
-
-3. **The Product-Is-The-Hero Pattern**: Below every headline section, a large browser-frame screenshot of the product fills the visual space. The screenshot is a true representation, not a stylized illustration — but the UI inside it uses the same yellow/blue/red accent system, creating a recursive brand experience.
+6. **Tag Pill**: Fill #e7db4c (Sunbeam Yellow), 47px border-radius, 8px vertical / 16px horizontal padding, Manrope 700 at 14px #000000. One tag per accent color, never mixing fills within a group.
 
 ## Similar Brands
 
-- **Framer** — Same bold sans-serif headlines with tight tracking, playful use of inline emoji, and a product screenshot as the hero visual
-- **Pitch** — Same generous border-radius on cards and buttons, light canvas with floating white surfaces, and a single vibrant accent color carrying the brand energy
-- **Popsy** — Same yellow as dominant brand accent, pill-shaped CTAs, and a flat illustration style that treats the product preview as decorative hero art
-- **Whimsical** — Same dot-grid background texture, flowchart-style product visualization, and a working-canvas aesthetic that makes the tool feel like the artifact
+- **Brio magazine / Highlights for Kids** — Same children's-publication language: peach/pastel canvas, oversized slab-serif headlines, scattered hand-drawn doodles, and a crayon-box color palette applied as flat washes.
+- **Mailchimp (illustration system)** — Same playful brand voice: flat vivid colors used as illustration fills, pill-shaped containers, and black-outlined white cards with zero shadow depth.
+- **Headspace (early brand)** — Same generous whitespace, oversized display headlines as the primary visual anchor, and warm pastel canvas with scattered decorative line-art elements.
+- **The Browser Company / Arc** — Same pill-shaped navigation, black-bordered white containers at large radii, and a refusal to use shadows — relying on border-weight and color for structure.
+- **Ridmik Dictionary (or other Bangla/French playful media)** — Same storybook-on-paper feeling: a warm tinted canvas with floating line illustrations and a single bold display face carrying all typographic weight.
 
 ## Quick Start
 
@@ -230,81 +233,85 @@ Three patterns define Aaply's visual identity and should be repeated across ever
 ```css
 :root {
   /* Colors */
-  --color-highlighter-yellow: #e6e51e;
-  --color-annotation-red: #f34646;
-  --color-signal-blue: #466cf3;
-  --color-peach-wash: #ff8562;
-  --color-carbon: #000000;
-  --color-paper-white: #ffffff;
-  --color-graphite-mist: #f2f2f2;
-  --color-hairline-gray: #e6e6e6;
-  --color-shadow-gray: #cccccc;
-  --color-sunbeam: #fff705;
+  --color-peach-paper: #f6e0db;
+  --color-charcoal-ink: #000000;
+  --color-snow: #ffffff;
+  --color-ember-orange: #ef724f;
+  --color-magenta-pop: #981082;
+  --color-sunbeam-yellow: #e7db4c;
+  --color-mint-wash: #ace2df;
+  --color-powder-blue: #84bfff;
+  --color-lilac-tint: #e69dff;
+  --color-lime-zest: #6ed311;
+  --color-cobalt-spark: #5196ff;
 
   /* Typography — Font Families */
-  --font-times: 'Times', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-poppins: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-inter: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-alfa-slab-one: 'Alfa Slab One', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-manrope: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 14px;
-  --leading-caption: 1.57;
+  --text-caption: 12px;
+  --leading-caption: 1.5;
   --text-body: 16px;
-  --leading-body: 1.53;
-  --text-subheading: 18px;
-  --leading-subheading: 1.4;
-  --tracking-subheading: -0.5px;
-  --text-heading-sm: 27px;
-  --leading-heading-sm: 1.33;
-  --tracking-heading-sm: -0.49px;
-  --text-heading: 34px;
-  --leading-heading: 1.05;
-  --tracking-heading: -0.65px;
-  --text-heading-lg: 52px;
-  --leading-heading-lg: 1;
-  --tracking-heading-lg: -3.85px;
-  --text-display: 57px;
-  --leading-display: 1.05;
-  --tracking-display: -4.22px;
+  --leading-body: 1.6;
+  --text-heading-sm: 25px;
+  --leading-heading-sm: 1.24;
+  --text-subheading: 34px;
+  --leading-subheading: 1.16;
+  --text-heading: 46px;
+  --leading-heading: 1.09;
+  --text-heading-lg: 50px;
+  --leading-heading-lg: 1.12;
+  --text-display: 120px;
+  --leading-display: 1;
 
   /* Typography — Weights */
-  --font-weight-light: 300;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-13: 13px;
+  --spacing-15: 15px;
+  --spacing-16: 16px;
+  --spacing-17: 17px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-25: 25px;
+  --spacing-27: 27px;
+  --spacing-30: 30px;
+  --spacing-38: 38px;
+  --spacing-40: 40px;
+  --spacing-46: 46px;
+  --spacing-80: 80px;
 
   /* Layout */
   --page-max-width: 1200px;
-  --section-gap: 80-120px;
-  --card-padding: 32-48px;
-  --element-gap: 16-24px;
+  --section-gap: 46-64px;
+  --card-padding: 24-40px;
+  --element-gap: 8-16px;
 
   /* Border Radius */
-  --radius-2xl: 16px;
-  --radius-3xl: 30px;
-  --radius-3xl-2: 36px;
-  --radius-3xl-3: 40px;
-  --radius-3xl-4: 45px;
-  --radius-full: 50px;
-  --radius-full-2: 56px;
-  --radius-full-3: 3000px;
+  --radius-lg: 10px;
+  --radius-3xl: 40px;
+  --radius-3xl-2: 47px;
 
   /* Named Radii */
-  --radius-nav: 30px;
-  --radius-tags: 3000px;
-  --radius-cards: 30-40px;
-  --radius-inputs: 16px;
-  --radius-buttons: 3000px;
-  --radius-productframe: 16px;
-
-  /* Shadows */
-  --shadow-md: rgba(0, 0, 0, 0.2) 0px 10px 10px -5px;
+  --radius-nav: 47px;
+  --radius-cards: 40-47px;
+  --radius-small: 10px;
+  --radius-buttons: 47px;
 
   /* Surfaces */
-  --surface-canvas: #f2f2f2;
-  --surface-card: #ffffff;
-  --surface-tinted-accent: #ff8562;
-  --surface-highlight-frame: #fff705;
+  --surface-peach-canvas: #f6e0db;
+  --surface-snow-card: #ffffff;
+  --surface-color-card: #ef724f;
+  --surface-mint-card: #ace2df;
+  --surface-lilac-card: #e69dff;
 }
 ```
 
@@ -313,54 +320,59 @@ Three patterns define Aaply's visual identity and should be repeated across ever
 ```css
 @theme {
   /* Colors */
-  --color-highlighter-yellow: #e6e51e;
-  --color-annotation-red: #f34646;
-  --color-signal-blue: #466cf3;
-  --color-peach-wash: #ff8562;
-  --color-carbon: #000000;
-  --color-paper-white: #ffffff;
-  --color-graphite-mist: #f2f2f2;
-  --color-hairline-gray: #e6e6e6;
-  --color-shadow-gray: #cccccc;
-  --color-sunbeam: #fff705;
+  --color-peach-paper: #f6e0db;
+  --color-charcoal-ink: #000000;
+  --color-snow: #ffffff;
+  --color-ember-orange: #ef724f;
+  --color-magenta-pop: #981082;
+  --color-sunbeam-yellow: #e7db4c;
+  --color-mint-wash: #ace2df;
+  --color-powder-blue: #84bfff;
+  --color-lilac-tint: #e69dff;
+  --color-lime-zest: #6ed311;
+  --color-cobalt-spark: #5196ff;
 
   /* Typography */
-  --font-times: 'Times', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-poppins: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-inter: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-alfa-slab-one: 'Alfa Slab One', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-manrope: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 14px;
-  --leading-caption: 1.57;
+  --text-caption: 12px;
+  --leading-caption: 1.5;
   --text-body: 16px;
-  --leading-body: 1.53;
-  --text-subheading: 18px;
-  --leading-subheading: 1.4;
-  --tracking-subheading: -0.5px;
-  --text-heading-sm: 27px;
-  --leading-heading-sm: 1.33;
-  --tracking-heading-sm: -0.49px;
-  --text-heading: 34px;
-  --leading-heading: 1.05;
-  --tracking-heading: -0.65px;
-  --text-heading-lg: 52px;
-  --leading-heading-lg: 1;
-  --tracking-heading-lg: -3.85px;
-  --text-display: 57px;
-  --leading-display: 1.05;
-  --tracking-display: -4.22px;
+  --leading-body: 1.6;
+  --text-heading-sm: 25px;
+  --leading-heading-sm: 1.24;
+  --text-subheading: 34px;
+  --leading-subheading: 1.16;
+  --text-heading: 46px;
+  --leading-heading: 1.09;
+  --text-heading-lg: 50px;
+  --leading-heading-lg: 1.12;
+  --text-display: 120px;
+  --leading-display: 1;
+
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-13: 13px;
+  --spacing-15: 15px;
+  --spacing-16: 16px;
+  --spacing-17: 17px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-25: 25px;
+  --spacing-27: 27px;
+  --spacing-30: 30px;
+  --spacing-38: 38px;
+  --spacing-40: 40px;
+  --spacing-46: 46px;
+  --spacing-80: 80px;
 
   /* Border Radius */
-  --radius-2xl: 16px;
-  --radius-3xl: 30px;
-  --radius-3xl-2: 36px;
-  --radius-3xl-3: 40px;
-  --radius-3xl-4: 45px;
-  --radius-full: 50px;
-  --radius-full-2: 56px;
-  --radius-full-3: 3000px;
-
-  /* Shadows */
-  --shadow-md: rgba(0, 0, 0, 0.2) 0px 10px 10px -5px;
+  --radius-lg: 10px;
+  --radius-3xl: 40px;
+  --radius-3xl-2: 47px;
 }
 ```
