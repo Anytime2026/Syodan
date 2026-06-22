@@ -1,55 +1,66 @@
-# Lpalo — Style Reference
-> A children's storybook spread on warm peach paper — one slab-serif headline shouting through scattered crayon doodles.
+# Ko-fi — Style Reference
+> Warm café chalkboard on cream paper.
 
 **Theme:** light
 
-La puce à l'oreille reads like a children's storybook spread across warm peach paper — a playful podcast platform where chunky black slab-serif headlines anchor the page while vivid color accents and floating line-art illustrations dance around them. The visual rhythm is generous and unhurried: a soft peach canvas (#f6e0db) holds scattered doodles, pill-shaped containers float with thick black borders, and a single oversized headline (Alfa Slab One at near-120px) does the heavy lifting for brand voice. Components feel handmade rather than engineered — black-outlined white cards, 47px pill radii, no shadows, no gradients. Color is treated as a palette of crayons pulled from a single box: every hue is saturated and flat, used as decorative punctuation on surfaces, icons, and section backgrounds rather than as functional UI states. The contrast between the type's serious slab-serif weight and the whimsical illustrations creates the site's identity tension — authoritative voice, childlike delivery.
+Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream page canvas replaces the cold white typical of creator tools, and a custom chunky display font stamps hero headlines with a hand-set zine energy while DM Sans keeps everything readable. Every interactive element is aggressively rounded — pill buttons, pillow-soft cards, capsule inputs — giving the whole system a tactile, sticker-book quality. Black 2-3px borders wrap photo and card surfaces instead of shadows, reinforcing the cut-out-and-paste craft aesthetic. A single soft periwinkle blue punctuates the otherwise warm neutral palette as the one and only accent, reserved for primary actions so they always feel like the most important thing on screen.
 
 ## Tokens — Colors
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Peach Paper | `#f6e0db` | `--color-peach-paper` | Page canvas — the warm pastel ground that makes every black border and colored accent pop |
-| Charcoal Ink | `#000000` | `--color-charcoal-ink` | Primary text, hairlines, card borders, nav outlines — the structural skeleton at 1400+ border occurrences |
-| Snow | `#ffffff` | `--color-snow` | Primary page canvas and white card surfaces. Do not promote it to the primary CTA color |
-| Ember Orange | `#ef724f` | `--color-ember-orange` | Decorative accent and warm card surfaces — a crayon-orange that carries the most frequency of any chromatic color across the UI |
-| Magenta Pop | `#981082` | `--color-magenta-pop` | Decorative accent, nav highlight, and vivid card fills — a saturated fuchsia used as bold punctuation on the peach canvas |
-| Sunbeam Yellow | `#e7db4c` | `--color-sunbeam-yellow` | Yellow wash for highlight backgrounds, decorative bands, and soft emphasis behind content |
-| Mint Wash | `#ace2df` | `--color-mint-wash` | Decorative accent and soft card surface — a desaturated teal that cools the warm palette without breaking its energy |
-| Powder Blue | `#84bfff` | `--color-powder-blue` | Decorative accent and card surface — a mid-saturation sky blue appearing in the largest non-black count (60 fills), used for illustration washes |
-| Lilac Tint | `#e69dff` | `--color-lilac-tint` | Decorative accent and card surface — a soft pastel pink-violet that lightens the magenta without competing |
-| Lime Zest | `#6ed311` | `--color-lime-zest` | Decorative accent — high-chroma green used sparingly as playful punctuation among illustrations |
-| Cobalt Spark | `#5196ff` | `--color-cobalt-spark` | Decorative accent — a single vivid blue dot in the illustration palette |
+| Oat Cream | `#e9dfd2` | `--color-oat-cream` | Secondary surface — feature card backgrounds, warm button fills, tag backgrounds |
+| Morning Fog | `#e5e7eb` | `--color-morning-fog` | Page canvas, subtle borders, hairline dividers — the base everything sits on |
+| Ink Black | `#202020` | `--color-ink-black` | Primary text, dark filled buttons, dark icon fills |
+| Sticker Black | `#000000` | `--color-sticker-black` | Heavy borders on cards, images, and the logo wordmark — the signature outline that makes elements feel cut from paper |
+| Paper White | `#ffffff` | `--color-paper-white` | Card surfaces above the cream canvas, text on dark buttons, input field fills |
+| Kofi Blue | `#aac9f7` | `--color-kofi-blue` | Blue wash for highlight backgrounds, decorative bands, and soft emphasis behind content. Do not promote it to the primary CTA color |
+| Cobalt Pop | `#72a4f2` | `--color-cobalt-pop` | Primary action hover/pressed state, saturated Kofi Blue variant |
 
 ## Tokens — Typography
 
-### Alfa Slab One — Display and editorial headlines — a single-weight chunky slab serif that carries the entire brand voice; the 46px size with tight 1.09 leading is the signature 'shouting headline' treatment, while 16px serves emphasized inline text · `--font-alfa-slab-one`
-- **Substitute:** Bowlby One, Roboto Slab 900, or Recoleta Black
+### bogue-black — Hero and section display headlines — a custom chunky rounded display face used only at 60px+ to stamp the page with a hand-set zine quality · `--font-bogue-black`
+- **Substitute:** Bowlby One, Lilita One, or Sniglet
 - **Weights:** 400
-- **Sizes:** 16px, 35px, 46px
-- **Line height:** 1.09–1.20
-- **Role:** Display and editorial headlines — a single-weight chunky slab serif that carries the entire brand voice; the 46px size with tight 1.09 leading is the signature 'shouting headline' treatment, while 16px serves emphasized inline text
+- **Sizes:** 60px, 72px
+- **Line height:** 1.00
+- **Role:** Hero and section display headlines — a custom chunky rounded display face used only at 60px+ to stamp the page with a hand-set zine quality
 
-### Manrope — UI text, navigation, body copy, and large display alternates — geometric sans used for everything that isn't an Alfa Slab headline; weight 500 for nav labels, 700-800 for emphasized UI text, 400 for body; the 120px extreme is a secondary display tier · `--font-manrope`
-- **Substitute:** Inter, Outfit, or Plus Jakarta Sans
-- **Weights:** 400, 500, 700, 800
-- **Sizes:** 12px, 25px, 34px, 50px, 120px
-- **Line height:** 1.00–1.60
-- **Role:** UI text, navigation, body copy, and large display alternates — geometric sans used for everything that isn't an Alfa Slab headline; weight 500 for nav labels, 700-800 for emphasized UI text, 400 for body; the 120px extreme is a secondary display tier
+### DM Sans — All UI text: nav links, body copy, button labels, subheadings, card titles, input fields, and footer text — clean geometric sans carrying all functional typography · `--font-dm-sans`
+- **Weights:** 400, 600
+- **Sizes:** 14px, 16px, 20px, 24px, 30px
+- **Line height:** 1.20-1.50
+- **Role:** All UI text: nav links, body copy, button labels, subheadings, card titles, input fields, and footer text — clean geometric sans carrying all functional typography
+
+### Font Awesome 6 Pro — Solid icon glyphs for category tags and feature markers · `--font-font-awesome-6-pro`
+- **Substitute:** Font Awesome 5 Free Solid
+- **Weights:** 900
+- **Sizes:** 20px
+- **Line height:** 1.00
+- **Role:** Solid icon glyphs for category tags and feature markers
+
+### Font Awesome 6 Brands — Brand/social icon glyphs · `--font-font-awesome-6-brands`
+- **Substitute:** Font Awesome 5 Brands
+- **Weights:** 400
+- **Sizes:** 20px
+- **Line height:** 1.00
+- **Role:** Brand/social icon glyphs
 
 ### Type Scale
 
 | Role | Size | Line Height | Letter Spacing | Token |
 |------|------|-------------|----------------|-------|
-| caption | 12px | 1.5 | — | `--text-caption` |
-| body | 16px | 1.6 | — | `--text-body` |
-| heading-sm | 25px | 1.24 | — | `--text-heading-sm` |
-| subheading | 34px | 1.16 | — | `--text-subheading` |
-| heading | 46px | 1.09 | — | `--text-heading` |
-| heading-lg | 50px | 1.12 | — | `--text-heading-lg` |
-| display | 120px | 1 | — | `--text-display` |
+| caption | 14px | 1.43 | — | `--text-caption` |
+| body | 16px | 1.5 | — | `--text-body` |
+| subheading | 20px | 1.4 | — | `--text-subheading` |
+| heading-sm | 24px | 1.33 | — | `--text-heading-sm` |
+| heading | 30px | 1.2 | — | `--text-heading` |
+| display | 60px | 1 | — | `--text-display` |
+| display-lg | 72px | 1 | — | `--text-display-lg` |
 
 ## Tokens — Spacing & Shapes
+
+**Base unit:** 4px
 
 **Density:** comfortable
 
@@ -59,172 +70,168 @@ La puce à l'oreille reads like a children's storybook spread across warm peach 
 |------|-------|-------|
 | 4 | 4px | `--spacing-4` |
 | 8 | 8px | `--spacing-8` |
-| 10 | 10px | `--spacing-10` |
-| 13 | 13px | `--spacing-13` |
-| 15 | 15px | `--spacing-15` |
+| 12 | 12px | `--spacing-12` |
 | 16 | 16px | `--spacing-16` |
-| 17 | 17px | `--spacing-17` |
 | 20 | 20px | `--spacing-20` |
 | 24 | 24px | `--spacing-24` |
-| 25 | 25px | `--spacing-25` |
-| 27 | 27px | `--spacing-27` |
-| 30 | 30px | `--spacing-30` |
-| 38 | 38px | `--spacing-38` |
+| 28 | 28px | `--spacing-28` |
+| 32 | 32px | `--spacing-32` |
 | 40 | 40px | `--spacing-40` |
-| 46 | 46px | `--spacing-46` |
 | 80 | 80px | `--spacing-80` |
+| 96 | 96px | `--spacing-96` |
+| 128 | 128px | `--spacing-128` |
 
 ### Border Radius
 
 | Element | Value |
 |---------|-------|
-| nav | 47px |
-| cards | 40-47px |
-| small | 10px |
-| buttons | 47px |
+| tags | 9999px |
+| cards | 40px |
+| inputs | 9999px |
+| buttons | 9999px |
+| feature-cards | 24px |
+| small-elements | 16px |
 
 ### Layout
 
 - **Page max-width:** 1200px
-- **Section gap:** 46-64px
-- **Card padding:** 24-40px
-- **Element gap:** 8-16px
+- **Section gap:** 64px
+- **Card padding:** 28px
+- **Element gap:** 20px
 
 ## Components
 
-### Pill Navigation Button
-**Role:** Top-bar nav item
+### Pill Primary Button (Kofi Blue)
+**Role:** Primary call-to-action — the one button per view that drives conversion
 
-White fill, 2px black border, 47px border-radius (fully pill-shaped), 10px vertical / 20px horizontal padding, Manrope 500 at 16px, black text. Active state swaps to a colored fill (orange, magenta, or teal). Appears in clusters of 4-5 across the header.
+Filled Kofi Blue (#aac9f7) with #202020 text, 9999px pill radius, 20px vertical and 20-28px horizontal padding, DM Sans 16px weight 600. Sits on cream canvas where it reads as the single most important action. Hover/pressed shifts to Cobalt Pop (#72a4f2).
 
-### Pill Dropdown Trigger
-**Role:** Nav item with caret
+### Pill Dark Button
+**Role:** Secondary action in nav and high-contrast contexts
 
-Identical to Pill Navigation Button but includes a small orange triangle (▾) suffix indicating an expandable menu. Sits as the leftmost primary nav item.
+Filled Ink Black (#202020) with #ffffff text, 9999px pill radius, 20px padding all sides, DM Sans 14-16px weight 600. Used for 'Sign up free' in the nav — the always-visible account action.
 
-### Outline Content Card
-**Role:** General-purpose content card
+### Pill Outline Button (Learn More)
+**Role:** Tertiary action on feature cards and content sections
 
-White (#ffffff) fill, 2px solid black border, 40-47px border-radius, 24-40px padding, no shadow. Uses Alfa Slab One for the card title and Manrope for body text. The thick black outline on white is the signature card treatment.
+Ink Black (#202020) text on white card surface, 9999px pill radius, 20px padding, no border. Label appears as a standalone pill. Used for 'Learn how Ko-fi works' on feature blocks.
 
-### Flat Color Card
-**Role:** Bold panel for featured content
+### Sticker Card (Creator Profile)
+**Role:** Profile showcase card for creator directory and testimonials
 
-Single vivid fill (Ember Orange, Magenta Pop, or Sunbeam Yellow), no border, 40-47px border-radius, 24-40px padding. Black text on top. Used sparingly as visual punctuation between white card sections.
+White (#ffffff) fill, 40px radius, 2-3px solid #000000 border. No shadow — the black border IS the elevation. Contains a full-bleed photo (also 40px radius) above creator info. The sticker effect is the signature visual moment of the whole system.
 
-### Display Headline Block
-**Role:** Hero or section title
+### Oat Feature Card
+**Role:** Large feature block like 'Payday your way'
 
-Alfa Slab One 400 at 46-120px, line-height 1.09-1.20, black on peach canvas. No gradient, no color treatment — the slab-serif weight alone carries impact. Often multi-line with manual line breaks creating a 'shout' rhythm.
+Oat Cream (#e9dfd2) fill, 24px radius, generous 40-80px padding, contains a bogue-black display heading, DM Sans body copy, and a pill outline button. Sits inside a white card frame on the cream canvas.
 
-### Line-Art Illustration
-**Role:** Decorative floating graphic
+### Category Tag Pill
+**Role:** Filter and creator-type chip — 'Streamers', 'Artists', 'Writers', etc.
 
-Thin black-stroke line drawings (robots, headphones, cameras, cassette tapes, faces) scattered across the peach canvas at varied rotations. Each is a standalone SVG, outlined only, no fill or minimal flat fill. Functions as visual breathing room around text.
+White fill, 9999px pill radius, 20px horizontal padding, DM Sans 16px weight 400 in Ink Black. Active state gets a 2px Ink Black border. Each tag leads with a 20px Font Awesome solid icon in its natural brand color.
 
-### Tilted Content Card
-**Role:** Featured episode or highlight card
+### Top Navigation Bar
+**Role:** Global site navigation
 
-A white card rotated 2-4 degrees with a slight teal or lavender offset behind it, creating a hand-placed scrapbook effect. 40px radius, black border, Manrope body text, Alfa Slab One title.
+Transparent over the cream canvas, 9999px pill for the dark 'Sign up free' button, nav links in DM Sans 16px weight 400. Logo is a chunky bogue-black 'Ko-fi' wordmark with a coffee-cup icon. No background bar — nav floats on the canvas. Padding 16-20px vertical.
 
-### Tag Pill
-**Role:** Category or filter label
+### Pill Input Field
+**Role:** Email/name input for signup and search
 
-Small pill (47px radius), 8px vertical / 16px horizontal padding, Manrope 700 at 12-14px. Fill can be any brand accent color with black text, or white with black border.
+White (#ffffff) fill, 9999px pill radius, 28px horizontal padding, 2px Ink Black border, DM Sans 16px placeholder. Border thickens or shifts to Kofi Blue on focus. No sharp corners anywhere.
 
-### Footer Link Group
-**Role:** Secondary navigation block
+### Logo Wordmark Lockup
+**Role:** Brand identity mark in nav and footer
 
-Manrope 500 at 16px, black text, minimal spacing (8-10px between items). No borders or background — sits directly on the peach canvas.
+bogue-black 'Ko-fi' text in Ink Black, paired with a rounded coffee-cup icon with a heart on the cup. The coffee cup fill is a warm orange-red (the brand's secondary signal). Surrounded by a 2px black sticker border when used as a standalone badge.
 
-### Event Card
-**Role:** Date-specific listing card
+### Section Headline Block
+**Role:** Section opener with display heading and subtitle
 
-White fill, black border, 40px radius, 15-16px padding. Features a date marker (Alfa Slab One large numerals), event title (Manrope 700), and location/meta (Manrope 400). 2-3 cards arranged in a horizontal row.
+Centered bogue-black heading at 60px line-height 1.0, followed by DM Sans 20px subheading in Ink Black. Generous 40-64px bottom margin before content. Creates the 'chapter title' rhythm that structures the page.
 
-### Amplified Poster Card
-**Role:** Featured visual content card
+### Creator Photo Tile
+**Role:** Image-first card for creator directory
 
-Large card with image-first layout: full-bleed illustration or poster at top, title in Alfa Slab One 35px, description in Manrope 16px, black border 2px, 47px radius. Acts as a 'magazine cover' within the content flow.
+Photo fills a 40px-radius tile with a 2-3px #000000 border, white frame around the photo. No caption inside the tile — info lives in adjacent text. Photos are not cropped to square; they keep natural aspect within the rounded frame.
 
-### Section Divider
-**Role:** Visual separator between content blocks
+### Feature Illustration Block
+**Role:** Decorative hero artwork like the three character mascots
 
-A wide, thin band of solid color (alternating between Ember Orange, Mint Wash, Sunbeam Yellow, or Lilac Tint) stretching edge-to-edge, 60-100px tall. No text — pure color rhythm.
+Hand-drawn line illustrations with selective Kofi Blue accent fills, no background container, sits directly on the cream canvas. Characters are outlined in black, flat colored, playful proportions. The illustration IS the emotional hook of the hero.
 
 ## Do's and Don'ts
 
 ### Do
-- Set display headlines in Alfa Slab One at 46px or above with line-height ≤ 1.20 — the tight leading is what makes the slab serif feel like it's shouting.
-- Use 47px border-radius on all primary containers (nav, cards, buttons) and 10px only for small nested elements; never use 0px or 4px radii.
-- Default to the peach canvas (#f6e0db) for every section; introduce a colored card surface only when breaking visual rhythm is intentional.
-- Pair 2px black borders with white fills for cards — this is the signature outlined-card language; never use shadows for elevation.
-- Scatter line-art illustrations at varied rotations around text blocks rather than aligning them to a grid; asymmetry is part of the storybook feel.
-- Use Manrope 500 for nav and 400 for body; reserve 700-800 for inline emphasis only — the default weight should feel conversational, not heavy.
-- Pick one vivid accent color per content block (orange, magenta, yellow, teal, blue, lilac) and let it saturate a whole card or band rather than mixing hues within a single component.
+- Use 9999px pill radius for every button, tag, input, and nav CTA — sharp corners break the tactile language
+- Use bogue-black (or Bowlby One substitute) only for display headings 48px and above — DM Sans for everything else
+- Wrap all card and image surfaces in a 2-3px solid #000000 border instead of adding drop shadows — the sticker outline is the elevation system
+- Reserve Kofi Blue (#aac9f7) exclusively for the single primary action per view; let it win attention by being the only color on screen
+- Maintain the cream canvas (#e5e7eb) as the universal page background — never introduce pure white or pure gray as the base
+- Keep all icon glyphs at 20px in the same family weight — consistent icon size preserves the sticker-book rhythm
+- Pair every category tag with a leading Font Awesome solid icon to reinforce the playful, labeled-sticker feel
 
 ### Don't
-- Don't apply drop shadows, inner shadows, or any elevation effects — the design is intentionally flat with borders doing the structural work.
-- Don't use gradients — all color is flat and saturated, like crayon on paper.
-- Don't set Alfa Slab One below 16px — at small sizes the slab serifs become illegible noise; switch to Manrope for anything under 16px.
-- Don't center-align body paragraphs — body text in Manrope reads left-aligned; centering is reserved for headlines and short labels.
-- Don't use neutral grays for borders or text — all structural lines are pure black (#000000); any gray breaks the storybook ink-on-paper metaphor.
-- Don't mix more than two accent colors within a single card or button — the palette is crayon-box broad, but each component should pick one crayon.
-- Don't add a traditional CTA button with a solid colored fill and white text; primary actions are pill-shaped with black borders on white, or colored-fill cards, not a conventional 'Buy now' button.
+- Don't use drop shadows on cards, buttons, or images — the black border replaces elevation and shadows would muddy the craft aesthetic
+- Don't introduce additional chromatic accents beyond Kofi Blue and its hover state — the warm-neutral-plus-one-blue palette is the identity
+- Don't use DM Sans at 40px+ for headings — it loses the chunky display quality; switch to bogue-black or its substitute
+- Don't place interactive elements on pure white #ffffff as the page background — the cream canvas is what makes the system feel warm
+- Don't use square or slightly-rounded (4-8px) corners on buttons, tags, or inputs — pill is the only acceptable radius for interactive elements
+- Don't apply the Sticker Black border to text or background blocks — reserve it for photo and card surfaces where the outline reads as a die-cut shape
+- Don't use the bogue-black display font for body, nav, button, or input text — its weight and personality overwhelm functional UI
 
 ## Surfaces
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 0 | Peach Canvas | `#f6e0db` | Full-page background — warm pastel base for all sections |
-| 1 | Snow Card | `#ffffff` | Primary card and button fill, outlined by black borders |
-| 2 | Color Card | `#ef724f` | Vivid flat card surface in orange — same color as accent, used as a bold panel |
-| 3 | Mint Card | `#ace2df` | Soft teal card surface for variety within content sections |
-| 4 | Lilac Card | `#e69dff` | Pastel pink-violet card surface for softer content panels |
-
-## Elevation
-
-The design intentionally avoids all shadows. Elevation is communicated exclusively through 2px black borders on white surfaces and through color contrast (vivid fills against the peach canvas). This is a deliberate flat-illustration aesthetic — depth would break the storybook metaphor. Components sit ON the page, not ABOVE it.
+| 1 | Canvas | `#e5e7eb` | Page background — warm light gray that softens the whole experience |
+| 2 | Oat Surface | `#e9dfd2` | Feature card and section backgrounds with extra warmth |
+| 3 | Paper Card | `#ffffff` | Elevated card surface sitting on the cream canvas |
+| 4 | Blue Wash | `#aac9f7` | Brand-tinted footer or highlight band — the warmest chromatic surface |
 
 ## Imagery
 
-The visual language is hand-drawn line illustration over flat color. Illustrations are thin-stroke black outlines (headphones, robots, cassette tapes, cameras, abstract faces, musical notes) scattered at irregular rotations around text — they function as decorative atmosphere, not as explanatory content. Cards occasionally feature full-bleed illustrated posters with a children's-book quality. No photography is present. The peach canvas with floating doodles creates a scrapbook or zine feel where the page itself is the artwork. Icons are mono-line, black-stroke only, matching the illustration style.
+Photography is creator-focused portraiture — direct, warm, eye-contact-with-camera shots at close crop, shown full-bleed inside 40px-radius sticker frames with a 2-3px black border. Illustrations are hand-drawn line art of rounded mascot characters (ghost, heart, bean) with selective flat color fills in Kofi Blue and warm cream. The coffee-cup-with-heart logo is a recurring illustration motif. No 3D renders, no stock photography, no abstract gradients — everything reads as either a friendly human portrait or a hand-drawn mascot.
 
 ## Layout
 
-The page is full-bleed with no fixed max-width container — content breathes from edge to edge on the peach canvas, broken by colored bands. The hero is a centered oversized Alfa Slab One headline (multi-line, tight leading) with illustrations orbiting it on all sides at different distances and rotations. Navigation sits as a horizontal row of pill-shaped buttons in the top-left third, not spanning full width. Content sections alternate between white-outlined card grids (2-3 columns) and full-bleed colored bands that act as visual rest stops. Cards are loosely arranged with slight rotations, not locked to a rigid grid. The rhythm is spacious: 46-64px between sections, generous whitespace inside cards. Footer is minimal — a few link groups on the peach canvas with no background change. The overall density is comfortable and editorial, not information-dense.
+Max-width ~1200px centered container on a full-bleed cream canvas. Hero is centered: large bogue-black display headline, DM Sans subtitle, single blue pill CTA, then illustration below. Sections alternate between centered text blocks and 3-column card grids. Category sections use wrapped rows of pill-shaped tags. Creator showcases are 3-up grids of sticker-bordered photo cards. Navigation is a minimal floating top bar with logo left, links center-right, dark pill CTA right. Section gaps of 40-80px create generous breathing room between rhythm blocks.
 
 ## Agent Prompt Guide
 
-## Quick Color Reference
-- text: #000000
-- background (canvas): #f6e0db
-- card surface: #ffffff
-- border: #000000 (2px solid)
-- accent (warm): #ef724f (Ember Orange)
-- accent (cool): #ace2df (Mint Wash)
-- primary action: no distinct CTA color
+Quick Color Reference:
+- canvas/background: #e5e7eb (Morning Fog)
+- text/primary: #202020 (Ink Black)
+- text/on-dark: #ffffff (Paper White)
+- border/sticker: #000000 (Sticker Black)
+- card/surface: #ffffff (Paper White)
+- accent/feature: #e9dfd2 (Oat Cream)
+- primary action: #72a4f2 (filled action)
 
-## Example Component Prompts
-1. **Hero Headline Block**: Render a 4-line headline in Alfa Slab One 400 at 50px, line-height 1.12, color #000000, centered on a #f6e0db canvas. Surround with 3-5 scattered line-art SVG illustrations (headphones, robot, cassette) at varied rotations between -15° and +15°.
+Example Component Prompts:
 
-2. **Outlined Content Card**: White (#ffffff) fill, 2px solid #000000 border, 40px border-radius, 32px padding. Title in Alfa Slab One 400 at 25px black, body in Manrope 400 at 16px black with 1.6 line-height. No shadow.
+1. Create a Primary Action Button: #72a4f2 background, #202020 text, 9999px radius, compact pill padding. Use this filled treatment for the main CTA.
 
-3. **Pill Navigation Button**: White fill, 2px #000000 border, 47px border-radius, 10px vertical / 20px horizontal padding. Label in Manrope 500 at 16px #000000. 8px gap between adjacent pills.
+2. Create a 3-column creator card grid: each card white (#ffffff) with 2px solid #000000 border, 40px radius, no shadow. Photo at top fills a 40px-radius area. Creator name in DM Sans 20px weight 600 #202020, handle in DM Sans 16px weight 400 #202020 below. 28px padding inside card.
 
-4. **Flat Color Band**: Full-bleed horizontal band, 80px tall, fill #ef724f (Ember Orange). No text, no border — pure color break between content sections.
+3. Create a category tag row: 6-8 pill tags in a wrapped flex layout. Each tag white fill, 9999px radius, 20px horizontal padding, DM Sans 16px weight 400 in #202020. Leading 20px Font Awesome solid icon. Active tag gets a 2px #202020 border.
 
-5. **Tilted Feature Card**: White card rotated 3°, 47px radius, 2px black border, 24px padding. Behind it, a slightly offset #ace2df rectangle (same dimensions) at 0° rotation, creating a scrapbook layered effect. Title in Alfa Slab One 35px, body in Manrope 16px.
+4. Create a feature block: outer card white (#ffffff) with 24px radius, 40-80px padding. Inner feature panel with #e9dfd2 fill, 24px radius. bogue-black heading at 60px, DM Sans body at 16px. Outline pill button: #202020 text on white, 9999px radius, 20px padding.
 
-6. **Tag Pill**: Fill #e7db4c (Sunbeam Yellow), 47px border-radius, 8px vertical / 16px horizontal padding, Manrope 700 at 14px #000000. One tag per accent color, never mixing fills within a group.
+5. Create a pill input field: #ffffff fill, 9999px radius, 28px horizontal padding, 2px solid #000000 border, DM Sans 16px placeholder in muted gray. On focus, border shifts to #aac9f7.
+
+## Elevation Philosophy
+
+Ko-fi deliberately avoids drop shadows. The system uses a 2-3px solid #000000 border as its sole elevation mechanism on cards, images, and the logo lockup. This creates a flat sticker-book aesthetic where elements feel cut from paper and placed on a warm canvas, rather than floating above it. The black border must always be paired with a generous radius (24px or 40px) so it reads as a die-cut outline rather than a hard frame. No box-shadows, no glow effects, no layered ambient lighting — the cream canvas itself provides all the depth the design needs.
 
 ## Similar Brands
 
-- **Brio magazine / Highlights for Kids** — Same children's-publication language: peach/pastel canvas, oversized slab-serif headlines, scattered hand-drawn doodles, and a crayon-box color palette applied as flat washes.
-- **Mailchimp (illustration system)** — Same playful brand voice: flat vivid colors used as illustration fills, pill-shaped containers, and black-outlined white cards with zero shadow depth.
-- **Headspace (early brand)** — Same generous whitespace, oversized display headlines as the primary visual anchor, and warm pastel canvas with scattered decorative line-art elements.
-- **The Browser Company / Arc** — Same pill-shaped navigation, black-bordered white containers at large radii, and a refusal to use shadows — relying on border-weight and color for structure.
-- **Ridmik Dictionary (or other Bangla/French playful media)** — Same storybook-on-paper feeling: a warm tinted canvas with floating line illustrations and a single bold display face carrying all typographic weight.
+- **Gumroad** — Same warm-cream canvas with a single playful color accent, and creator-portrait cards with rounded edges and friendly typography
+- **Buy Me a Coffee** — Direct competitor with the same creator-tip focus, shared hand-drawn mascot illustration style, and rounded-everything button and card system
+- **Substack** — Similar zine-quality custom display headlines, cream-and-black palette, and sticker-bordered editorial card layouts
+- **Notion** — Same pill-shaped buttons and capsule input fields, though Notion is colder and more utilitarian — the structural DNA of soft-rounded controls overlaps
+- **Craigslist (reimagined)** — Stripped-back warm aesthetic with one accent color, chunky display type, and an unapologetically craft, non-corporate personality
 
 ## Quick Start
 
@@ -233,85 +240,81 @@ The page is full-bleed with no fixed max-width container — content breathes fr
 ```css
 :root {
   /* Colors */
-  --color-peach-paper: #f6e0db;
-  --color-charcoal-ink: #000000;
-  --color-snow: #ffffff;
-  --color-ember-orange: #ef724f;
-  --color-magenta-pop: #981082;
-  --color-sunbeam-yellow: #e7db4c;
-  --color-mint-wash: #ace2df;
-  --color-powder-blue: #84bfff;
-  --color-lilac-tint: #e69dff;
-  --color-lime-zest: #6ed311;
-  --color-cobalt-spark: #5196ff;
+  --color-oat-cream: #e9dfd2;
+  --color-morning-fog: #e5e7eb;
+  --color-ink-black: #202020;
+  --color-sticker-black: #000000;
+  --color-paper-white: #ffffff;
+  --color-kofi-blue: #aac9f7;
+  --color-cobalt-pop: #72a4f2;
 
   /* Typography — Font Families */
-  --font-alfa-slab-one: 'Alfa Slab One', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-manrope: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bogue-black: 'bogue-black', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-font-awesome-6-pro: 'Font Awesome 6 Pro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-font-awesome-6-brands: 'Font Awesome 6 Brands', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 12px;
-  --leading-caption: 1.5;
+  --text-caption: 14px;
+  --leading-caption: 1.43;
   --text-body: 16px;
-  --leading-body: 1.6;
-  --text-heading-sm: 25px;
-  --leading-heading-sm: 1.24;
-  --text-subheading: 34px;
-  --leading-subheading: 1.16;
-  --text-heading: 46px;
-  --leading-heading: 1.09;
-  --text-heading-lg: 50px;
-  --leading-heading-lg: 1.12;
-  --text-display: 120px;
+  --leading-body: 1.5;
+  --text-subheading: 20px;
+  --leading-subheading: 1.4;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.33;
+  --text-heading: 30px;
+  --leading-heading: 1.2;
+  --text-display: 60px;
   --leading-display: 1;
+  --text-display-lg: 72px;
+  --leading-display-lg: 1;
 
   /* Typography — Weights */
   --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
+  --font-weight-semibold: 600;
+  --font-weight-black: 900;
 
   /* Spacing */
+  --spacing-unit: 4px;
   --spacing-4: 4px;
   --spacing-8: 8px;
-  --spacing-10: 10px;
-  --spacing-13: 13px;
-  --spacing-15: 15px;
+  --spacing-12: 12px;
   --spacing-16: 16px;
-  --spacing-17: 17px;
   --spacing-20: 20px;
   --spacing-24: 24px;
-  --spacing-25: 25px;
-  --spacing-27: 27px;
-  --spacing-30: 30px;
-  --spacing-38: 38px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
   --spacing-40: 40px;
-  --spacing-46: 46px;
   --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-128: 128px;
 
   /* Layout */
   --page-max-width: 1200px;
-  --section-gap: 46-64px;
-  --card-padding: 24-40px;
-  --element-gap: 8-16px;
+  --section-gap: 64px;
+  --card-padding: 28px;
+  --element-gap: 20px;
 
   /* Border Radius */
-  --radius-lg: 10px;
-  --radius-3xl: 40px;
-  --radius-3xl-2: 47px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-3xl-2: 40px;
+  --radius-full: 9999px;
 
   /* Named Radii */
-  --radius-nav: 47px;
-  --radius-cards: 40-47px;
-  --radius-small: 10px;
-  --radius-buttons: 47px;
+  --radius-tags: 9999px;
+  --radius-cards: 40px;
+  --radius-inputs: 9999px;
+  --radius-buttons: 9999px;
+  --radius-feature-cards: 24px;
+  --radius-small-elements: 16px;
 
   /* Surfaces */
-  --surface-peach-canvas: #f6e0db;
-  --surface-snow-card: #ffffff;
-  --surface-color-card: #ef724f;
-  --surface-mint-card: #ace2df;
-  --surface-lilac-card: #e69dff;
+  --surface-canvas: #e5e7eb;
+  --surface-oat-surface: #e9dfd2;
+  --surface-paper-card: #ffffff;
+  --surface-blue-wash: #aac9f7;
 }
 ```
 
@@ -320,59 +323,54 @@ The page is full-bleed with no fixed max-width container — content breathes fr
 ```css
 @theme {
   /* Colors */
-  --color-peach-paper: #f6e0db;
-  --color-charcoal-ink: #000000;
-  --color-snow: #ffffff;
-  --color-ember-orange: #ef724f;
-  --color-magenta-pop: #981082;
-  --color-sunbeam-yellow: #e7db4c;
-  --color-mint-wash: #ace2df;
-  --color-powder-blue: #84bfff;
-  --color-lilac-tint: #e69dff;
-  --color-lime-zest: #6ed311;
-  --color-cobalt-spark: #5196ff;
+  --color-oat-cream: #e9dfd2;
+  --color-morning-fog: #e5e7eb;
+  --color-ink-black: #202020;
+  --color-sticker-black: #000000;
+  --color-paper-white: #ffffff;
+  --color-kofi-blue: #aac9f7;
+  --color-cobalt-pop: #72a4f2;
 
   /* Typography */
-  --font-alfa-slab-one: 'Alfa Slab One', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-manrope: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bogue-black: 'bogue-black', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-font-awesome-6-pro: 'Font Awesome 6 Pro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-font-awesome-6-brands: 'Font Awesome 6 Brands', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 12px;
-  --leading-caption: 1.5;
+  --text-caption: 14px;
+  --leading-caption: 1.43;
   --text-body: 16px;
-  --leading-body: 1.6;
-  --text-heading-sm: 25px;
-  --leading-heading-sm: 1.24;
-  --text-subheading: 34px;
-  --leading-subheading: 1.16;
-  --text-heading: 46px;
-  --leading-heading: 1.09;
-  --text-heading-lg: 50px;
-  --leading-heading-lg: 1.12;
-  --text-display: 120px;
+  --leading-body: 1.5;
+  --text-subheading: 20px;
+  --leading-subheading: 1.4;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.33;
+  --text-heading: 30px;
+  --leading-heading: 1.2;
+  --text-display: 60px;
   --leading-display: 1;
+  --text-display-lg: 72px;
+  --leading-display-lg: 1;
 
   /* Spacing */
   --spacing-4: 4px;
   --spacing-8: 8px;
-  --spacing-10: 10px;
-  --spacing-13: 13px;
-  --spacing-15: 15px;
+  --spacing-12: 12px;
   --spacing-16: 16px;
-  --spacing-17: 17px;
   --spacing-20: 20px;
   --spacing-24: 24px;
-  --spacing-25: 25px;
-  --spacing-27: 27px;
-  --spacing-30: 30px;
-  --spacing-38: 38px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
   --spacing-40: 40px;
-  --spacing-46: 46px;
   --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-128: 128px;
 
   /* Border Radius */
-  --radius-lg: 10px;
-  --radius-3xl: 40px;
-  --radius-3xl-2: 47px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-3xl-2: 40px;
+  --radius-full: 9999px;
 }
 ```

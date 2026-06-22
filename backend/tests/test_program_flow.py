@@ -47,6 +47,26 @@ async def test_true_challenge_hidden_until_all_sessions_done(client: AsyncClient
 
 
 @pytest.mark.asyncio
+async def test_create_program_with_personality_override(client: AsyncClient) -> None:
+    res = await client.post(
+        "/api/programs",
+        json={
+            "field": "製造業 / 車・自動車部品",
+            "total_sessions": 2,
+            "personality_type": "せっかちで要点を急ぐ",
+            "sub_field": "車・自動車部品",
+            "it_knowledge_level": "ITが苦手（専門用語やシステム用語は通じない）",
+        },
+    )
+    assert res.status_code == 201
+    body = res.json()
+    assert body["field"] == "製造業 / 車・自動車部品"
+    assert body["customer_profile"]["personality_type"] == "せっかちで要点を急ぐ"
+    assert body["sessions"] == []
+    assert body["overall_reviews"] == []
+
+
+@pytest.mark.asyncio
 async def test_cors_allows_localhost_frontend(client: AsyncClient) -> None:
     res = await client.options(
         "/api/programs",

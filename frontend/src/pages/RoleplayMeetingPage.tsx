@@ -8,13 +8,15 @@ import '../components/roleplay/roleplay.css'
 import { useHearingWebSocket } from '../hooks/useHearingWebSocket'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
 import { usePushToTalk } from '../hooks/usePushToTalk'
-import { endSession, getApiBase, getSession } from '../lib/api'
-import type { HearingSession } from '../lib/types'
+import { endSession, getApiBase, getProgram, getSession } from '../lib/api'
+import { setCurrentProgramId } from '../lib/registry'
+import type { HearingSession, Program } from '../lib/types'
 
 export function RoleplayMeetingPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<HearingSession | null>(null)
+  const [program, setProgram] = useState<Program | null>(null)
   const [ended, setEnded] = useState(false)
   const [transcriptOpen, setTranscriptOpen] = useState(true)
   const [userSpeaking, setUserSpeaking] = useState(false)
@@ -24,7 +26,10 @@ export function RoleplayMeetingPage() {
       if (!sessionId || ended) return
       setEnded(true)
       try {
-        await endSession(sessionId)
+        const updated = await endSession(sessionId)
+        setSession(updated)
+        const prog = await getProgram(updated.program_id)
+        setProgram(prog)
       } catch {
         /* already ended */
       }
@@ -56,8 +61,12 @@ export function RoleplayMeetingPage() {
   useEffect(() => {
     if (!sessionId) return
     getSession(sessionId)
-      .then(setSession)
-      .catch(() => navigate('/roleplay/setup'))
+      .then((s) => {
+        setSession(s)
+        return getProgram(s.program_id)
+      })
+      .then(setProgram)
+      .catch(() => navigate('/settings'))
   }, [sessionId, navigate])
 
   useEffect(() => {
@@ -79,7 +88,14 @@ export function RoleplayMeetingPage() {
   async function handleEnd() {
     if (!sessionId) return
     setEnded(true)
-    await endSession(sessionId)
+    try {
+      const updated = await endSession(sessionId)
+      setSession(updated)
+      const prog = await getProgram(updated.program_id)
+      setProgram(prog)
+    } catch {
+      /* ignore */
+    }
   }
 
   async function handlePttDown() {
@@ -90,9 +106,17 @@ export function RoleplayMeetingPage() {
 
   async function handlePttUp() {
     setUserSpeaking(false)
-    await stop() // onChunk (audio) completes before returning
-    ws.pttEnd() // must follow audio send — server processes on ptt_end
+    await stop()
+    ws.pttEnd()
   }
+
+  const allSessionsDone =
+    program !== null && program.completed_sessions >= program.total_sessions
+  const showOverallReview =
+    program?.reveal_challenge ||
+    program?.status === 'closed' ||
+    program?.status === 'overall_review_requested' ||
+    program?.status === 'all_sessions_done'
 
   if (!session) {
     return (
@@ -108,8 +132,16 @@ export function RoleplayMeetingPage() {
         <div className="meeting-complete">
           <h2>セッションが終了しました</h2>
           <p>{session.title ?? `第${session.session_number}回`} の処理をバックエンドで実行中です。</p>
+          <Link to={`/evaluations/${sessionId}`}>評価詳細へ</Link>
+          {allSessionsDone && showOverallReview && program && (
+            <Link to={`/overall-review?program_id=${program.id}`}>シリーズ総評へ</Link>
+          )}
+          {!allSessionsDone && program && (
+            <Link to="/pre-session" onClick={() => setCurrentProgramId(program.id)}>
+              次のセッションを設定
+            </Link>
+          )}
           <Link to="/evaluations">評価一覧へ</Link>
-          <Link to="/roleplay/setup">次のセッションを設定</Link>
         </div>
       </div>
     )
@@ -122,12 +154,7 @@ export function RoleplayMeetingPage() {
       sessionInfo={`第${session.session_number}回 — ${session.goal}`}
     >
       <div className="participant-grid">
-        <ParticipantTile
-          name="あなた"
-          role="営業担当"
-          speaking={userSpeaking}
-          avatarLabel="営"
-        />
+        <ParticipantTile name="あなた" role="営業担当" speaking={userSpeaking} avatarLabel="営" />
         <ParticipantTile
           name="顧客AI"
           role={session.goal ? '見込み顧客' : '顧客'}

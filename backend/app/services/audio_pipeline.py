@@ -52,18 +52,19 @@ class AudioPipeline:
         state: CustomerState,
         goal: str,
         remaining_sec: int,
+        profile_hints: dict | None = None,
     ) -> str:
-        profile_json = json.dumps(
-            {
-                "industry": profile.industry,
-                "company_size": profile.company_size,
-                "role_title": profile.role_title,
-                "surface_need": profile.surface_need,
-                "true_challenge": profile.true_challenge,
-                "personality_type": profile.personality_type,
-            },
-            ensure_ascii=False,
-        )
+        profile_data: dict = {
+            "industry": profile.industry,
+            "company_size": profile.company_size,
+            "role_title": profile.role_title,
+            "surface_need": profile.surface_need,
+            "true_challenge": profile.true_challenge,
+            "personality_type": profile.personality_type,
+        }
+        if profile_hints and profile_hints.get("it_knowledge_level"):
+            profile_data["it_knowledge_level"] = profile_hints["it_knowledge_level"]
+        profile_json = json.dumps(profile_data, ensure_ascii=False)
         state_json = json.dumps(
             {
                 "awareness_level": state.awareness_level,

@@ -5,10 +5,13 @@ from pydantic import BaseModel, Field
 
 
 class ProgramCreate(BaseModel):
-    field: str = Field(min_length=1, max_length=64)
+    field: str = Field(min_length=1, max_length=256)
     total_sessions: int = Field(ge=1, le=20)
     evaluator_ids: list[str] = Field(default_factory=list)
     user_id: str = "default-user"
+    personality_type: str | None = None
+    sub_field: str | None = None
+    it_knowledge_level: str | None = None
 
 
 class CustomerProfileResponse(BaseModel):
@@ -42,6 +45,8 @@ class ProgramResponse(BaseModel):
     customer_profile: CustomerProfileResponse | None = None
     customer_state: CustomerStateResponse | None = None
     completed_sessions: int = 0
+    sessions: list["SessionListItem"] = Field(default_factory=list)
+    overall_reviews: list["OverallReviewResponse"] = Field(default_factory=list)
 
 
 class SessionCreate(BaseModel):

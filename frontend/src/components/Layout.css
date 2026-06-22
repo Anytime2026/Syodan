@@ -1,34 +1,11 @@
 .layout {
-  min-height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-}
-
-.layout__header {
-  border-bottom: 1px solid #eaeaea;
-  background: #fff;
-}
-
-.layout__nav {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #787774;
-}
-
-.nav-link--active {
-  color: #111;
-  font-weight: 600;
+  justify-content: center;
 }
 
 .layout__main {
-  flex: 1;
-  padding: 2rem 1.5rem;
-  max-width: 960px;
-  margin: 0 auto;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }

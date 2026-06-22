@@ -1,4 +1,4 @@
-import type { HearingSession, Program } from './types'
+import type { CreateProgramInput, HearingSession, Program, SessionListItem } from './types'
 
 /** 開発時は Vite プロキシ経由（同一オリジン）で CORS を回避 */
 export function getApiBase(): string {
@@ -33,15 +33,19 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
-export function createProgram(field: string, totalSessions: number): Promise<Program> {
+export function createProgram(input: CreateProgramInput): Promise<Program> {
   return request<Program>('/api/programs', {
     method: 'POST',
-    body: JSON.stringify({ field, total_sessions: totalSessions }),
+    body: JSON.stringify(input),
   })
 }
 
 export function getProgram(programId: string): Promise<Program> {
   return request<Program>(`/api/programs/${programId}`)
+}
+
+export function listSessions(programId: string): Promise<SessionListItem[]> {
+  return request<SessionListItem[]>(`/api/programs/${programId}/sessions`)
 }
 
 export function createSession(
@@ -74,3 +78,18 @@ export function getSession(sessionId: string): Promise<HearingSession> {
 export function getWsUrl(sessionId: string): string {
   return `${getWsBase()}/ws/sessions/${sessionId}/hearing`
 }
+
+/** 評価一覧に表示するセッション status */
+export const EVALUABLE_SESSION_STATUSES = new Set([
+  'evaluation_requested',
+  'evaluated',
+  'completed',
+])
+
+/** 進行中とみなす program status */
+export const ACTIVE_PROGRAM_STATUSES = new Set([
+  'created',
+  'in_progress',
+  'all_sessions_done',
+  'overall_review_requested',
+])

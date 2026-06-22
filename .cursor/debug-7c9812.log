@@ -1,0 +1,9 @@
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:onopen","message":"WebSocket connected","data":{"sessionId":"bf129125-8211-473a-b9c1-d93da1e4bfd2","url":"ws://syodan-alb-520683133.ap-northeast-1.elb.amazonaws.com/ws/sessions/bf129125-8211-473a-b9c1-d93da1e4bfd2/hearing"},"timestamp":1782093660737,"hypothesisId":"C"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:onopen","message":"WebSocket connected","data":{"sessionId":"916e8024-6d75-4ff9-8deb-40b6d255f95d","url":"ws://syodan-alb-520683133.ap-northeast-1.elb.amazonaws.com/ws/sessions/916e8024-6d75-4ff9-8deb-40b6d255f95d/hearing"},"timestamp":1782093683364,"hypothesisId":"C"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:pttEnd","message":"ptt_end sent","data":{"readyState":1},"timestamp":1782093688318,"hypothesisId":"C"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:message","message":"WS JSON message","data":{"type":"transcript","speaker":"user"},"timestamp":1782093690350,"hypothesisId":"E"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:audio","message":"TTS audio chunk received","data":{"bytes":14156},"timestamp":1782093691572,"hypothesisId":"D"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:audio","message":"TTS audio chunk received","data":{"bytes":12428},"timestamp":1782093691794,"hypothesisId":"D"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:audio","message":"TTS audio chunk received","data":{"bytes":21500},"timestamp":1782093692307,"hypothesisId":"D"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:message","message":"WS JSON message","data":{"type":"transcript","speaker":"ai"},"timestamp":1782093692307,"hypothesisId":"E"}
+{"sessionId":"7c9812","location":"useHearingWebSocket.ts:message","message":"WS JSON message","data":{"type":"turn_complete"},"timestamp":1782093692308,"hypothesisId":"E"}

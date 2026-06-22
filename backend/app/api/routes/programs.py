@@ -18,6 +18,9 @@ async def create_program(body: ProgramCreate, db: AsyncSession = Depends(get_db)
         total_sessions=body.total_sessions,
         evaluator_ids=body.evaluator_ids,
         user_id=body.user_id,
+        personality_type=body.personality_type,
+        sub_field=body.sub_field,
+        it_knowledge_level=body.it_knowledge_level,
     )
     loaded = await service.get_program(program.id)
     return service.to_response(loaded)  # type: ignore[arg-type]
