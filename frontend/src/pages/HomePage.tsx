@@ -34,7 +34,9 @@ export function HomePage() {
     ).then((results) => {
       const active = results.filter(
         (r): r is ActiveProgram =>
-          r !== null && ACTIVE_PROGRAM_STATUSES.has(r.program.status),
+          r !== null &&
+          ACTIVE_PROGRAM_STATUSES.has(r.program.status) &&
+          r.program.completed_sessions < r.program.total_sessions,
       )
       setActivePrograms(active)
       setLoading(false)
@@ -77,39 +79,46 @@ export function HomePage() {
             進行中のプログラム
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {activePrograms.map(({ registryId, industry, program }) => (
-              <Link
-                key={registryId}
-                to="/pre-session"
-                className="btn secondary"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  padding: '16px 20px',
-                  margin: 0,
-                  background: 'var(--color-oat-cream)',
-                  color: 'var(--color-ink-black)',
-                  border: '2px solid var(--color-sticker-black)',
-                  borderRadius: '24px',
-                }}
-                onClick={() => setCurrentProgramId(registryId)}
-              >
-                <div style={{ fontWeight: 'bold', fontSize: '15px' }}>
-                  ⏱ {INDUSTRY_META[industry]?.label} - 進行中 ({program.completed_sessions + 1} /{' '}
-                  {program.total_sessions}回目)
-                </div>
-                <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '5px' }}>
-                  作成日: {formatDate(program.created_at)}
-                </div>
-              </Link>
-            ))}
+            {activePrograms.map(({ registryId, industry, program }) => {
+              const isCompleted = program.completed_sessions >= program.total_sessions
+              return (
+                <Link
+                  key={registryId}
+                  to={isCompleted ? `/overall-review?program_id=${program.id}` : '/pre-session'}
+                  className="btn secondary"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    padding: '16px 20px',
+                    margin: 0,
+                    background: 'var(--color-oat-cream)',
+                    color: 'var(--color-ink-black)',
+                    border: '2px solid var(--color-sticker-black)',
+                    borderRadius: '24px',
+                  }}
+                  onClick={() => setCurrentProgramId(registryId)}
+                >
+                  <div style={{ fontWeight: 'bold', fontSize: '15px' }}>
+                    {isCompleted ? (
+                      <>🏆 {INDUSTRY_META[industry]?.label} - 商談シリーズ完了 (総評を見る)</>
+                    ) : (
+                      <>⏱ {INDUSTRY_META[industry]?.label} - 進行中 ({program.completed_sessions + 1} /{' '}
+                      {program.total_sessions}回目)</>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '5px' }}>
+                    作成日: {formatDate(program.created_at)}
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
       )}
 
       <Link to="/evaluations" className="btn primary" style={{ marginTop: '12px' }}>
-        📊 評価履歴・総評一覧
+        評価履歴・総評一覧
       </Link>
 
       <div style={{ borderTop: '1px solid #eee', marginTop: '30px', paddingTop: '15px', textAlign: 'center' }}>

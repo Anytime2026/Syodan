@@ -58,6 +58,46 @@ export function PreSessionPage() {
   if (loading) return <div className="card">読み込み中…</div>
   if (!program) return <div className="card">プログラムが見つかりません</div>
 
+  if (program.completed_sessions >= program.total_sessions) {
+    return (
+      <div className="card wide" style={{ maxWidth: '800px' }}>
+        <h2>ヒアリング準備</h2>
+        <p className="small">全ヒアリングセッションが終了しています</p>
+
+        <div
+          style={{
+            background: 'var(--color-oat-cream)',
+            padding: 20,
+            borderRadius: '24px',
+            marginBottom: 20,
+            border: '2px solid var(--color-sticker-black)',
+            textAlign: 'center',
+          }}
+        >
+          <p style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}>
+            設定された商談回数（全 {program.total_sessions} 回）をすべて実施済みです。
+          </p>
+          <p className="small" style={{ margin: '10px 0 0', opacity: 0.9 }}>
+            新しいセッションを開始することはできません。評価履歴や総評を確認してください。
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+          <button className="btn secondary" onClick={() => navigate('/')} style={{ flex: 1, margin: 0 }}>
+            ホームに戻る
+          </button>
+          <button
+            className="btn primary"
+            onClick={() => navigate(`/overall-review?program_id=${program.id}`)}
+            style={{ flex: 2, margin: 0 }}
+          >
+            シリーズ総評を見る
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   const meta = registryIndustry ? INDUSTRY_META[registryIndustry] : null
   const profile = program.customer_profile
   const nextSessionNumber = program.completed_sessions + 1
