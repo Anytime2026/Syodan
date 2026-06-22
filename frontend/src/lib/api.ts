@@ -1,21 +1,22 @@
 import type { CreateProgramInput, HearingSession, Program, SessionListItem } from './types'
 
-/** 開発時は Vite プロキシ経由（同一オリジン）で CORS を回避 */
+/** 開発時・Cloudflare Pages 本番は同一オリジン（Vite / Pages Functions プロキシ） */
 export function getApiBase(): string {
-  if (import.meta.env.DEV) return ''
-  return (import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '')
+  const base = import.meta.env.VITE_API_BASE_URL
+  if (import.meta.env.DEV || !base) return ''
+  return base.replace(/\/$/, '')
 }
 
 export function getWsBase(): string {
   const explicit = import.meta.env.VITE_WS_BASE_URL
   if (explicit) return explicit.replace(/\/$/, '')
 
-  if (import.meta.env.DEV) {
+  const api = import.meta.env.VITE_API_BASE_URL
+  if (!api || import.meta.env.DEV) {
     const { protocol, host } = window.location
     return `${protocol === 'https:' ? 'wss:' : 'ws:'}//${host}`
   }
 
-  const api = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
   if (api.startsWith('https://')) return `wss://${api.slice('https://'.length)}`
   if (api.startsWith('http://')) return `ws://${api.slice('http://'.length)}`
   return api
