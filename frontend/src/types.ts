@@ -18,6 +18,8 @@ export interface Program {
   createdAt: string;
   personality_type?: string;
   customerItLevel?: string;
+  timeLimit?: number;
+  sub_industry?: string;
 }
 
 export interface AiEvaluation {

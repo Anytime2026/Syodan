@@ -3,16 +3,45 @@ import { useNavigate } from 'react-router-dom'
 import { INDUSTRY_META } from '../types'
 import type { Industry, Program } from '../types'
 
+const SUB_INDUSTRY_PRESETS: Record<Industry, string[]> = {
+  manufacturing: ['車・自動車部品', '金属加工', '電子部品・半導体', '食品・化学', 'その他（直接入力）'],
+  finance: ['信用金庫・地銀', 'メガバンク', '証券・投資', '保険', 'その他（直接入力）'],
+  retail: ['アパレル', 'スーパー・食料品', '家電量販店', 'ドラッグストア', 'その他（直接入力）'],
+  distribution: ['陸上運送・トラック', '倉庫・管理', '海運・空運', 'その他（直接入力）'],
+  real_estate: ['賃貸仲介', '売買仲介', 'デベロッパー', '不動産管理', 'その他（直接入力）']
+}
+
 export function SettingsPage() {
   const navigate = useNavigate()
   const [industry, setIndustry] = useState<Industry>('manufacturing')
   const [totalSessions, setTotalSessions] = useState(3)
+  const [timeLimit, setTimeLimit] = useState(5) // Default 5 mins
+
+  // Sub-industry states
+  const [subIndustrySelect, setSubIndustrySelect] = useState(SUB_INDUSTRY_PRESETS.manufacturing[0])
+  const [subIndustryCustom, setSubIndustryCustom] = useState('')
+  const [isCustomSubIndustry, setIsCustomSubIndustry] = useState(false)
   
   // Custom customer settings
   const [customerItLevel, setCustomerItLevel] = useState('平均的（一般的なPC操作やビジネスツールは問題なく使える）')
   const [personalityType, setPersonalityType] = useState('')
 
+  const handleIndustryChange = (newIndustry: Industry) => {
+    setIndustry(newIndustry)
+    const presets = SUB_INDUSTRY_PRESETS[newIndustry]
+    setSubIndustrySelect(presets[0])
+    setIsCustomSubIndustry(presets[0] === 'その他（直接入力）')
+    setSubIndustryCustom('')
+  }
+
+  const handleSubIndustrySelectChange = (val: string) => {
+    setSubIndustrySelect(val)
+    setIsCustomSubIndustry(val === 'その他（直接入力）')
+  }
+
   const handleCreate = () => {
+    const finalSubIndustry = isCustomSubIndustry ? subIndustryCustom.trim() : subIndustrySelect
+
     const newProgram: Program = {
       id: `prog_${Date.now()}`,
       industry,
@@ -21,7 +50,9 @@ export function SettingsPage() {
       status: 'active',
       createdAt: new Date().toISOString(),
       personality_type: personalityType.trim() || undefined,
-      customerItLevel: customerItLevel.trim() || undefined
+      customerItLevel: customerItLevel.trim() || undefined,
+      timeLimit,
+      sub_industry: finalSubIndustry || '未定'
     }
 
     const saved = localStorage.getItem('syodan_programs')
@@ -43,12 +74,35 @@ export function SettingsPage() {
         <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '12px', border: '1px solid #eee' }}>
           <h3 style={{ marginTop: 0, borderBottom: '2px solid #E91E63', paddingBottom: '8px' }}>1. 基本商談設定</h3>
           
-          <label>業界・分野</label>
-          <select value={industry} onChange={e => setIndustry(e.target.value as Industry)}>
+          <label>業界</label>
+          <select value={industry} onChange={e => handleIndustryChange(e.target.value as Industry)}>
             {Object.entries(INDUSTRY_META).map(([key, meta]) => (
               <option key={key} value={key}>{meta.label}</option>
             ))}
           </select>
+
+          <label>分野 (セクター)</label>
+          <select 
+            value={subIndustrySelect} 
+            onChange={e => handleSubIndustrySelectChange(e.target.value)}
+          >
+            {SUB_INDUSTRY_PRESETS[industry].map((preset) => (
+              <option key={preset} value={preset}>{preset}</option>
+            ))}
+          </select>
+
+          {isCustomSubIndustry && (
+            <div style={{ marginTop: '-8px', marginBottom: '16px' }}>
+              <label className="small">直接入力する分野名</label>
+              <input 
+                type="text"
+                placeholder="例: 精密医療機器、バイオテクノロジーなど" 
+                value={subIndustryCustom}
+                onChange={e => setSubIndustryCustom(e.target.value)}
+                style={{ margin: 0, fontSize: '13px' }}
+              />
+            </div>
+          )}
 
           <label>総ヒアリング回数</label>
           <select 
@@ -59,9 +113,18 @@ export function SettingsPage() {
               <option key={num} value={num}>{num} 回</option>
             ))}
           </select>
+
+          <label>1回あたりの制限時間 (分)</label>
+          <input 
+            type="number" 
+            value={timeLimit} 
+            min="1" max="30" 
+            onChange={e => setTimeLimit(parseInt(e.target.value))}
+            style={{ fontSize: '14px', margin: '8px 0 0 0' }}
+          />
           
           <p className="small" style={{ marginTop: 15, lineHeight: '1.4' }}>
-            ※回を追うごとに顧客の「真の課題」に近づく練習ができます。総回数は1〜5回から選択可能です。
+            ※回を追うごとに顧客の「真の課題」に近づく練習ができます。制限時間は1〜30分の間で指定可能です。
           </p>
         </div>
 

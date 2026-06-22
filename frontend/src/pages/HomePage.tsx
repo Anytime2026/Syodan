@@ -39,20 +39,20 @@ export function HomePage() {
       <p className="small" style={{ textAlign: 'center', marginBottom: '24px' }}>AI顧客を相手にしたロールプレイトレーニング</p>
 
       <Link to="/settings" className="btn primary" style={{ padding: '16px' }}>▶ 新規プログラム作成</Link>
-      
+
       {activePrograms.length > 0 && (
         <div style={{ marginTop: '25px', marginBottom: '15px' }}>
           <p className="small" style={{ fontWeight: 'bold', margin: '0 0 10px 0', color: '#E91E63' }}>進行中のプログラム</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {activePrograms.map(p => (
-              <Link 
-                key={p.id} 
-                to={`/pre-session`} 
+              <Link
+                key={p.id}
+                to={`/pre-session`}
                 className="btn secondary"
-                style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'flex-start', 
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
                   padding: '12px 18px',
                   margin: 0,
                   background: '#FFF0F6',
@@ -73,19 +73,19 @@ export function HomePage() {
           </div>
         </div>
       )}
-      
+
       <Link to="/evaluations" className="btn primary" style={{ marginTop: '12px', background: '#FF5722' }}>📊 評価履歴・総評一覧</Link>
 
       <div style={{ borderTop: '1px solid #eee', marginTop: '30px', paddingTop: '15px', textAlign: 'center' }}>
-        <button 
-          onClick={handleReset} 
-          style={{ 
-            background: 'none', 
-            border: 'none', 
-            color: '#999', 
-            fontSize: '11px', 
-            textDecoration: 'underline', 
-            cursor: 'pointer' 
+        <button
+          onClick={handleReset}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#999',
+            fontSize: '11px',
+            textDecoration: 'underline',
+            cursor: 'pointer'
           }}
         >
           ⚙️ データをリセットして最初から試す

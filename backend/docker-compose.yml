@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: syodan
+      POSTGRES_PASSWORD: syodan_dev
+      POSTGRES_DB: syodan
+    ports:
+      - '5432:5432'
+    volumes:
+      - syodan_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U syodan -d syodan']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  syodan_pgdata:

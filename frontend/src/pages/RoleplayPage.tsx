@@ -55,7 +55,7 @@ export function RoleplayPage() {
         if (current) {
           setProgram(current)
           // Use program's specific time limit if set, else 5 mins
-          setTimeLeft(5 * 60)
+          setTimeLeft((current.timeLimit || 5) * 60)
         }
       } catch (e) {
         console.error("Failed to parse programs", e)
@@ -87,7 +87,7 @@ export function RoleplayPage() {
   // 2. Camera controller
   useEffect(() => {
     let activeStream: MediaStream | null = null
-    
+
     async function startCamera() {
       if (videoActive) {
         try {
@@ -133,7 +133,7 @@ export function RoleplayPage() {
   const handleSend = async (text = input) => {
     const targetText = text.trim()
     if (!targetText || !program || loading) return
-    
+
     stopSpeaking()
     const userMsg: ChatMessage = { role: 'user', content: targetText }
     const updatedMessages = [...messages, userMsg]
@@ -145,12 +145,12 @@ export function RoleplayPage() {
     const historyToSend = [...updatedMessages]
     if (program && (program.personality_type || program.customerItLevel)) {
       const systemInjection = `【システム指示：あなたは以下の設定（顧客プロファイル）を持つ顧客キャラクターとしてロールプレイを行います。
-industry: ${INDUSTRY_META[program.industry].label}
+industry: ${INDUSTRY_META[program.industry].label} (分野: ${program.sub_industry || '一般'})
 personality_type: ${program.personality_type || '標準的'}
 IT知識レベル: ${program.customerItLevel || '平均的'}
 
 ※この設定プロファイルを前提条件として振る舞い、最初の挨拶（${INDUSTRY_META[program.industry].initialGreeting}）から指定の「性格タイプ」の性格や「IT知識レベル」の知識度合いに基づいて、自然に会話を継続しているフリをしてください。この設定キーや条件自体には対話中直接言及しないでください。】`;
-      
+
       // Inject system prompt to the beginning of the history
       historyToSend.unshift({ role: 'user', content: systemInjection })
     }
@@ -206,7 +206,7 @@ IT知識レベル: ${program.customerItLevel || '平均的'}
 ${messages.map(m => `${m.role === 'user' ? '自分' : '相手'}: ${m.content}`).join('\n')}`;
 
       const evalRes = await sendMessage(program.id, evalPrompt, [], program.industry)
-      
+
       try {
         let cleanJson = evalRes.message.replace(/```json/g, '').replace(/```/g, '').trim()
         const startIdx = cleanJson.indexOf('{')
@@ -412,7 +412,7 @@ ${allTranscripts}`;
                 <div className="waveform-dot" style={{ backgroundColor: '#ff4b4b' }}></div>
               </div>
             )}
-            
+
             {videoActive ? (
               <video ref={videoRef} autoPlay playsInline muted />
             ) : (
@@ -420,7 +420,7 @@ ${allTranscripts}`;
                 👤
               </div>
             )}
-            
+
             <div className="zoom-participant-name">
               あなた (インカメラ映像)
             </div>
@@ -434,15 +434,15 @@ ${allTranscripts}`;
 
         {/* コントロールバー */}
         <div className="zoom-control-bar">
-          <button 
+          <button
             className={`zoom-ctrl-btn ${micMuted ? 'active' : ''}`}
             onClick={() => setMicMuted(prev => !prev)}
             title={micMuted ? "マイクON" : "マイクOFF"}
           >
             {micMuted ? "🎙️" : "🎤"}
           </button>
-          
-          <button 
+
+          <button
             className={`zoom-ctrl-btn ${!videoActive ? 'active' : ''}`}
             onClick={() => setVideoActive(prev => !prev)}
             title={videoActive ? "ビデオ停止" : "ビデオ開始"}
@@ -450,7 +450,7 @@ ${allTranscripts}`;
             {videoActive ? "📹" : "❌📹"}
           </button>
 
-          <button 
+          <button
             className={`zoom-ctrl-btn ${!chatVisible ? 'active' : ''}`}
             onClick={() => setChatVisible(prev => !prev)}
             title={chatVisible ? "チャットを閉じる" : "チャットを開く"}
@@ -476,7 +476,7 @@ ${allTranscripts}`;
           <div className="zoom-chat-header">
             ミーティングチャット履歴
           </div>
-          
+
           <div className="zoom-chat-messages">
             {messages.map((m, i) => (
               <div key={i} className={`zoom-chat-message ${m.role === 'user' ? 'user' : 'ai'}`}>
@@ -491,7 +491,7 @@ ${allTranscripts}`;
           </div>
 
           <div className="zoom-chat-input-area">
-            <button 
+            <button
               className={`zoom-chat-mic-btn ${isListening ? 'active' : ''}`}
               onMouseDown={() => { stopSpeaking(); startListening(); }}
               onMouseUp={() => { stopListening(); }}
@@ -500,7 +500,7 @@ ${allTranscripts}`;
             >
               🎤
             </button>
-            <input 
+            <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="メッセージを入力..."
