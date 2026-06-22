@@ -127,7 +127,7 @@ export function OverallReviewPage() {
 
       <div style={{ display: 'flex', gap: '12px' }}>
         <Link to="/evaluations" className="btn secondary" style={{ flex: 1, margin: 0 }}>
-          📊 評価履歴へ戻る
+          評価履歴へ戻る
         </Link>
         <Link to="/" className="btn primary" style={{ flex: 1, margin: 0 }}>
           🏠 トップに戻る
