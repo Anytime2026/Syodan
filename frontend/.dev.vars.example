@@ -1,0 +1,2 @@
+# wrangler pages dev 用（.dev.vars にコピーして使用）
+BACKEND_ORIGIN=http://syodan-alb-520683133.ap-northeast-1.elb.amazonaws.com
