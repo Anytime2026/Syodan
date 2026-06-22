@@ -15,13 +15,13 @@ export function OverallReviewPage() {
     const programId = searchParams.get('program_id') ?? getCurrentProgramId()
     if (!programId) {
       setLoading(false)
-      setError('プログラムが指定されていません')
+      setError('商談データが指定されていません')
       return
     }
 
     getProgram(programId)
       .then(setProgram)
-      .catch(() => setError('プログラムの取得に失敗しました'))
+      .catch(() => setError('商談データの取得に失敗しました'))
       .finally(() => setLoading(false))
   }, [searchParams])
 

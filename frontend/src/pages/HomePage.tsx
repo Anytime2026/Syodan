@@ -51,12 +51,12 @@ export function HomePage() {
   const handleReset = () => {
     if (
       window.confirm(
-        'ブラウザに保存したプログラム一覧と設定が消去されます。バックエンドのデータは残ります。リセットしてよろしいですか？',
+        'ブラウザに保存した商談一覧と設定が消去されます。バックエンドのデータは残ります。リセットしてよろしいですか？',
       )
     ) {
       clearLocalData()
       setActivePrograms([])
-      alert('ローカルデータをクリアしました。新しい商談プログラムを作成してください。')
+      alert('ローカルデータをクリアしました。新しい商談を作成してください。')
     }
   }
 
@@ -68,7 +68,7 @@ export function HomePage() {
       </p>
 
       <Link to="/settings" className="btn primary" style={{ padding: '16px' }}>
-        ▶ 新規プログラム作成
+        ▶ 新規商談作成
       </Link>
 
       {loading && <p className="small" style={{ marginTop: 16 }}>読み込み中…</p>}
@@ -76,7 +76,7 @@ export function HomePage() {
       {!loading && activePrograms.length > 0 && (
         <div style={{ marginTop: '25px', marginBottom: '15px' }}>
           <p className="small" style={{ fontWeight: 'bold', margin: '0 0 10px 0', color: 'var(--color-ink-black)' }}>
-            進行中のプログラム
+            進行中の商談
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {activePrograms.map(({ registryId, industry, program }) => {

@@ -69,7 +69,7 @@ export function SettingsPage() {
       setCurrentProgramId(program.id)
       navigate('/pre-session')
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'プログラム作成に失敗しました'
+      const message = err instanceof Error ? err.message : '商談作成に失敗しました'
       setError(message)
     } finally {
       setLoading(false)
@@ -78,7 +78,7 @@ export function SettingsPage() {
 
   return (
     <div className="card wide">
-      <h2>新規プログラム作成</h2>
+      <h2>新規商談作成</h2>
       <p className="small" style={{ marginBottom: 20 }}>
         AI顧客との商談シリーズを開始します。PCサイズに合わせて広々と設定できます。
       </p>
@@ -186,7 +186,7 @@ export function SettingsPage() {
           戻る
         </button>
         <button className="btn cta" onClick={handleCreate} disabled={loading} style={{ flex: 2, margin: 0 }}>
-          {loading ? '作成中…' : '▶ プログラム作成'}
+          {loading ? '作成中…' : '▶ 商談作成'}
         </button>
       </div>
     </div>

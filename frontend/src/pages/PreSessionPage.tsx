@@ -34,7 +34,7 @@ export function PreSessionPage() {
 
     getProgram(programId)
       .then(setProgram)
-      .catch(() => setError('プログラムの取得に失敗しました'))
+      .catch(() => setError('商談データの取得に失敗しました'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -56,7 +56,7 @@ export function PreSessionPage() {
   }
 
   if (loading) return <div className="card">読み込み中…</div>
-  if (!program) return <div className="card">プログラムが見つかりません</div>
+  if (!program) return <div className="card">商談データが見つかりません</div>
 
   if (program.completed_sessions >= program.total_sessions) {
     return (
