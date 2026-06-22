@@ -73,37 +73,65 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
 
                 media_format = data.get("media_format", "webm")
 
-                async with AsyncSessionLocal() as db:
-                    session = await _load_session(db, session_id)
-                    state = await _load_state(db, session.program_id)  # type: ignore[union-attr]
-                    profile = await _load_profile(db, session.program_id)  # type: ignore[union-attr]
-                    remaining = _remaining_seconds(session)  # type: ignore[arg-type]
+                try:
+                    async with AsyncSessionLocal() as db:
+                        session = await _load_session(db, session_id)
+                        state = await _load_state(db, session.program_id)  # type: ignore[union-attr]
+                        profile = await _load_profile(db, session.program_id)  # type: ignore[union-attr]
+                        remaining = _remaining_seconds(session)  # type: ignore[arg-type]
 
-                system = pipeline.build_system_prompt(profile, state, session.goal, remaining)  # type: ignore[arg-type]
+                    system = pipeline.build_system_prompt(profile, state, session.goal, remaining)  # type: ignore[arg-type]
 
-                user_text = await pipeline.transcribe_turn(bytes(audio_buffer), media_format)
-                audio_buffer = bytearray()
+                    try:
+                        user_text = await pipeline.transcribe_turn(bytes(audio_buffer), media_format)
+                    except Exception:
+                        logger.exception("STT failed for session %s", session_id)
+                        await websocket.send_json(
+                            {"type": "error", "message": "Speech recognition failed (STT). Check microphone audio."}
+                        )
+                        await websocket.send_json({"type": "turn_complete"})
+                        audio_buffer = bytearray()
+                        continue
+                    finally:
+                        audio_buffer = bytearray()
 
-                if not user_text.strip():
-                    await websocket.send_json({"type": "error", "message": "No speech detected"})
+                    if not user_text.strip():
+                        await websocket.send_json({"type": "error", "message": "No speech detected"})
+                        await websocket.send_json({"type": "turn_complete"})
+                        continue
+
+                    sessions_routes.append_conversation(str(session_id), "user", user_text)
+                    await websocket.send_json({"type": "transcript", "speaker": "user", "text": user_text})
+
+                    loop = asyncio.get_running_loop()
+
+                    def emit_audio(audio: bytes) -> None:
+                        asyncio.run_coroutine_threadsafe(websocket.send_bytes(audio), loop).result()
+
+                    try:
+                        ai_text = await asyncio.to_thread(
+                            pipeline.stream_ai_audio, system, user_text, emit_audio
+                        )
+                    except Exception as exc:
+                        logger.exception("AI/TTS pipeline failed for session %s", session_id)
+                        err_msg = str(exc) or type(exc).__name__
+                        if "bedrock" in err_msg.lower() or "AccessDenied" in err_msg:
+                            detail = "AI response failed (Bedrock). Check model access and IAM."
+                        elif "polly" in err_msg.lower():
+                            detail = "Voice synthesis failed (Polly/TTS)."
+                        else:
+                            detail = f"AI response failed: {err_msg[:200]}"
+                        await websocket.send_json({"type": "error", "message": detail})
+                        await websocket.send_json({"type": "turn_complete"})
+                        continue
+
+                    sessions_routes.append_conversation(str(session_id), "ai", ai_text)
+                    await websocket.send_json({"type": "transcript", "speaker": "ai", "text": ai_text})
                     await websocket.send_json({"type": "turn_complete"})
-                    continue
-
-                sessions_routes.append_conversation(str(session_id), "user", user_text)
-                await websocket.send_json({"type": "transcript", "speaker": "user", "text": user_text})
-
-                loop = asyncio.get_running_loop()
-
-                def emit_audio(audio: bytes) -> None:
-                    asyncio.run_coroutine_threadsafe(websocket.send_bytes(audio), loop).result()
-
-                ai_text = await asyncio.to_thread(
-                    pipeline.stream_ai_audio, system, user_text, emit_audio
-                )
-
-                sessions_routes.append_conversation(str(session_id), "ai", ai_text)
-                await websocket.send_json({"type": "transcript", "speaker": "ai", "text": ai_text})
-                await websocket.send_json({"type": "turn_complete"})
+                except Exception:
+                    logger.exception("Unexpected turn error for session %s", session_id)
+                    await websocket.send_json({"type": "error", "message": "Internal error during turn processing"})
+                    await websocket.send_json({"type": "turn_complete"})
 
             if msg_type == "ping":
                 async with AsyncSessionLocal() as db:

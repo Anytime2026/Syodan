@@ -38,7 +38,7 @@ export function HomePage() {
       <h2 style={{ textAlign: 'center', color: '#E91E63', marginBottom: '8px' }}>営業ヒアリングロープレ</h2>
       <p className="small" style={{ textAlign: 'center', marginBottom: '24px' }}>AI顧客を相手にしたロールプレイトレーニング</p>
 
-      <Link to="/settings" className="btn primary" style={{ padding: '16px' }}>▶ 新規プログラム作成</Link>
+      <Link to="/roleplay/setup" className="btn primary" style={{ padding: '16px' }}>▶ 新規プログラム作成</Link>
 
       {activePrograms.length > 0 && (
         <div style={{ marginTop: '25px', marginBottom: '15px' }}>
@@ -47,7 +47,7 @@ export function HomePage() {
             {activePrograms.map(p => (
               <Link
                 key={p.id}
-                to={`/pre-session`}
+                to={`/roleplay/setup`}
                 className="btn secondary"
                 style={{
                   display: 'flex',

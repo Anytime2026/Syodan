@@ -124,6 +124,11 @@ export function RoleplayPage() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // 旧ローカル専用画面 — Bedrock/Polly 連携は /roleplay/setup から開始
+  useEffect(() => {
+    navigate('/roleplay/setup', { replace: true })
+  }, [navigate])
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
