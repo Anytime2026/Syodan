@@ -88,8 +88,14 @@ class EvaluationResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class EvaluationSubmit(BaseModel):
+    evaluator_id: str = Field(min_length=1, max_length=128)
+    content: str = Field(min_length=1)
+
+
 class ReviewPageResponse(BaseModel):
     session_id: UUID
+    program_id: UUID
     program_field: str
     session_number: int
     goal: str
@@ -97,6 +103,23 @@ class ReviewPageResponse(BaseModel):
     formatted_transcript: str | None
     recording_url: str | None
     evaluations: list[EvaluationResponse]
+
+
+class SessionSummaryForReview(BaseModel):
+    session_number: int
+    title: str | None
+    goal: str
+    formatted_transcript: str | None
+
+
+class OverallReviewPageResponse(BaseModel):
+    program_id: UUID
+    program_field: str
+    total_sessions: int
+    true_challenge: str
+    session_summaries: list[dict]
+    sessions: list[SessionSummaryForReview]
+    overall_reviews: list[OverallReviewResponse]
 
 
 class EvaluationArtifactRequest(BaseModel):

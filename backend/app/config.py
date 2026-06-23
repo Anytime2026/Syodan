@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     internal_api_key: str = "change-me-local-dev-key"
     hulft_webhook_url: str | None = None
     hulft_stub_mode: bool = True
+    frontend_base_url: str = "http://localhost:5173"
 
     session_time_warning_sec: int = 120
 

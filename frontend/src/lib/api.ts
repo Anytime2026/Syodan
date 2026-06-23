@@ -1,7 +1,12 @@
 import type {
   CreateProgramInput,
+  Evaluation,
+  EvaluationSubmitInput,
   HearingSession,
+  OverallReview,
+  OverallReviewPageData,
   Program,
+  ReviewPageData,
   SessionListItem,
 } from './types'
 
@@ -89,6 +94,34 @@ export function getSession(sessionId: string): Promise<HearingSession> {
 
 export function getWsUrl(sessionId: string): string {
   return `${getWsBase()}/ws/sessions/${sessionId}/hearing`
+}
+
+export function getReviewPage(token: string): Promise<ReviewPageData> {
+  return request<ReviewPageData>(`/api/review/${token}`)
+}
+
+export function submitSessionEvaluation(
+  token: string,
+  body: EvaluationSubmitInput,
+): Promise<Evaluation> {
+  return request(`/api/review/${token}/evaluations`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+}
+
+export function getOverallReviewPage(token: string): Promise<OverallReviewPageData> {
+  return request<OverallReviewPageData>(`/api/review/overall/${token}`)
+}
+
+export function submitOverallReview(
+  token: string,
+  body: EvaluationSubmitInput,
+): Promise<OverallReview> {
+  return request(`/api/review/overall/${token}/reviews`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
 }
 
 /** 評価一覧に表示するセッション status */

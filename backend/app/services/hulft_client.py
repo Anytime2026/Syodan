@@ -18,11 +18,12 @@ class HulftClient:
         payload: dict,
     ) -> None:
         settings = get_settings()
+        frontend_base = settings.frontend_base_url.rstrip("/")
         body = {
             "event": "session_complete",
             "session_id": str(session_id),
             "program_id": str(program_id),
-            "review_url": f"/api/review/{review_token}",
+            "review_url": f"{frontend_base}/reviewer/evaluations/{review_token}",
             "payload": payload,
         }
         if settings.hulft_stub_mode or not settings.hulft_webhook_url:
@@ -33,9 +34,16 @@ class HulftClient:
         async with httpx.AsyncClient(timeout=30) as client:
             await client.post(settings.hulft_webhook_url, json=body)
 
-    async def send_overall_review_request(self, program_id: UUID) -> None:
+    async def send_overall_review_request(
+        self, program_id: UUID, overall_review_token: str
+    ) -> None:
         settings = get_settings()
-        body = {"event": "overall_review_request", "program_id": str(program_id)}
+        frontend_base = settings.frontend_base_url.rstrip("/")
+        body = {
+            "event": "overall_review_request",
+            "program_id": str(program_id),
+            "review_url": f"{frontend_base}/reviewer/overall-review/{overall_review_token}",
+        }
         if settings.hulft_stub_mode or not settings.hulft_webhook_url:
             logger.info("HULFT stub overall_review_request: %s", json.dumps(body, ensure_ascii=False))
             return
