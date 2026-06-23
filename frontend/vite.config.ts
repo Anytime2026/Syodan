@@ -20,7 +20,11 @@ export default defineConfig(({ mode }) => {
         '/api': { target: backendTarget, changeOrigin: true },
         '/health': { target: backendTarget, changeOrigin: true },
         '/internal': { target: backendTarget, changeOrigin: true },
-        '/ws': { target: backendTarget.replace(/^http/, 'ws'), ws: true, changeOrigin: true },
+        '/ws': {
+          target: backendTarget.replace(/^http/, 'ws'),
+          ws: true,
+          changeOrigin: true,
+        },
       },
     },
   }

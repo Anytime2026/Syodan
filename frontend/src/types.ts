@@ -1,4 +1,9 @@
-export type Industry = 'manufacturing' | 'finance' | 'distribution' | 'retail' | 'real_estate'
+export type Industry =
+  | 'manufacturing'
+  | 'finance'
+  | 'distribution'
+  | 'retail'
+  | 'real_estate'
 
 export interface IndustryMeta {
   label: string

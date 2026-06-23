@@ -10,7 +10,9 @@ const DEFAULT_GOAL = '現状の課題と予算感をヒアリングする'
 export function PreSessionPage() {
   const navigate = useNavigate()
   const [program, setProgram] = useState<Program | null>(null)
-  const [registryIndustry, setRegistryIndustry] = useState<keyof typeof INDUSTRY_META | null>(null)
+  const [registryIndustry, setRegistryIndustry] = useState<
+    keyof typeof INDUSTRY_META | null
+  >(null)
   const [subIndustry, setSubIndustry] = useState('')
   const [timeLimit, setTimeLimit] = useState(5)
   const [goal, setGoal] = useState(DEFAULT_GOAL)
@@ -48,7 +50,8 @@ export function PreSessionPage() {
       await startSession(session.id)
       navigate(`/roleplay/${session.id}`)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'セッション開始に失敗しました'
+      const message =
+        err instanceof Error ? err.message : 'セッション開始に失敗しました'
       setError(message)
     } finally {
       setStarting(false)
@@ -75,7 +78,8 @@ export function PreSessionPage() {
           }}
         >
           <p style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}>
-            設定された商談回数（全 {program.total_sessions} 回）をすべて実施済みです。
+            設定された商談回数（全 {program.total_sessions}{' '}
+            回）をすべて実施済みです。
           </p>
           <p className="small" style={{ margin: '10px 0 0', opacity: 0.9 }}>
             新しいセッションを開始することはできません。評価履歴や総評を確認してください。
@@ -83,7 +87,11 @@ export function PreSessionPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-          <button className="btn secondary" onClick={() => navigate('/')} style={{ flex: 1, margin: 0 }}>
+          <button
+            className="btn secondary"
+            onClick={() => navigate('/')}
+            style={{ flex: 1, margin: 0 }}
+          >
             ホームに戻る
           </button>
           <button
@@ -116,21 +124,34 @@ export function PreSessionPage() {
           border: '2px solid var(--color-sticker-black)',
         }}
       >
-        <p className="small" style={{ margin: '0 0 4px 0', color: 'var(--color-ink-black)', fontWeight: 'bold' }}>
+        <p
+          className="small"
+          style={{
+            margin: '0 0 4px 0',
+            color: 'var(--color-ink-black)',
+            fontWeight: 'bold',
+          }}
+        >
           相手情報
         </p>
         {profile ? (
           <>
-            <p style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}>
+            <p
+              style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}
+            >
               {profile.name ? `${profile.name} 様` : profile.role_title}
             </p>
             {profile.name && (
-              <p className="small" style={{ margin: '0 0 4px 0', opacity: 0.9 }}>
+              <p
+                className="small"
+                style={{ margin: '0 0 4px 0', opacity: 0.9 }}
+              >
                 {profile.role_title}
               </p>
             )}
             <p className="small" style={{ margin: 0, opacity: 0.9 }}>
-              {profile.industry} / {profile.company_size} (分野: {subIndustry || program.field})
+              {profile.industry} / {profile.company_size} (分野:{' '}
+              {subIndustry || program.field})
             </p>
             {profile.personality_type && (
               <p className="small" style={{ margin: '8px 0 0', opacity: 0.85 }}>
@@ -140,7 +161,9 @@ export function PreSessionPage() {
           </>
         ) : meta ? (
           <>
-            <p style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}>
+            <p
+              style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}
+            >
               {meta.personName} {meta.honorific}
             </p>
             <p className="small" style={{ margin: 0, opacity: 0.9 }}>
@@ -176,7 +199,13 @@ export function PreSessionPage() {
         }}
       >
         <span style={{ fontSize: '20px' }}>⏱️</span>
-        <div style={{ fontSize: '14px', color: 'var(--color-ink-black)', fontWeight: 'bold' }}>
+        <div
+          style={{
+            fontSize: '14px',
+            color: 'var(--color-ink-black)',
+            fontWeight: 'bold',
+          }}
+        >
           制限時間: {timeLimit} 分
         </div>
       </div>
@@ -188,7 +217,11 @@ export function PreSessionPage() {
       )}
 
       <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-        <button className="btn secondary" onClick={() => navigate('/')} style={{ flex: 1, margin: 0 }}>
+        <button
+          className="btn secondary"
+          onClick={() => navigate('/')}
+          style={{ flex: 1, margin: 0 }}
+        >
           戻る
         </button>
         <button

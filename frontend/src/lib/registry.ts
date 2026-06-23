@@ -38,7 +38,9 @@ export function setCurrentProgramId(id: string): void {
   localStorage.setItem(CURRENT_PROGRAM_KEY, id)
 }
 
-export function findRegistryEntry(programId: string): ProgramRegistryEntry | undefined {
+export function findRegistryEntry(
+  programId: string,
+): ProgramRegistryEntry | undefined {
   return loadRegistry().find((e) => e.id === programId)
 }
 

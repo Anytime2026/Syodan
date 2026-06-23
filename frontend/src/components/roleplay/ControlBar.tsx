@@ -40,7 +40,9 @@ export function ControlBar({
       >
         {recording ? '話しています…' : processing ? 'AI応答中…' : '押して話す'}
       </button>
-      <span className="connection-status">{connected ? '接続中' : '接続待ち'}</span>
+      <span className="connection-status">
+        {connected ? '接続中' : '接続待ち'}
+      </span>
     </footer>
   )
 }
