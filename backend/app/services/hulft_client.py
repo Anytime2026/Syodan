@@ -64,7 +64,12 @@ class HulftClient:
         token = await self._get_access_token()
         headers = {"Authorization": f"Bearer {token}"} if token else {}
         async with httpx.AsyncClient(timeout=30) as client:
-            await client.post(settings.hulft_webhook_url, json=body, headers=headers)
+            await client.post(
+                settings.hulft_webhook_url,
+                json=body,
+                headers=headers,
+                params={"session_id": str(session_id)},
+            )
 
     async def send_overall_review_request(self, program_id: UUID) -> None:
         settings = get_settings()
