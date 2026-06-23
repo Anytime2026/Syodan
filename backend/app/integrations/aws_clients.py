@@ -1,8 +1,9 @@
 import asyncio
 import json
 import logging
+import xml.sax.saxutils
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import boto3
 from botocore.config import Config
@@ -225,6 +226,84 @@ class TranscribeClient:
         raise TimeoutError("Transcription timed out")
 
 
+class TranscribeStreamSession:
+    """Incremental STT session fed with PCM chunks during PTT."""
+
+    _STUB_TEXT = "本日はお時間いただきありがとうございます。現状の課題についてお伺いしたいのですが。"
+
+    def __init__(
+        self,
+        settings: Settings | None = None,
+        sample_rate: int = 16000,
+        on_partial: Callable[[str], None] | None = None,
+    ) -> None:
+        self.settings = settings or get_settings()
+        self.sample_rate = sample_rate
+        self.on_partial = on_partial
+        self.partial_text = ""
+        self._final_parts: list[str] = []
+        self._stream = None
+        self._handler_task: asyncio.Task | None = None
+        self._started = False
+
+    async def start(self) -> None:
+        if self.settings.aws_stub_mode:
+            self._started = True
+            return
+
+        from amazon_transcribe.client import TranscribeStreamingClient
+        from amazon_transcribe.handlers import TranscriptResultStreamHandler
+
+        client = TranscribeStreamingClient(region=self.settings.aws_region)
+        self._stream = await client.start_stream_transcription(
+            language_code="ja-JP",
+            media_sample_rate_hz=self.sample_rate,
+            media_encoding="pcm",
+        )
+        session = self
+
+        class _Handler(TranscriptResultStreamHandler):
+            async def handle_transcript_event(self, transcript_event) -> None:
+                for result in transcript_event.transcript.results:
+                    if not result.alternatives:
+                        continue
+                    text = result.alternatives[0].transcript
+                    if result.is_partial:
+                        session.partial_text = text
+                        if session.on_partial and text:
+                            session.on_partial(text)
+                    else:
+                        session._final_parts.append(text)
+                        session.partial_text = ""
+                        if session.on_partial and text:
+                            session.on_partial(text)
+
+        handler = _Handler(self._stream.output_stream)
+        self._handler_task = asyncio.create_task(handler.handle_events())
+        self._started = True
+
+    async def feed(self, pcm_chunk: bytes) -> None:
+        if not pcm_chunk:
+            return
+        if self.settings.aws_stub_mode:
+            return
+        if not self._stream:
+            raise RuntimeError("TranscribeStreamSession not started")
+        await self._stream.input_stream.send_audio_event(audio_chunk=pcm_chunk)
+
+    async def finish(self) -> str:
+        if self.settings.aws_stub_mode:
+            return self._STUB_TEXT
+
+        if not self._stream:
+            raise RuntimeError("TranscribeStreamSession not started")
+
+        await self._stream.input_stream.end_stream()
+        if self._handler_task:
+            await self._handler_task
+        return "".join(self._final_parts).strip()
+
+
 class PollyClient:
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()
@@ -243,9 +322,18 @@ class PollyClient:
 
     def _synthesize_aws(self, text: str) -> bytes:
         client = _service_client("polly", self.settings)
+        rate = self.settings.polly_speech_rate.strip()
+        if rate and rate != "100%":
+            escaped = xml.sax.saxutils.escape(text)
+            speech_text = f'<speak><prosody rate="{rate}">{escaped}</prosody></speak>'
+            text_type = "ssml"
+        else:
+            speech_text = text
+            text_type = "text"
         try:
             response = client.synthesize_speech(
-                Text=text,
+                Text=speech_text,
+                TextType=text_type,
                 OutputFormat="mp3",
                 VoiceId=self.settings.polly_voice_id,
                 Engine=self.settings.polly_engine,

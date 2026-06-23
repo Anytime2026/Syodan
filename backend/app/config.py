@@ -23,6 +23,7 @@ class Settings(BaseSettings):
 
     polly_voice_id: str = "Takumi"
     polly_engine: str = "neural"
+    polly_speech_rate: str = "110%"
 
     internal_api_key: str = "change-me-local-dev-key"
     hulft_webhook_url: str | None = None

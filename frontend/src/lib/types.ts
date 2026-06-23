@@ -74,6 +74,7 @@ export type TranscriptMessage = {
 
 export type WsServerMessage =
   | { type: 'transcript'; speaker: 'user' | 'ai'; text: string }
+  | { type: 'transcript_partial'; text: string }
   | { type: 'turn_complete' }
   | { type: 'time_warning'; remaining_sec: number }
   | { type: 'session_ended'; reason: string }
