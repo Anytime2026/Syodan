@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 from pathlib import Path
@@ -68,6 +69,46 @@ class BedrockClient:
         payload = json.loads(response["body"].read())
         return payload["content"][0]["text"]
 
+    def invoke_stream(
+        self, model_id: str, system: str, user_message: str, max_tokens: int = 1024
+    ):
+        """Yield text deltas as they are generated (lower time-to-first-token)."""
+        if self.settings.aws_stub_mode:
+            yield self._stub_response(system, user_message)
+            return
+
+        client = _service_client("bedrock-runtime", self.settings)
+        body = {
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": max_tokens,
+            "system": system,
+            "messages": [{"role": "user", "content": user_message}],
+        }
+        try:
+            response = client.invoke_model_with_response_stream(
+                modelId=model_id,
+                body=json.dumps(body),
+                contentType="application/json",
+                accept="application/json",
+            )
+        except (ClientError, BotoCoreError):
+            logger.exception(
+                "Bedrock stream invoke failed (model=%s, region=%s)",
+                model_id,
+                self.settings.aws_region,
+            )
+            raise
+        for event in response["body"]:
+            chunk = event.get("chunk")
+            if not chunk:
+                continue
+            data = json.loads(chunk["bytes"])
+            if data.get("type") == "content_block_delta":
+                delta = data.get("delta", {})
+                text = delta.get("text")
+                if text:
+                    yield text
+
     def _stub_response(self, system: str, user_message: str) -> str:
         if "JSON" in system or "json" in system.lower():
             if "customer profile" in system.lower() or "顧客" in system:
@@ -101,6 +142,43 @@ class BedrockClient:
 class TranscribeClient:
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()
+
+    async def transcribe_stream_pcm(self, pcm_bytes: bytes, sample_rate: int = 16000) -> str:
+        """Near real-time STT via Transcribe streaming (avoids batch-job queue latency)."""
+        if self.settings.aws_stub_mode:
+            return "本日はお時間いただきありがとうございます。現状の課題についてお伺いしたいのですが。"
+        if not pcm_bytes:
+            raise ValueError("No audio received for transcription")
+
+        from amazon_transcribe.client import TranscribeStreamingClient
+        from amazon_transcribe.handlers import TranscriptResultStreamHandler
+
+        client = TranscribeStreamingClient(region=self.settings.aws_region)
+        stream = await client.start_stream_transcription(
+            language_code="ja-JP",
+            media_sample_rate_hz=sample_rate,
+            media_encoding="pcm",
+        )
+
+        final_parts: list[str] = []
+
+        class _Handler(TranscriptResultStreamHandler):
+            async def handle_transcript_event(self, transcript_event) -> None:
+                for result in transcript_event.transcript.results:
+                    if result.is_partial or not result.alternatives:
+                        continue
+                    final_parts.append(result.alternatives[0].transcript)
+
+        handler = _Handler(stream.output_stream)
+
+        async def _write() -> None:
+            chunk = 1024 * 8
+            for i in range(0, len(pcm_bytes), chunk):
+                await stream.input_stream.send_audio_event(audio_chunk=pcm_bytes[i : i + chunk])
+            await stream.input_stream.end_stream()
+
+        await asyncio.gather(_write(), handler.handle_events())
+        return "".join(final_parts).strip()
 
     def transcribe_audio(self, audio_bytes: bytes, media_format: str = "webm") -> str:
         if self.settings.aws_stub_mode:

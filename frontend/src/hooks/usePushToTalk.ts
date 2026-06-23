@@ -48,9 +48,6 @@ export function usePushToTalk({ onChunk, disabled }: UsePushToTalkOptions) {
       recorder.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: recorder.mimeType })
         chunksRef.current = []
-        // #region agent log
-        fetch('http://127.0.0.1:7710/ingest/8f9dd29b-f72f-45b0-934b-d4c329cf521d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4c07bd'},body:JSON.stringify({sessionId:'4c07bd',location:'usePushToTalk.ts:onstop',message:'recording stopped',data:{blobSize:blob.size,mimeType:recorder.mimeType},timestamp:Date.now(),hypothesisId:'E',runId:'pre-fix'})}).catch(()=>{});
-        // #endregion
         if (blob.size > 0) await onChunk(blob)
         stopTracks()
         recorderRef.current = null

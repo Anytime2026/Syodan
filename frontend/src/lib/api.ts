@@ -7,13 +7,13 @@ export function getApiBase(): string {
 }
 
 export function getWsBase(): string {
+  const explicit = import.meta.env.VITE_WS_BASE_URL
+  if (explicit) return explicit.replace(/\/$/, '')
+
   if (import.meta.env.DEV) {
     const { protocol, host } = window.location
     return `${protocol === 'https:' ? 'wss:' : 'ws:'}//${host}`
   }
-
-  const explicit = import.meta.env.VITE_WS_BASE_URL
-  if (explicit) return explicit.replace(/\/$/, '')
 
   const api = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
   if (api.startsWith('https://')) return `wss://${api.slice('https://'.length)}`

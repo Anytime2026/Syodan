@@ -1,1 +1,2 @@
 {"sessionId":"4c07bd","location":"RoleplaySetupPage.tsx:handleSubmit","message":"setup failed","data":{"error":"Internal Server Error"},"timestamp":1781829452042,"hypothesisId":"F","runId":"post-fix"}
+{"sessionId":"4c07bd","location":"useHearingWebSocket.ts:onopen","message":"websocket connected","data":{"sessionId":"089c9256-e2fc-4792-ab39-3866545a9b72"},"timestamp":1781833869386,"hypothesisId":"C","runId":"pre-fix"}
