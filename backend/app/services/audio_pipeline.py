@@ -20,6 +20,7 @@ _FIRST_BOUNDARY = re.compile(r"[。．！？!?\n、，,]")
 _FIRST_MIN_CHARS = 6
 
 CHAT_SYSTEM_TEMPLATE = """あなたはB2B商談の見込み顧客としてロールプレイします。
+プロファイルの名前で自己紹介・応答してください（例: 田中 健太）。
 性格・業界・役職・表面ニーズ・真の課題・現在の気づき度に沿って自然な日本語で応答してください。
 営業担当の質問に対し、一度に長すぎず、リアルな会話調で答えてください。
 真の課題を直接明かさないでください。気づき度が低いほど課題認識は曖昧に。
@@ -55,6 +56,7 @@ class AudioPipeline:
         profile_hints: dict | None = None,
     ) -> str:
         profile_data: dict = {
+            "name": profile.name,
             "industry": profile.industry,
             "company_size": profile.company_size,
             "role_title": profile.role_title,

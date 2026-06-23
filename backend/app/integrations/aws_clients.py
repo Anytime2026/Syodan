@@ -114,6 +114,7 @@ class BedrockClient:
             if "customer profile" in system.lower() or "顧客" in system:
                 return json.dumps(
                     {
+                        "name": "田中 健太",
                         "industry": "金融",
                         "company_size": "中堅（300名）",
                         "role_title": "情報システム部長",

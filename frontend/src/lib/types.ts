@@ -1,4 +1,5 @@
 export type CustomerProfile = {
+  name: string
   industry: string
   company_size: string
   role_title: string

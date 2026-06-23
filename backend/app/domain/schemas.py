@@ -15,6 +15,7 @@ class ProgramCreate(BaseModel):
 
 
 class CustomerProfileResponse(BaseModel):
+    name: str = ""
     industry: str
     company_size: str
     role_title: str

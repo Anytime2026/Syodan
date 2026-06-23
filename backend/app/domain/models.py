@@ -33,6 +33,7 @@ class CustomerProfile(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     program_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("programs.id"), unique=True)
+    name: Mapped[str] = mapped_column(String(64), default="")
     industry: Mapped[str] = mapped_column(Text)
     company_size: Mapped[str] = mapped_column(Text)
     role_title: Mapped[str] = mapped_column(Text)

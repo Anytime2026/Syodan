@@ -1,4 +1,9 @@
-import type { CreateProgramInput, HearingSession, Program, SessionListItem } from './types'
+import type {
+  CreateProgramInput,
+  HearingSession,
+  Program,
+  SessionListItem,
+} from './types'
 
 /** 開発時・Cloudflare Pages 本番は同一オリジン（Vite / Pages Functions プロキシ） */
 export function getApiBase(): string {
@@ -61,15 +66,21 @@ export function createSession(
 }
 
 export function startSession(sessionId: string): Promise<HearingSession> {
-  return request<HearingSession>(`/api/sessions/${sessionId}/start`, { method: 'POST' })
+  return request<HearingSession>(`/api/sessions/${sessionId}/start`, {
+    method: 'POST',
+  })
 }
 
 export function endSession(sessionId: string): Promise<HearingSession> {
-  return request<HearingSession>(`/api/sessions/${sessionId}/end`, { method: 'POST' })
+  return request<HearingSession>(`/api/sessions/${sessionId}/end`, {
+    method: 'POST',
+  })
 }
 
 export function abortSession(sessionId: string): Promise<HearingSession> {
-  return request<HearingSession>(`/api/sessions/${sessionId}/abort`, { method: 'POST' })
+  return request<HearingSession>(`/api/sessions/${sessionId}/abort`, {
+    method: 'POST',
+  })
 }
 
 export function getSession(sessionId: string): Promise<HearingSession> {

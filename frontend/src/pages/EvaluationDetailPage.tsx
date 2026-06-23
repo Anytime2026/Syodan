@@ -25,10 +25,13 @@ export function EvaluationDetailPage() {
   }, [id])
 
   if (loading) return <div className="card">読み込み中…</div>
-  if (error || !session || !program) return <div className="card">{error ?? 'データがありません'}</div>
+  if (error || !session || !program)
+    return <div className="card">{error ?? 'データがありません'}</div>
 
   const entry = findRegistryEntry(program.id)
-  const industryLabel = entry ? INDUSTRY_META[entry.industry]?.label : program.field
+  const industryLabel = entry
+    ? INDUSTRY_META[entry.industry]?.label
+    : program.field
   const sessionSummary = program.customer_state?.session_summaries?.find(
     (s) => s.session_number === session.session_number,
   )?.summary
@@ -59,7 +62,14 @@ export function EvaluationDetailPage() {
       </div>
 
       <div style={{ marginBottom: 20 }}>
-        <p style={{ fontWeight: 'bold', fontSize: '15px', color: 'var(--color-ink-black)', marginBottom: '10px' }}>
+        <p
+          style={{
+            fontWeight: 'bold',
+            fontSize: '15px',
+            color: 'var(--color-ink-black)',
+            marginBottom: '10px',
+          }}
+        >
           💬 会話履歴
         </p>
         <div
@@ -88,7 +98,9 @@ export function EvaluationDetailPage() {
                   style={{
                     alignSelf: isUser ? 'flex-end' : 'flex-start',
                     maxWidth: '85%',
-                    background: isUser ? 'var(--color-kofi-blue)' : 'var(--color-paper-white)',
+                    background: isUser
+                      ? 'var(--color-kofi-blue)'
+                      : 'var(--color-paper-white)',
                     color: 'var(--color-ink-black)',
                     padding: '10px 14px',
                     borderRadius: '12px',
@@ -100,7 +112,14 @@ export function EvaluationDetailPage() {
                     lineHeight: '1.4',
                   }}
                 >
-                  <div style={{ fontSize: '10px', opacity: 0.8, fontWeight: 'bold', marginBottom: '3px' }}>
+                  <div
+                    style={{
+                      fontSize: '10px',
+                      opacity: 0.8,
+                      fontWeight: 'bold',
+                      marginBottom: '3px',
+                    }}
+                  >
                     {sender}
                   </div>
                   {content}
@@ -116,7 +135,13 @@ export function EvaluationDetailPage() {
       </div>
 
       {sessionSummary && (
-        <div style={{ borderTop: '2px solid var(--color-sticker-black)', paddingTop: 15, marginBottom: 20 }}>
+        <div
+          style={{
+            borderTop: '2px solid var(--color-sticker-black)',
+            paddingTop: 15,
+            marginBottom: 20,
+          }}
+        >
           <h3
             style={{
               marginTop: 0,
@@ -138,12 +163,29 @@ export function EvaluationDetailPage() {
               borderRadius: '24px',
             }}
           >
-            <p style={{ margin: 0, fontSize: '13.5px', lineHeight: '1.6', color: 'var(--color-ink-black)' }}>{sessionSummary}</p>
+            <p
+              style={{
+                margin: 0,
+                fontSize: '13.5px',
+                lineHeight: '1.6',
+                color: 'var(--color-ink-black)',
+              }}
+            >
+              {sessionSummary}
+            </p>
           </div>
         </div>
       )}
 
-      <div style={{ background: 'var(--color-oat-cream)', padding: 20, borderRadius: '24px', border: '2px solid var(--color-sticker-black)', marginBottom: 25 }}>
+      <div
+        style={{
+          background: 'var(--color-oat-cream)',
+          padding: 20,
+          borderRadius: '24px',
+          border: '2px solid var(--color-sticker-black)',
+          marginBottom: 25,
+        }}
+      >
         <h3
           style={{
             marginTop: 0,
@@ -166,23 +208,45 @@ export function EvaluationDetailPage() {
                 border: '2px solid var(--color-sticker-black)',
               }}
             >
-              <p className="small" style={{ margin: '0 0 6px', fontWeight: 'bold', color: 'var(--color-ink-black)' }}>
+              <p
+                className="small"
+                style={{
+                  margin: '0 0 6px',
+                  fontWeight: 'bold',
+                  color: 'var(--color-ink-black)',
+                }}
+              >
                 {ev.evaluator_id}
               </p>
-              <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '13.5px',
+                  lineHeight: 1.6,
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
                 {ev.content || '（評価内容なし）'}
               </p>
             </div>
           ))
         ) : (
-          <p className="small" style={{ margin: 0, color: 'var(--color-ink-black)' }}>
-            先輩評価はまだ届いていません。HULFT 経由で反映されるまでお待ちください。
+          <p
+            className="small"
+            style={{ margin: 0, color: 'var(--color-ink-black)' }}
+          >
+            先輩評価はまだ届いていません。HULFT
+            経由で反映されるまでお待ちください。
           </p>
         )}
       </div>
 
       <div style={{ display: 'flex', gap: '12px' }}>
-        <Link to="/evaluations" className="btn secondary" style={{ flex: 1, margin: 0 }}>
+        <Link
+          to="/evaluations"
+          className="btn secondary"
+          style={{ flex: 1, margin: 0 }}
+        >
           一覧に戻る
         </Link>
         <Link to="/" className="btn primary" style={{ flex: 1, margin: 0 }}>

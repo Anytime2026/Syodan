@@ -56,13 +56,18 @@ export function useHearingWebSocket({
     ws.onclose = () => setConnected(false)
     ws.onmessage = async (event) => {
       if (event.data instanceof ArrayBuffer) {
-        audioQueueRef.current.push(new Blob([event.data], { type: 'audio/mpeg' }))
+        audioQueueRef.current.push(
+          new Blob([event.data], { type: 'audio/mpeg' }),
+        )
         playNext()
         return
       }
       const msg = JSON.parse(event.data as string) as WsServerMessage
       if (msg.type === 'transcript') {
-        setTranscripts((prev) => [...prev, { speaker: msg.speaker, text: msg.text }])
+        setTranscripts((prev) => [
+          ...prev,
+          { speaker: msg.speaker, text: msg.text },
+        ])
         if (msg.speaker === 'user') setProcessing(true)
         if (msg.speaker === 'ai') setProcessing(false)
       }

@@ -1,64 +1,67 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 interface UseSpeechRecognitionProps {
-  onResult: (text: string) => void;
+  onResult: (text: string) => void
+}
+
+function getSpeechRecognitionCtor(): SpeechRecognitionConstructor | undefined {
+  if (typeof window === 'undefined') return undefined
+  return window.SpeechRecognition ?? window.webkitSpeechRecognition
 }
 
 export function useSpeechRecognition({ onResult }: UseSpeechRecognitionProps) {
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const [isListening, setIsListening] = useState(false)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    const SpeechRecognition = getSpeechRecognitionCtor()
+    if (!SpeechRecognition) return
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      try {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = 'ja-JP';
+    try {
+      const recognition = new SpeechRecognition()
+      recognition.continuous = false
+      recognition.interimResults = false
+      recognition.lang = 'ja-JP'
 
-        recognition.onresult = (event: any) => {
-          const transcript = event.results[0][0].transcript;
-          onResult(transcript);
-          setIsListening(false);
-        };
-
-        recognition.onerror = (event: any) => {
-          console.error("Speech recognition error", event.error);
-          setIsListening(false);
-        };
-
-        recognition.onend = () => {
-          setIsListening(false);
-        };
-
-        recognitionRef.current = recognition;
-      } catch (e) {
-        console.error("Failed to initialize SpeechRecognition", e);
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = event.results[0][0].transcript
+        onResult(transcript)
+        setIsListening(false)
       }
+
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('Speech recognition error', event.error)
+        setIsListening(false)
+      }
+
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+
+      recognitionRef.current = recognition
+    } catch (e) {
+      console.error('Failed to initialize SpeechRecognition', e)
     }
-  }, [onResult]);
+  }, [onResult])
 
   const startListening = useCallback(() => {
     if (recognitionRef.current && !isListening) {
-      setIsListening(true);
-      recognitionRef.current.start();
+      setIsListening(true)
+      recognitionRef.current.start()
     }
-  }, [isListening]);
+  }, [isListening])
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+      recognitionRef.current.stop()
+      setIsListening(false)
     }
-  }, [isListening]);
+  }, [isListening])
 
   return {
     isListening,
     startListening,
     stopListening,
-    supported: !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
-  };
+    supported: Boolean(getSpeechRecognitionCtor()),
+  }
 }

@@ -6,11 +6,40 @@ import { INDUSTRY_META } from '../types'
 import type { Industry } from '../types'
 
 const SUB_INDUSTRY_PRESETS: Record<Industry, string[]> = {
-  manufacturing: ['車・自動車部品', '金属加工', '電子部品・半導体', '食品・化学', 'その他（直接入力）'],
-  finance: ['信用金庫・地銀', 'メガバンク', '証券・投資', '保険', 'その他（直接入力）'],
-  retail: ['アパレル', 'スーパー・食料品', '家電量販店', 'ドラッグストア', 'その他（直接入力）'],
-  distribution: ['陸上運送・トラック', '倉庫・管理', '海運・空運', 'その他（直接入力）'],
-  real_estate: ['賃貸仲介', '売買仲介', 'デベロッパー', '不動産管理', 'その他（直接入力）'],
+  manufacturing: [
+    '車・自動車部品',
+    '金属加工',
+    '電子部品・半導体',
+    '食品・化学',
+    'その他（直接入力）',
+  ],
+  finance: [
+    '信用金庫・地銀',
+    'メガバンク',
+    '証券・投資',
+    '保険',
+    'その他（直接入力）',
+  ],
+  retail: [
+    'アパレル',
+    'スーパー・食料品',
+    '家電量販店',
+    'ドラッグストア',
+    'その他（直接入力）',
+  ],
+  distribution: [
+    '陸上運送・トラック',
+    '倉庫・管理',
+    '海運・空運',
+    'その他（直接入力）',
+  ],
+  real_estate: [
+    '賃貸仲介',
+    '売買仲介',
+    'デベロッパー',
+    '不動産管理',
+    'その他（直接入力）',
+  ],
 }
 
 export function SettingsPage() {
@@ -19,7 +48,9 @@ export function SettingsPage() {
   const [totalSessions, setTotalSessions] = useState(3)
   const [timeLimit, setTimeLimit] = useState(5)
 
-  const [subIndustrySelect, setSubIndustrySelect] = useState(SUB_INDUSTRY_PRESETS.manufacturing[0])
+  const [subIndustrySelect, setSubIndustrySelect] = useState(
+    SUB_INDUSTRY_PRESETS.manufacturing[0],
+  )
   const [subIndustryCustom, setSubIndustryCustom] = useState('')
   const [isCustomSubIndustry, setIsCustomSubIndustry] = useState(false)
 
@@ -45,7 +76,9 @@ export function SettingsPage() {
   }
 
   const handleCreate = async () => {
-    const finalSubIndustry = isCustomSubIndustry ? subIndustryCustom.trim() : subIndustrySelect
+    const finalSubIndustry = isCustomSubIndustry
+      ? subIndustryCustom.trim()
+      : subIndustrySelect
     const industryLabel = INDUSTRY_META[industry].label
     const field = `${industryLabel} / ${finalSubIndustry || '一般'}`
 
@@ -69,7 +102,8 @@ export function SettingsPage() {
       setCurrentProgramId(program.id)
       navigate('/pre-session')
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'プログラム作成に失敗しました'
+      const message =
+        err instanceof Error ? err.message : 'プログラム作成に失敗しました'
       setError(message)
     } finally {
       setLoading(false)
@@ -84,11 +118,30 @@ export function SettingsPage() {
       </p>
 
       <div className="settings-grid">
-        <div style={{ background: 'var(--color-oat-cream)', padding: '20px', borderRadius: '24px', border: '2px solid var(--color-sticker-black)' }}>
-          <h3 style={{ marginTop: 0, borderBottom: '2px solid var(--color-sticker-black)', paddingBottom: '8px', color: 'var(--color-ink-black)' }}>1. 基本商談設定</h3>
+        <div
+          style={{
+            background: 'var(--color-oat-cream)',
+            padding: '20px',
+            borderRadius: '24px',
+            border: '2px solid var(--color-sticker-black)',
+          }}
+        >
+          <h3
+            style={{
+              marginTop: 0,
+              borderBottom: '2px solid var(--color-sticker-black)',
+              paddingBottom: '8px',
+              color: 'var(--color-ink-black)',
+            }}
+          >
+            1. 基本商談設定
+          </h3>
 
           <label>業界</label>
-          <select value={industry} onChange={(e) => handleIndustryChange(e.target.value as Industry)}>
+          <select
+            value={industry}
+            onChange={(e) => handleIndustryChange(e.target.value as Industry)}
+          >
             {Object.entries(INDUSTRY_META).map(([key, meta]) => (
               <option key={key} value={key}>
                 {meta.label}
@@ -97,7 +150,10 @@ export function SettingsPage() {
           </select>
 
           <label>分野 (セクター)</label>
-          <select value={subIndustrySelect} onChange={(e) => handleSubIndustrySelectChange(e.target.value)}>
+          <select
+            value={subIndustrySelect}
+            onChange={(e) => handleSubIndustrySelectChange(e.target.value)}
+          >
             {SUB_INDUSTRY_PRESETS[industry].map((preset) => (
               <option key={preset} value={preset}>
                 {preset}
@@ -119,7 +175,10 @@ export function SettingsPage() {
           )}
 
           <label>総ヒアリング回数</label>
-          <select value={totalSessions} onChange={(e) => setTotalSessions(parseInt(e.target.value))}>
+          <select
+            value={totalSessions}
+            onChange={(e) => setTotalSessions(parseInt(e.target.value))}
+          >
             {[1, 2, 3, 4, 5].map((num) => (
               <option key={num} value={num}>
                 {num} 回
@@ -142,8 +201,22 @@ export function SettingsPage() {
           </p>
         </div>
 
-        <div style={{ background: 'var(--color-oat-cream)', padding: '20px', borderRadius: '24px', border: '2px solid var(--color-sticker-black)' }}>
-          <h3 style={{ marginTop: 0, borderBottom: '2px solid var(--color-sticker-black)', paddingBottom: '8px', color: 'var(--color-ink-black)' }}>
+        <div
+          style={{
+            background: 'var(--color-oat-cream)',
+            padding: '20px',
+            borderRadius: '24px',
+            border: '2px solid var(--color-sticker-black)',
+          }}
+        >
+          <h3
+            style={{
+              marginTop: 0,
+              borderBottom: '2px solid var(--color-sticker-black)',
+              paddingBottom: '8px',
+              color: 'var(--color-ink-black)',
+            }}
+          >
             2. AI顧客の人物設定 (任意)
           </h3>
 
@@ -182,10 +255,19 @@ export function SettingsPage() {
       )}
 
       <div style={{ display: 'flex', gap: '12px', marginTop: '15px' }}>
-        <button className="btn secondary" onClick={() => navigate('/')} style={{ flex: 1, margin: 0 }}>
+        <button
+          className="btn secondary"
+          onClick={() => navigate('/')}
+          style={{ flex: 1, margin: 0 }}
+        >
           戻る
         </button>
-        <button className="btn cta" onClick={handleCreate} disabled={loading} style={{ flex: 2, margin: 0 }}>
+        <button
+          className="btn cta"
+          onClick={handleCreate}
+          disabled={loading}
+          style={{ flex: 2, margin: 0 }}
+        >
           {loading ? '作成中…' : '▶ プログラム作成'}
         </button>
       </div>

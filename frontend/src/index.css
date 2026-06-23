@@ -11,8 +11,10 @@
   --color-cobalt-pop: #72a4f2;
 
   /* Typography — Font Families */
-  --font-bogue-black: 'Lilita One', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
-  --font-dm-sans: 'DM Sans', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  --font-bogue-black:
+    'Lilita One', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  --font-dm-sans:
+    'DM Sans', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
 
   /* Border Radius */
   --radius-tags: 9999px;
@@ -55,7 +57,12 @@ body {
   justify-content: center;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-bogue-black);
   color: var(--color-ink-black);
   margin-top: 0;
@@ -127,7 +134,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 入力 */
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0 16px;
@@ -137,14 +146,18 @@ input, textarea, select {
   font-family: inherit;
   color: inherit;
   font-size: 15px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 textarea {
   border-radius: var(--radius-feature-cards);
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--color-cobalt-pop);
 }
@@ -203,9 +216,15 @@ label {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* チャット */
@@ -231,17 +250,17 @@ label {
   line-height: 1.5;
 }
 
-.ai { 
-  background:#fff; 
-  align-self:flex-start; 
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.ai {
+  background: #fff;
+  align-self: flex-start;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   border-bottom-left-radius: 2px;
 }
 
-.user { 
-  background:#dff7ff; 
-  align-self:flex-end; 
-  margin-left:auto; 
+.user {
+  background: #dff7ff;
+  align-self: flex-end;
+  margin-left: auto;
   border-bottom-right-radius: 2px;
 }
 
@@ -275,7 +294,7 @@ label {
   display: flex;
   flex-direction: row;
   gap: 20px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
   margin: 20px;
   height: 650px;
   position: relative;
@@ -325,13 +344,15 @@ label {
   align-items: center;
   justify-content: center;
   border: 3px solid transparent;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
   height: 100%;
   min-height: 200px;
 }
 
 .zoom-video-tile.speaking {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
 }
 
@@ -354,14 +375,14 @@ label {
   justify-content: center;
   font-weight: bold;
   border: 2px solid #555;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .zoom-participant-name {
   position: absolute;
   bottom: 12px;
   left: 12px;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.65);
   color: #fff;
   padding: 4px 10px;
   border-radius: 6px;
@@ -374,14 +395,14 @@ label {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.65);
   padding: 6px 10px;
   border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #4CAF50;
+  color: #4caf50;
   backdrop-filter: blur(4px);
   z-index: 10;
 }
@@ -389,7 +410,7 @@ label {
 .waveform-dot {
   width: 3px;
   height: 10px;
-  background: #4CAF50;
+  background: #4caf50;
   border-radius: 2px;
   animation: wave 1s ease-in-out infinite;
 }
@@ -403,12 +424,17 @@ label {
 }
 
 @keyframes wave {
-  0%, 100% { transform: scaleY(0.4); }
-  50% { transform: scaleY(1.8); }
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1.8);
+  }
 }
 
 .zoom-subtitles {
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   padding: 14px 20px;
   border-radius: 10px;
   font-size: 16px;
@@ -416,10 +442,10 @@ label {
   text-align: center;
   color: #fff;
   margin: 15px 0;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   word-break: break-all;
   font-weight: 500;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   line-height: 1.4;
 }
 
@@ -519,7 +545,7 @@ label {
 }
 
 .zoom-chat-message.user {
-  background: #E91E63;
+  background: #e91e63;
   color: #fff;
   align-self: flex-end;
   border-bottom-right-radius: 2px;
@@ -546,7 +572,7 @@ label {
 }
 
 .zoom-chat-input-area input:focus {
-  border-color: #E91E63;
+  border-color: #e91e63;
   outline: none;
 }
 
@@ -555,7 +581,7 @@ label {
 }
 
 .zoom-send-btn {
-  background: #E91E63;
+  background: #e91e63;
   color: white;
   border: none;
   border-radius: 50%;
@@ -595,4 +621,3 @@ label {
   border-color: #ff4b4b;
   animation: pulse 1.5s infinite;
 }
-
