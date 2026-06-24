@@ -56,7 +56,8 @@ export function ReviewerEvaluationPage() {
     }
   }
 
-  if (showLoadingScreen) return <LoadingScreen message="評価ページを読み込み中" />
+  if (showLoadingScreen)
+    return <LoadingScreen message="評価ページを読み込み中" />
   if (loading) return null
   if (error || !page)
     return (

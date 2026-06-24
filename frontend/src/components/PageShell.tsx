@@ -82,7 +82,9 @@ export function PageSection({
   className = '',
 }: PageSectionProps) {
   return (
-    <section className={`page-section page-section--${variant} ${className}`.trim()}>
+    <section
+      className={`page-section page-section--${variant} ${className}`.trim()}
+    >
       {children}
     </section>
   )

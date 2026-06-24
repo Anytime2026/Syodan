@@ -1,11 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { LoadingScreen } from '../components/LoadingScreen'
-import {
-  PageActions,
-  PageEmpty,
-  PageShell,
-} from '../components/PageShell'
+import { PageActions, PageEmpty, PageShell } from '../components/PageShell'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { EVALUABLE_SESSION_STATUSES, getProgram } from '../lib/api'
 import { loadRegistry } from '../lib/registry'
@@ -150,7 +146,9 @@ export function EvaluationsPage() {
                       ? `${industryLabel} - 商談シリーズ完了 (総評)`
                       : `${industryLabel} - ${sessionText}`}
                   </p>
-                  {isOverall && <span className="page-badge">シリーズ完了</span>}
+                  {isOverall && (
+                    <span className="page-badge">シリーズ完了</span>
+                  )}
                 </div>
 
                 <div className="page-list__item-row" style={{ marginTop: 8 }}>

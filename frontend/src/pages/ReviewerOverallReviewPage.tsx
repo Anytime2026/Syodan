@@ -68,7 +68,8 @@ export function ReviewerOverallReviewPage() {
     }
   }
 
-  if (showLoadingScreen) return <LoadingScreen message="総評ページを読み込み中" />
+  if (showLoadingScreen)
+    return <LoadingScreen message="総評ページを読み込み中" />
   if (loading) return null
   if (error || !page)
     return (

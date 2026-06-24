@@ -91,7 +91,9 @@ export function PreSessionPage() {
         illustration="/images/LevelUp.svg"
       >
         <PageSection variant="blue">
-          <p style={{ fontWeight: 'bold', fontSize: '1.05rem', margin: '5px 0' }}>
+          <p
+            style={{ fontWeight: 'bold', fontSize: '1.05rem', margin: '5px 0' }}
+          >
             設定された商談回数（全 {program.total_sessions}{' '}
             回）をすべて実施済みです。
           </p>
