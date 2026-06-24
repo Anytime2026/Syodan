@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import re
 import threading
@@ -7,8 +6,9 @@ from collections.abc import Callable
 from queue import Queue
 
 from app.config import get_settings
-from app.domain.models import CustomerProfile, CustomerState, HearingSession
+from app.domain.models import CustomerProfile, CustomerState
 from app.integrations.aws_clients import BedrockClient, PollyClient, TranscribeClient
+from app.services.prompts import build_chat_system_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -18,26 +18,6 @@ _MIN_SYNTH_CHARS = 12
 # 初回チャンクは読点でも区切り、最小文字数も下げて「最初の音声が出るまで」を短縮する
 _FIRST_BOUNDARY = re.compile(r"[。．！？!?\n、，,]")
 _FIRST_MIN_CHARS = 4
-
-CHAT_SYSTEM_TEMPLATE = """あなたはB2B商談の見込み顧客としてロールプレイします。
-プロファイルの名前で自己紹介・応答してください（例: 田中 健太）。
-性格・業界・役職・表面ニーズ・真の課題・現在の気づき度に沿って自然な日本語で応答してください。
-営業担当の質問に対し、一度に長すぎず、リアルな会話調で答えてください。
-真の課題を直接明かさないでください。気づき度が低いほど課題認識は曖昧に。
-残り時間が少ない場合は会話を締めに向かうが、相手が締め中なら協調的に続けてください。
-
-【顧客プロファイル】
-{profile_json}
-
-【現在の状態】
-{state_json}
-
-【今回の目標（営業側）】
-{goal}
-
-【残り秒数】
-{remaining_sec}
-"""
 
 
 class AudioPipeline:
@@ -53,33 +33,16 @@ class AudioPipeline:
         state: CustomerState,
         goal: str,
         remaining_sec: int,
+        session_number: int,
         profile_hints: dict | None = None,
     ) -> str:
-        profile_data: dict = {
-            "name": profile.name,
-            "industry": profile.industry,
-            "company_size": profile.company_size,
-            "role_title": profile.role_title,
-            "surface_need": profile.surface_need,
-            "true_challenge": profile.true_challenge,
-            "personality_type": profile.personality_type,
-        }
-        if profile_hints and profile_hints.get("it_knowledge_level"):
-            profile_data["it_knowledge_level"] = profile_hints["it_knowledge_level"]
-        profile_json = json.dumps(profile_data, ensure_ascii=False)
-        state_json = json.dumps(
-            {
-                "awareness_level": state.awareness_level,
-                "rapport_level": state.rapport_level,
-                "disclosed_info": state.disclosed_info,
-            },
-            ensure_ascii=False,
-        )
-        return CHAT_SYSTEM_TEMPLATE.format(
-            profile_json=profile_json,
-            state_json=state_json,
-            goal=goal,
-            remaining_sec=remaining_sec,
+        return build_chat_system_prompt(
+            profile,
+            state,
+            goal,
+            remaining_sec,
+            session_number,
+            profile_hints,
         )
 
     async def transcribe_turn(self, audio_bytes: bytes, media_format: str = "webm") -> str:
@@ -100,6 +63,7 @@ class AudioPipeline:
         system_prompt: str,
         user_text: str,
         on_audio: Callable[[bytes], None],
+        messages: list[dict] | None = None,
         max_tokens: int = 400,
     ) -> str:
         """Stream the LLM response, synthesizing speech sentence-by-sentence.
@@ -133,12 +97,15 @@ class AudioPipeline:
             if text:
                 sentence_queue.put(text)
 
+        body_messages = messages if messages is not None else [{"role": "user", "content": user_text}]
+
         try:
             for delta in self.bedrock.invoke_stream(
                 self.settings.bedrock_chat_model_id,
                 system_prompt,
                 user_text,
                 max_tokens=max_tokens,
+                messages=body_messages,
             ):
                 full_parts.append(delta)
                 buffer += delta

@@ -16,16 +16,9 @@ from app.domain.schemas import (
     SessionListItem,
 )
 from app.integrations.aws_clients import BedrockClient
+from app.services.prompts import PROFILE_SYSTEM, split_profile_data
 
 logger = logging.getLogger(__name__)
-
-PROFILE_SYSTEM = """あなたは営業ロープレ用のB2B顧客ペルソナ生成器です。
-指定分野に沿った現実的な顧客プロファイルを返してください。
-出力はJSONオブジェクト1つのみ。説明文・マークダウン・コードブロックは禁止。
-キー: name, industry, company_size, role_title, surface_need, true_challenge, personality_type, initial_awareness(0-100整数)
-name は日本人のフルネーム（姓と名をスペース区切り、例: 田中 健太）。読みやすく一般的な名前にすること。難読・造語・カタカナのみの名前は避ける。
-文字列内の改行は使わず、ダブルクォートはエスケープすること。
-真の課題は表面ニーズの奥にある本質的課題とし、ユーザーには後で開示する前提で詳細に書いてください。"""
 
 
 def _parse_llm_json(raw: str) -> dict:
@@ -79,10 +72,11 @@ class ProgramService:
         profile_data = await self._generate_profile(field, sub_field)
         if personality_type:
             profile_data["personality_type"] = personality_type
-        profile = CustomerProfile(program_id=program.id, **profile_data)
+        base_fields, persona_extras = split_profile_data(profile_data)
+        profile = CustomerProfile(program_id=program.id, persona_extras=persona_extras, **base_fields)
         state = CustomerState(
             program_id=program.id,
-            awareness_level=profile_data["initial_awareness"],
+            awareness_level=base_fields["initial_awareness"],
             rapport_level=30,
             disclosed_info=[],
             session_summaries=[],

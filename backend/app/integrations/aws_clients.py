@@ -42,16 +42,24 @@ class BedrockClient:
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()
 
-    def invoke(self, model_id: str, system: str, user_message: str, max_tokens: int = 1024) -> str:
+    def invoke(
+        self,
+        model_id: str,
+        system: str,
+        user_message: str = "",
+        max_tokens: int = 1024,
+        messages: list[dict] | None = None,
+    ) -> str:
         if self.settings.aws_stub_mode:
             return self._stub_response(system, user_message)
 
         client = _service_client("bedrock-runtime", self.settings)
+        body_messages = messages if messages is not None else [{"role": "user", "content": user_message}]
         body = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": max_tokens,
             "system": system,
-            "messages": [{"role": "user", "content": user_message}],
+            "messages": body_messages,
         }
         try:
             response = client.invoke_model(
@@ -71,7 +79,12 @@ class BedrockClient:
         return payload["content"][0]["text"]
 
     def invoke_stream(
-        self, model_id: str, system: str, user_message: str, max_tokens: int = 1024
+        self,
+        model_id: str,
+        system: str,
+        user_message: str = "",
+        max_tokens: int = 1024,
+        messages: list[dict] | None = None,
     ):
         """Yield text deltas as they are generated (lower time-to-first-token)."""
         if self.settings.aws_stub_mode:
@@ -79,11 +92,12 @@ class BedrockClient:
             return
 
         client = _service_client("bedrock-runtime", self.settings)
+        body_messages = messages if messages is not None else [{"role": "user", "content": user_message}]
         body = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": max_tokens,
             "system": system,
-            "messages": [{"role": "user", "content": user_message}],
+            "messages": body_messages,
         }
         try:
             response = client.invoke_model_with_response_stream(
@@ -111,21 +125,29 @@ class BedrockClient:
                     yield text
 
     def _stub_response(self, system: str, user_message: str) -> str:
-        if "JSON" in system or "json" in system.lower():
-            if "customer profile" in system.lower() or "顧客" in system:
-                return json.dumps(
-                    {
-                        "name": "田中 健太",
-                        "industry": "金融",
-                        "company_size": "中堅（300名）",
-                        "role_title": "情報システム部長",
-                        "surface_need": "社内システムの老朽化対応",
-                        "true_challenge": "部門間のデータ連携不全により意思決定が遅延している",
-                        "personality_type": "慎重・課題にまだ気づいていない",
-                        "initial_awareness": 25,
-                    },
-                    ensure_ascii=False,
-                )
+        if "hidden_motivations" in system or "ペルソナ" in system:
+            return json.dumps(
+                {
+                    "name": "田中 健太",
+                    "industry": "金融",
+                    "company_size": "中堅（300名）",
+                    "role_title": "情報システム部長",
+                    "surface_need": "社内システムの老朽化対応",
+                    "true_challenge": "部門間のデータ連携不全により意思決定が遅延している",
+                    "personality_type": "慎重・課題にまだ気づいていない",
+                    "initial_awareness": 25,
+                    "hidden_motivations": ["前任部長の失敗を繰り返したくない", "情シス部門の評価を上げたい"],
+                    "typical_objections": ["予算が読めない", "ベンダー依存を避けたい"],
+                    "background_facts": [
+                        "来期に基幹刷新の予算申請予定",
+                        "経理と倉庫の数字が月次で合わない",
+                        "社内にExcel連携が残っている",
+                    ],
+                    "communication_style": "丁寧語だが距離感あり。専門用語は避け、具体例を求める",
+                },
+                ensure_ascii=False,
+            )
+        if "session_summary" in system:
             return json.dumps(
                 {
                     "awareness_level": 35,
@@ -136,7 +158,18 @@ class BedrockClient:
                 },
                 ensure_ascii=False,
             )
-        if "顧客" in system or "customer" in system.lower():
+        if "JSON" in system or "json" in system.lower():
+            return json.dumps(
+                {
+                    "awareness_level": 35,
+                    "rapport_level": 45,
+                    "disclosed_info": ["現行システムの課題"],
+                    "session_summary": "予算感と導入時期について質問があった。",
+                    "title": "現状課題のヒアリング",
+                },
+                ensure_ascii=False,
+            )
+        if "見込み顧客" in system or "ロールプレイ" in system:
             return "そうですね、現状のシステムについてはいくつか課題を感じています。もう少し詳しくお聞きしてもよろしいでしょうか。"
         return "了解しました。"
 

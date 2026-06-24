@@ -91,3 +91,7 @@ def append_recording(session_id: str, chunk: bytes) -> None:
 def append_conversation(session_id: str, speaker: str, text: str) -> None:
     log = _conversation_logs.setdefault(session_id, [])
     log.append({"speaker": speaker, "text": text})
+
+
+def get_conversation_log(session_id: str) -> list[dict]:
+    return list(_conversation_logs.get(session_id, []))

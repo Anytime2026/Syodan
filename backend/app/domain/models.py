@@ -42,6 +42,7 @@ class CustomerProfile(Base):
     true_challenge: Mapped[str] = mapped_column(Text)
     personality_type: Mapped[str] = mapped_column(Text)
     initial_awareness: Mapped[int] = mapped_column(Integer, default=20)
+    persona_extras: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     program: Mapped["Program"] = relationship(back_populates="customer_profile")
 
