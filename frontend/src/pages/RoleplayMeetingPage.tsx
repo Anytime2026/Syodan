@@ -183,6 +183,7 @@ export function RoleplayMeetingPage() {
       </div>
       <TranscriptDrawer
         messages={ws.transcripts}
+        partialText={ws.partialTranscript}
         open={transcriptOpen}
         onToggle={() => setTranscriptOpen((o) => !o)}
       />
