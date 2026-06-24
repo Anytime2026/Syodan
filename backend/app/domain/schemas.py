@@ -112,6 +112,15 @@ class SessionSummaryForReview(BaseModel):
     formatted_transcript: str | None
 
 
+class OverallReviewResponse(BaseModel):
+    id: UUID
+    evaluator_id: str
+    content: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class OverallReviewPageResponse(BaseModel):
     program_id: UUID
     program_field: str
@@ -127,15 +136,6 @@ class EvaluationArtifactRequest(BaseModel):
     program_id: UUID | None = None
     formatted_transcript: str
     artifact_type: str = "session"
-
-
-class OverallReviewResponse(BaseModel):
-    id: UUID
-    evaluator_id: str
-    content: str
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class ProgramDetailWithReviews(BaseModel):

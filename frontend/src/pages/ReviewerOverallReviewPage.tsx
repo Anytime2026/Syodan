@@ -13,20 +13,26 @@ export function ReviewerOverallReviewPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [expandedSessions, setExpandedSessions] = useState<Set<number>>(new Set())
+  const [expandedSessions, setExpandedSessions] = useState<Set<number>>(
+    new Set(),
+  )
 
-  const loadPage = () => {
+  useEffect(() => {
     if (!token) return
     setLoading(true)
+    setError(null)
     getOverallReviewPage(token)
       .then(setPage)
       .catch(() => setError('総評ページの取得に失敗しました'))
       .finally(() => setLoading(false))
-  }
-
-  useEffect(() => {
-    loadPage()
   }, [token])
+
+  const refreshPage = () => {
+    if (!token) return
+    getOverallReviewPage(token)
+      .then(setPage)
+      .catch(() => setError('総評ページの取得に失敗しました'))
+  }
 
   const toggleSession = (num: number) => {
     setExpandedSessions((prev) => {
@@ -50,7 +56,7 @@ export function ReviewerOverallReviewPage() {
       })
       setSubmitSuccess(true)
       setContent('')
-      loadPage()
+      refreshPage()
     } catch {
       setSubmitError('総評の送信に失敗しました')
     } finally {
@@ -63,7 +69,10 @@ export function ReviewerOverallReviewPage() {
     return <div className="card">{error ?? 'ページが見つかりません'}</div>
 
   return (
-    <div className="card wide" style={{ maxWidth: '800px', margin: '24px auto' }}>
+    <div
+      className="card wide"
+      style={{ maxWidth: '800px', margin: '24px auto' }}
+    >
       <h2>先輩総評入力</h2>
       <p className="small" style={{ marginBottom: 20 }}>
         {page.program_field} — 全 {page.total_sessions} 回完了
@@ -81,7 +90,14 @@ export function ReviewerOverallReviewPage() {
         <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '14px' }}>
           真の課題（先輩のみ表示）
         </p>
-        <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: '13.5px',
+            lineHeight: 1.6,
+            whiteSpace: 'pre-wrap',
+          }}
+        >
           {page.true_challenge || '（未設定）'}
         </p>
       </div>
@@ -100,10 +116,18 @@ export function ReviewerOverallReviewPage() {
                 marginBottom: 8,
               }}
             >
-              <p style={{ margin: '0 0 4px', fontWeight: 'bold', fontSize: '13px' }}>
+              <p
+                style={{
+                  margin: '0 0 4px',
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                }}
+              >
                 第 {s.session_number} 回
               </p>
-              <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.5 }}>{s.summary}</p>
+              <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.5 }}>
+                {s.summary}
+              </p>
             </div>
           ))}
         </div>
@@ -139,7 +163,13 @@ export function ReviewerOverallReviewPage() {
               {expandedSessions.has(s.session_number) ? '▲' : '▼'}
             </button>
             {expandedSessions.has(s.session_number) && (
-              <div style={{ padding: 14, fontSize: '13.5px', whiteSpace: 'pre-wrap' }}>
+              <div
+                style={{
+                  padding: 14,
+                  fontSize: '13.5px',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
                 <p style={{ margin: '0 0 8px' }}>
                   <strong>目標:</strong> {s.goal}
                 </p>
@@ -164,10 +194,22 @@ export function ReviewerOverallReviewPage() {
                 marginBottom: 10,
               }}
             >
-              <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '13px' }}>
+              <p
+                style={{
+                  margin: '0 0 6px',
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                }}
+              >
                 {review.evaluator_id}
               </p>
-              <p style={{ margin: 0, fontSize: '13.5px', whiteSpace: 'pre-wrap' }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '13.5px',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
                 {review.content}
               </p>
             </div>
@@ -214,7 +256,9 @@ export function ReviewerOverallReviewPage() {
           }}
         />
         {submitError && (
-          <p style={{ color: 'crimson', margin: '0 0 12px', fontSize: '13px' }}>{submitError}</p>
+          <p style={{ color: 'crimson', margin: '0 0 12px', fontSize: '13px' }}>
+            {submitError}
+          </p>
         )}
         {submitSuccess && (
           <p style={{ color: 'green', margin: '0 0 12px', fontSize: '13px' }}>

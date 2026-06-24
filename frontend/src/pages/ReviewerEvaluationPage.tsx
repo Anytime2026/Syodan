@@ -14,18 +14,22 @@ export function ReviewerEvaluationPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
-  const loadPage = () => {
+  useEffect(() => {
     if (!token) return
     setLoading(true)
+    setError(null)
     getReviewPage(token)
       .then(setPage)
       .catch(() => setError('評価ページの取得に失敗しました'))
       .finally(() => setLoading(false))
-  }
-
-  useEffect(() => {
-    loadPage()
   }, [token])
+
+  const refreshPage = () => {
+    if (!token) return
+    getReviewPage(token)
+      .then(setPage)
+      .catch(() => setError('評価ページの取得に失敗しました'))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,7 +44,7 @@ export function ReviewerEvaluationPage() {
       })
       setSubmitSuccess(true)
       setContent('')
-      loadPage()
+      refreshPage()
     } catch {
       setSubmitError('評価の送信に失敗しました')
     } finally {
@@ -53,7 +57,10 @@ export function ReviewerEvaluationPage() {
     return <div className="card">{error ?? 'ページが見つかりません'}</div>
 
   return (
-    <div className="card wide" style={{ maxWidth: '800px', margin: '24px auto' }}>
+    <div
+      className="card wide"
+      style={{ maxWidth: '800px', margin: '24px auto' }}
+    >
       <h2>先輩評価入力（第 {page.session_number} 回）</h2>
       <p className="small" style={{ marginBottom: 20 }}>
         {page.program_field} — 目標: {page.goal}
@@ -71,7 +78,14 @@ export function ReviewerEvaluationPage() {
         <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '14px' }}>
           真の課題（先輩のみ表示）
         </p>
-        <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: '13.5px',
+            lineHeight: 1.6,
+            whiteSpace: 'pre-wrap',
+          }}
+        >
           {page.true_challenge || '（未設定）'}
         </p>
       </div>
@@ -116,10 +130,22 @@ export function ReviewerEvaluationPage() {
                 marginBottom: 10,
               }}
             >
-              <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '13px' }}>
+              <p
+                style={{
+                  margin: '0 0 6px',
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                }}
+              >
                 {ev.evaluator_id}
               </p>
-              <p style={{ margin: 0, fontSize: '13.5px', whiteSpace: 'pre-wrap' }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '13.5px',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
                 {ev.content}
               </p>
             </div>
@@ -166,7 +192,9 @@ export function ReviewerEvaluationPage() {
           }}
         />
         {submitError && (
-          <p style={{ color: 'crimson', margin: '0 0 12px', fontSize: '13px' }}>{submitError}</p>
+          <p style={{ color: 'crimson', margin: '0 0 12px', fontSize: '13px' }}>
+            {submitError}
+          </p>
         )}
         {submitSuccess && (
           <p style={{ color: 'green', margin: '0 0 12px', fontSize: '13px' }}>

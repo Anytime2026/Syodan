@@ -110,7 +110,9 @@ export function submitSessionEvaluation(
   })
 }
 
-export function getOverallReviewPage(token: string): Promise<OverallReviewPageData> {
+export function getOverallReviewPage(
+  token: string,
+): Promise<OverallReviewPageData> {
   return request<OverallReviewPageData>(`/api/review/overall/${token}`)
 }
 
