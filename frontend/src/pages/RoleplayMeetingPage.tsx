@@ -7,6 +7,7 @@ import { ParticipantTile } from '../components/roleplay/ParticipantTile'
 import { TranscriptDrawer } from '../components/roleplay/TranscriptDrawer'
 import '../components/roleplay/roleplay.css'
 import { useHearingWebSocket } from '../hooks/useHearingWebSocket'
+import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
 import { usePushToTalk } from '../hooks/usePushToTalk'
 import { endSession, getApiBase, getProgram, getSession } from '../lib/api'
@@ -21,6 +22,8 @@ export function RoleplayMeetingPage() {
   const [ended, setEnded] = useState(false)
   const [transcriptOpen, setTranscriptOpen] = useState(true)
   const [userSpeaking, setUserSpeaking] = useState(false)
+  const sessionLoading = !session && Boolean(sessionId)
+  const showLoadingScreen = useDeferredLoading(sessionLoading)
 
   const handleSessionEnded = useCallback(
     async (reason: string) => {
@@ -125,8 +128,16 @@ export function RoleplayMeetingPage() {
   const customerName = program?.customer_profile?.name
   const customerRole = program?.customer_profile?.role_title ?? '見込み顧客'
 
-  if (!session) {
+  if (showLoadingScreen) {
     return <LoadingScreen message="セッションを読み込み中" />
+  }
+
+  if (sessionLoading) {
+    return null
+  }
+
+  if (!session) {
+    return null
   }
 
   if (ended) {

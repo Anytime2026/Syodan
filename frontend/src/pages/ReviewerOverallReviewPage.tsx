@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { PageSection, PageShell } from '../components/PageShell'
+import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { getOverallReviewPage, submitOverallReview } from '../lib/api'
 import type { OverallReviewPageData } from '../lib/types'
 
@@ -9,6 +11,7 @@ export function ReviewerOverallReviewPage() {
   const [page, setPage] = useState<OverallReviewPageData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const showLoadingScreen = useDeferredLoading(loading)
   const [evaluatorId, setEvaluatorId] = useState('')
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -65,29 +68,25 @@ export function ReviewerOverallReviewPage() {
     }
   }
 
-  if (loading) return <LoadingScreen message="総評ページを読み込み中" />
+  if (showLoadingScreen) return <LoadingScreen message="総評ページを読み込み中" />
+  if (loading) return null
   if (error || !page)
-    return <div className="card">{error ?? 'ページが見つかりません'}</div>
+    return (
+      <PageShell
+        title={error ?? 'ページが見つかりません'}
+        illustration="/images/!-bear.svg"
+      />
+    )
 
   return (
-    <div
-      className="card wide"
-      style={{ maxWidth: '800px', margin: '24px auto' }}
+    <PageShell
+      width="wide"
+      title="先輩総評入力"
+      subtitle={`${page.program_field} — 全 ${page.total_sessions} 回完了`}
+      illustration="/images/LevelUp.svg"
+      brandLink={false}
     >
-      <h2>先輩総評入力</h2>
-      <p className="small" style={{ marginBottom: 20 }}>
-        {page.program_field} — 全 {page.total_sessions} 回完了
-      </p>
-
-      <div
-        style={{
-          background: 'var(--color-kofi-blue)',
-          padding: 16,
-          borderRadius: '16px',
-          border: '2px solid var(--color-sticker-black)',
-          marginBottom: 20,
-        }}
-      >
+      <PageSection variant="blue">
         <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '14px' }}>
           真の課題（先輩のみ表示）
         </p>
@@ -101,7 +100,7 @@ export function ReviewerOverallReviewPage() {
         >
           {page.true_challenge || '（未設定）'}
         </p>
-      </div>
+      </PageSection>
 
       {page.session_summaries.length > 0 && (
         <div style={{ marginBottom: 20 }}>
@@ -270,6 +269,6 @@ export function ReviewerOverallReviewPage() {
           {submitting ? '送信中…' : '総評を送信'}
         </button>
       </form>
-    </div>
+    </PageShell>
   )
 }

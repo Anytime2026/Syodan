@@ -1,0 +1,325 @@
+.page-shell {
+  width: 100%;
+  max-width: 420px;
+  margin: clamp(12px, 3vw, 20px);
+  padding: clamp(20px, 4vw, 28px);
+  background: var(--surface-paper-card);
+  border: 3px solid var(--color-sticker-black);
+  border-radius: var(--radius-cards);
+}
+
+.page-shell--wide {
+  max-width: min(900px, calc(100vw - 24px));
+}
+
+.page-shell--narrow {
+  max-width: min(520px, calc(100vw - 24px));
+}
+
+.page-shell__header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: clamp(16px, 4vw, 24px);
+}
+
+.page-shell__brand-link {
+  display: inline-flex;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.page-shell__brand-link:hover {
+  transform: translateY(-2px);
+}
+
+.page-shell__brand {
+  width: min(220px, 72vw);
+  height: auto;
+}
+
+.page-shell__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 3vw, 20px);
+  margin-bottom: clamp(20px, 4vw, 28px);
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .page-shell__intro {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .page-shell__intro--stacked {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.page-shell__illustration {
+  width: min(160px, 42vw);
+  height: auto;
+  flex-shrink: 0;
+}
+
+.page-shell__intro-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-shell__title {
+  margin: 0 0 8px;
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+  line-height: 1.25;
+}
+
+.page-shell__subtitle {
+  margin: 0;
+  font-size: clamp(0.82rem, 2.5vw, 0.95rem);
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-ink-black) 72%, transparent);
+}
+
+.page-shell__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-section {
+  padding: clamp(16px, 3vw, 20px);
+  border-radius: var(--radius-feature-cards);
+  border: 2px solid var(--color-sticker-black);
+}
+
+.page-section--oat {
+  background: var(--color-oat-cream);
+}
+
+.page-section--blue {
+  background: var(--color-kofi-blue);
+}
+
+.page-section--paper {
+  background: var(--surface-paper-card);
+}
+
+.page-section__heading {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-sticker-black);
+  font-size: clamp(1rem, 3vw, 1.15rem);
+}
+
+.page-section__label {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-ink-black);
+}
+
+.page-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(20px, 5vw, 32px) 16px;
+  text-align: center;
+}
+
+.page-empty__image {
+  width: min(120px, 32vw);
+  height: auto;
+}
+
+.page-empty__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-ink-black);
+}
+
+.page-empty__description {
+  margin: 0;
+  max-width: 280px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-ink-black) 68%, transparent);
+}
+
+.page-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .page-actions {
+    flex-direction: row;
+  }
+
+  .page-actions .btn {
+    margin: 0;
+  }
+
+  .page-actions .btn--grow {
+    flex: 2;
+  }
+
+  .page-actions .btn--shrink {
+    flex: 1;
+  }
+}
+
+.page-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.page-list__item {
+  display: block;
+  padding: clamp(14px, 3vw, 16px) clamp(16px, 3vw, 20px);
+  border: 2px solid var(--color-sticker-black);
+  border-radius: var(--radius-feature-cards);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease;
+}
+
+.page-list__item:hover {
+  transform: translateY(-2px);
+}
+
+.page-list__item--oat {
+  background: var(--color-oat-cream);
+}
+
+.page-list__item--paper {
+  background: var(--surface-paper-card);
+}
+
+.page-list__item-title {
+  margin: 0 0 5px;
+  font-weight: 700;
+  font-size: clamp(0.88rem, 2.8vw, 0.95rem);
+  color: var(--color-ink-black);
+}
+
+.page-list__item-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.page-list__item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.page-badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 2px solid var(--color-sticker-black);
+  border-radius: var(--radius-tags);
+  background: var(--color-kofi-blue);
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.page-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 4vw, 24px);
+  margin-bottom: clamp(8px, 2vw, 16px);
+}
+
+@media (min-width: 640px) {
+  .page-hero {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
+}
+
+.page-hero__image {
+  width: min(200px, 52vw);
+  height: auto;
+  flex-shrink: 0;
+}
+
+.page-hero__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-hero__tagline {
+  margin: 0;
+  font-size: clamp(0.88rem, 2.8vw, 1rem);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--color-ink-black) 78%, transparent);
+}
+
+.page-features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 4px 0;
+}
+
+@media (min-width: 480px) {
+  .page-features {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.page-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border: 2px solid var(--color-sticker-black);
+  border-radius: var(--radius-small-elements);
+  background: var(--color-oat-cream);
+  text-align: center;
+}
+
+.page-feature__icon {
+  width: min(48px, 14vw);
+  height: auto;
+}
+
+.page-feature__label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.page-footer {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink-black) 12%, transparent);
+  text-align: center;
+}
+
+.page-footer__link {
+  background: none;
+  border: none;
+  color: color-mix(in srgb, var(--color-ink-black) 50%, transparent);
+  font-size: 0.7rem;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.page-footer__link:hover {
+  color: var(--color-ink-black);
+}

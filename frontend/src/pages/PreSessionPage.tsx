@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { PageActions, PageSection, PageShell } from '../components/PageShell'
+import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { createSession, getProgram, startSession } from '../lib/api'
 import { findRegistryEntry, getCurrentProgramId } from '../lib/registry'
 import type { Program } from '../lib/types'
@@ -20,6 +22,8 @@ export function PreSessionPage() {
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const showLoadingScreen = useDeferredLoading(loading)
+  const showStartingScreen = useDeferredLoading(starting)
 
   useEffect(() => {
     const programId = getCurrentProgramId()
@@ -59,52 +63,58 @@ export function PreSessionPage() {
     }
   }
 
-  if (loading) return <LoadingScreen message="準備中" />
-  if (starting) return <LoadingScreen message="セッションを開始しています" />
-  if (!program) return <div className="card">プログラムが見つかりません</div>
+  if (showLoadingScreen) return <LoadingScreen message="準備中" />
+  if (loading) return null
+  if (showStartingScreen) {
+    return <LoadingScreen message="セッションを開始しています" />
+  }
+  if (!program)
+    return (
+      <PageShell
+        title="プログラムが見つかりません"
+        illustration="/images/!-bear.svg"
+      >
+        <PageActions>
+          <button className="btn primary" onClick={() => navigate('/')}>
+            ホームに戻る
+          </button>
+        </PageActions>
+      </PageShell>
+    )
 
   if (program.completed_sessions >= program.total_sessions) {
     return (
-      <div className="card wide" style={{ maxWidth: '800px' }}>
-        <h2>ヒアリング準備</h2>
-        <p className="small">全ヒアリングセッションが終了しています</p>
-
-        <div
-          style={{
-            background: 'var(--color-oat-cream)',
-            padding: 20,
-            borderRadius: '24px',
-            marginBottom: 20,
-            border: '2px solid var(--color-sticker-black)',
-            textAlign: 'center',
-          }}
-        >
-          <p style={{ fontWeight: 'bold', fontSize: '18px', margin: '5px 0' }}>
+      <PageShell
+        width="wide"
+        title="ヒアリング準備"
+        subtitle="全ヒアリングセッションが終了しています"
+        illustration="/images/LevelUp.svg"
+      >
+        <PageSection variant="blue">
+          <p style={{ fontWeight: 'bold', fontSize: '1.05rem', margin: '5px 0' }}>
             設定された商談回数（全 {program.total_sessions}{' '}
             回）をすべて実施済みです。
           </p>
           <p className="small" style={{ margin: '10px 0 0', opacity: 0.9 }}>
             新しいセッションを開始することはできません。評価履歴や総評を確認してください。
           </p>
-        </div>
+        </PageSection>
 
-        <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+        <PageActions>
           <button
-            className="btn secondary"
+            className="btn secondary btn--shrink"
             onClick={() => navigate('/')}
-            style={{ flex: 1, margin: 0 }}
           >
             ホームに戻る
           </button>
           <button
-            className="btn primary"
+            className="btn primary btn--grow"
             onClick={() => navigate(`/overall-review?program_id=${program.id}`)}
-            style={{ flex: 2, margin: 0 }}
           >
             シリーズ総評を見る
           </button>
-        </div>
-      </div>
+        </PageActions>
+      </PageShell>
     )
   }
 
@@ -113,29 +123,14 @@ export function PreSessionPage() {
   const nextSessionNumber = program.completed_sessions + 1
 
   return (
-    <div className="card wide" style={{ maxWidth: '800px' }}>
-      <h2>ヒアリング準備</h2>
-      <p className="small">第 {nextSessionNumber} 回商談を開始します</p>
-
-      <div
-        style={{
-          background: 'var(--color-oat-cream)',
-          padding: 20,
-          borderRadius: '24px',
-          marginBottom: 20,
-          border: '2px solid var(--color-sticker-black)',
-        }}
-      >
-        <p
-          className="small"
-          style={{
-            margin: '0 0 4px 0',
-            color: 'var(--color-ink-black)',
-            fontWeight: 'bold',
-          }}
-        >
-          相手情報
-        </p>
+    <PageShell
+      width="wide"
+      title="ヒアリング準備"
+      subtitle={`第 ${nextSessionNumber} 回商談を開始します`}
+      illustration="/images/brackBoard.svg"
+    >
+      <PageSection>
+        <p className="page-section__label">相手情報</p>
         {profile ? (
           <>
             <p
@@ -177,7 +172,7 @@ export function PreSessionPage() {
             {program.field}
           </p>
         )}
-      </div>
+      </PageSection>
 
       <label>今回の目標</label>
       <textarea
@@ -188,29 +183,26 @@ export function PreSessionPage() {
         style={{ marginBottom: 16 }}
       />
 
-      <div
-        style={{
-          background: 'var(--color-kofi-blue)',
-          padding: '15px 20px',
-          borderRadius: '9999px',
-          marginBottom: 20,
-          border: '2px solid var(--color-sticker-black)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-        }}
-      >
-        <span style={{ fontSize: '20px' }}>⏱️</span>
-        <div
-          style={{
-            fontSize: '14px',
-            color: 'var(--color-ink-black)',
-            fontWeight: 'bold',
-          }}
-        >
-          制限時間: {timeLimit} 分
+      <PageSection variant="blue">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img
+            src="/images/Search-glass.svg"
+            alt=""
+            width={28}
+            height={28}
+            draggable={false}
+          />
+          <div
+            style={{
+              fontSize: '14px',
+              color: 'var(--color-ink-black)',
+              fontWeight: 'bold',
+            }}
+          >
+            制限時間: {timeLimit} 分
+          </div>
         </div>
-      </div>
+      </PageSection>
 
       {error && (
         <p className="small" style={{ color: '#c62828', marginBottom: 12 }}>
@@ -218,23 +210,21 @@ export function PreSessionPage() {
         </p>
       )}
 
-      <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+      <PageActions>
         <button
-          className="btn secondary"
+          className="btn secondary btn--shrink"
           onClick={() => navigate('/')}
-          style={{ flex: 1, margin: 0 }}
         >
           戻る
         </button>
         <button
-          className="btn cta"
+          className="btn cta btn--grow"
           onClick={handleStartSession}
           disabled={starting || !goal.trim()}
-          style={{ flex: 2, margin: 0 }}
         >
           {starting ? '準備中…' : '▶ 商談開始'}
         </button>
-      </div>
-    </div>
+      </PageActions>
+    </PageShell>
   )
 }

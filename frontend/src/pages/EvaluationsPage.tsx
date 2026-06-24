@@ -1,6 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { LoadingScreen } from '../components/LoadingScreen'
+import {
+  PageActions,
+  PageEmpty,
+  PageShell,
+} from '../components/PageShell'
+import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { EVALUABLE_SESSION_STATUSES, getProgram } from '../lib/api'
 import { loadRegistry } from '../lib/registry'
 import { INDUSTRY_META } from '../types'
@@ -28,6 +34,7 @@ export function EvaluationsPage() {
   const navigate = useNavigate()
   const [items, setItems] = useState<EvaluationListItem[]>([])
   const [loading, setLoading] = useState(true)
+  const showLoadingScreen = useDeferredLoading(loading)
 
   useEffect(() => {
     const registry = loadRegistry()
@@ -98,22 +105,26 @@ export function EvaluationsPage() {
   }
 
   return (
-    <div className="card wide" style={{ maxWidth: '800px' }}>
-      <h2>商談評価履歴</h2>
-      <p className="small" style={{ marginBottom: '20px' }}>
-        これまでの個別セッションおよびシリーズ総評一覧
-      </p>
-
-      {loading && (
+    <PageShell
+      width="wide"
+      title="商談評価履歴"
+      subtitle="これまでの個別セッションおよびシリーズ総評一覧"
+      illustration="/images/Search-bear-closeMouce.svg"
+    >
+      {showLoadingScreen && (
         <LoadingScreen variant="inline" showLogo={false} message="読み込み中" />
       )}
 
       {!loading && items.length === 0 && (
-        <p className="small">完了したセッションや商談はまだありません</p>
+        <PageEmpty
+          image="/images/Search-bear-closeMouce.svg"
+          title="完了したセッションや商談はまだありません"
+          description="商談を完了すると、ここに評価履歴が表示されます"
+        />
       )}
 
       {!loading && items.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div className="page-list">
           {items.map((res) => {
             const industryLabel =
               INDUSTRY_META[res.industry]?.label ?? '不明な業界'
@@ -131,77 +142,26 @@ export function EvaluationsPage() {
                     ? `/overall-review?program_id=${res.programId}`
                     : `/evaluations/${res.id}`
                 }
-                className="msg ai"
-                style={{
-                  textDecoration: 'none',
-                  display: 'block',
-                  border: '2px solid var(--color-sticker-black)',
-                  background: isOverall
-                    ? 'var(--color-oat-cream)'
-                    : 'var(--color-paper-white)',
-                  width: '100%',
-                  margin: 0,
-                  padding: '16px',
-                  borderRadius: '24px',
-                  boxShadow: 'none',
-                }}
+                className={`page-list__item ${isOverall ? 'page-list__item--oat' : 'page-list__item--paper'}`}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  <p
-                    style={{
-                      fontWeight: 'bold',
-                      margin: '0 0 5px 0',
-                      color: 'var(--color-ink-black)',
-                      fontSize: '15px',
-                    }}
-                  >
+                <div className="page-list__item-row">
+                  <p className="page-list__item-title">
                     {isOverall
-                      ? `🏆 ${industryLabel} - 商談シリーズ完了 (総評)`
+                      ? `${industryLabel} - 商談シリーズ完了 (総評)`
                       : `${industryLabel} - ${sessionText}`}
                   </p>
-                  {isOverall && (
-                    <span
-                      style={{
-                        background: 'var(--color-kofi-blue)',
-                        color: 'var(--color-ink-black)',
-                        border: '2px solid var(--color-sticker-black)',
-                        fontSize: '10px',
-                        padding: '2px 8px',
-                        borderRadius: '9999px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      シリーズ完了
-                    </span>
-                  )}
+                  {isOverall && <span className="page-badge">シリーズ完了</span>}
                 </div>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginTop: '8px',
-                  }}
-                >
-                  <p className="small" style={{ margin: 0, opacity: 0.8 }}>
+                <div className="page-list__item-row" style={{ marginTop: 8 }}>
+                  <p className="page-list__item-meta">
                     {isOverall
                       ? `全${res.totalSessions}回のアプローチ評価`
                       : `実施日: ${formatDate(res.createdAt)}`}
                   </p>
                   <p
-                    className="small"
-                    style={{
-                      margin: 0,
-                      fontWeight: 'bold',
-                      color: 'var(--color-ink-black)',
-                    }}
+                    className="page-list__item-meta"
+                    style={{ fontWeight: 700, opacity: 1 }}
                   >
                     {isOverall ? '全体総評を見る ＞' : '詳細評価 ＞'}
                   </p>
@@ -212,13 +172,11 @@ export function EvaluationsPage() {
         </div>
       )}
 
-      <button
-        className="btn secondary"
-        onClick={() => navigate('/')}
-        style={{ marginTop: '24px' }}
-      >
-        ホームに戻る
-      </button>
-    </div>
+      <PageActions>
+        <button className="btn secondary" onClick={() => navigate('/')}>
+          ホームに戻る
+        </button>
+      </PageActions>
+    </PageShell>
   )
 }

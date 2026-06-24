@@ -54,7 +54,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 h1,
@@ -69,15 +69,15 @@ h6 {
   font-weight: 400; /* Lilita One looks best with regular weight */
 }
 
-/* 共通カード */
+/* 共通カード（レガシー互換 — 新規は PageShell を使用） */
 .card {
   background: var(--surface-paper-card);
   width: 100%;
-  max-width: 420px;
+  max-width: min(420px, calc(100vw - 24px));
   border-radius: var(--radius-cards);
-  padding: 28px;
+  padding: clamp(20px, 4vw, 28px);
   border: 3px solid var(--color-sticker-black);
-  margin: 20px;
+  margin: clamp(12px, 3vw, 20px);
   box-shadow: none;
 }
 
@@ -266,7 +266,14 @@ label {
 
 /* PC用広幅・レイアウト */
 .card.wide {
-  max-width: 900px;
+  max-width: min(900px, calc(100vw - 24px));
+}
+
+@media (max-width: 480px) {
+  .btn {
+    font-size: 15px;
+    padding: 13px 20px;
+  }
 }
 
 .settings-grid {
