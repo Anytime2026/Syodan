@@ -8,7 +8,13 @@ type ParticipantTileProps = {
   avatarLabel: string
 }
 
-export function ParticipantTile({ name, role, speaking, muted, avatarLabel }: ParticipantTileProps) {
+export function ParticipantTile({
+  name,
+  role,
+  speaking,
+  muted,
+  avatarLabel,
+}: ParticipantTileProps) {
   return (
     <div className={`participant-tile ${speaking ? 'speaking' : ''}`}>
       <SpeakingIndicator active={speaking} />

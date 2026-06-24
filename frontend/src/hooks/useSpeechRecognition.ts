@@ -1,64 +1,117 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react'
+
+// Web Speech API interfaces for type safety
+interface SpeechRecognitionAlternative {
+  readonly transcript: string
+  readonly confidence: number
+}
+
+interface SpeechRecognitionResult {
+  readonly length: number
+  item(index: number): SpeechRecognitionAlternative
+  [index: number]: SpeechRecognitionAlternative
+}
+
+interface SpeechRecognitionResultList {
+  readonly length: number
+  item(index: number): SpeechRecognitionResult
+  [index: number]: SpeechRecognitionResult
+}
+
+interface SpeechRecognitionEvent extends Event {
+  readonly resultIndex: number
+  readonly results: SpeechRecognitionResultList
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  readonly error: string
+  readonly message: string
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null
+  onend: (() => void) | null
+  start(): void
+  stop(): void
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognitionInstance
+}
+
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor
+  webkitSpeechRecognition?: SpeechRecognitionConstructor
+}
 
 interface UseSpeechRecognitionProps {
-  onResult: (text: string) => void;
+  onResult: (text: string) => void
 }
 
 export function useSpeechRecognition({ onResult }: UseSpeechRecognitionProps) {
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const [isListening, setIsListening] = useState(false)
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const w = window as unknown as WindowWithSpeechRecognition
+    const SpeechRecognition = w.SpeechRecognition || w.webkitSpeechRecognition
     if (SpeechRecognition) {
       try {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = 'ja-JP';
+        const recognition = new SpeechRecognition()
+        recognition.continuous = false
+        recognition.interimResults = false
+        recognition.lang = 'ja-JP'
 
-        recognition.onresult = (event: any) => {
-          const transcript = event.results[0][0].transcript;
-          onResult(transcript);
-          setIsListening(false);
-        };
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
+          const transcript = event.results[0][0].transcript
+          onResult(transcript)
+          setIsListening(false)
+        }
 
-        recognition.onerror = (event: any) => {
-          console.error("Speech recognition error", event.error);
-          setIsListening(false);
-        };
+        recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+          console.error('Speech recognition error', event.error)
+          setIsListening(false)
+        }
 
         recognition.onend = () => {
-          setIsListening(false);
-        };
+          setIsListening(false)
+        }
 
-        recognitionRef.current = recognition;
+        recognitionRef.current = recognition
       } catch (e) {
-        console.error("Failed to initialize SpeechRecognition", e);
+        console.error('Failed to initialize SpeechRecognition', e)
       }
     }
-  }, [onResult]);
+  }, [onResult])
 
   const startListening = useCallback(() => {
     if (recognitionRef.current && !isListening) {
-      setIsListening(true);
-      recognitionRef.current.start();
+      setIsListening(true)
+      recognitionRef.current.start()
     }
-  }, [isListening]);
+  }, [isListening])
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+      recognitionRef.current.stop()
+      setIsListening(false)
     }
-  }, [isListening]);
+  }, [isListening])
 
+  const w =
+    typeof window !== 'undefined'
+      ? (window as unknown as WindowWithSpeechRecognition)
+      : null
   return {
     isListening,
     startListening,
     stopListening,
-    supported: !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
-  };
+    supported: !!(w && (w.SpeechRecognition || w.webkitSpeechRecognition)),
+  }
 }

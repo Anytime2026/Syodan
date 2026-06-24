@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { ACTIVE_PROGRAM_STATUSES, getProgram } from '../lib/api'
-import { clearLocalData, loadRegistry, setCurrentProgramId } from '../lib/registry'
+import {
+  clearLocalData,
+  loadRegistry,
+  setCurrentProgramId,
+} from '../lib/registry'
 import type { Program } from '../lib/types'
 import { INDUSTRY_META } from '../types'
 
@@ -62,8 +66,13 @@ export function HomePage() {
 
   return (
     <div className="card" style={{ maxWidth: '500px' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>営業ヒアリングロープレ</h2>
-      <p className="small" style={{ textAlign: 'center', marginBottom: '24px' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>
+        営業ヒアリングロープレ
+      </h2>
+      <p
+        className="small"
+        style={{ textAlign: 'center', marginBottom: '24px' }}
+      >
         AI顧客を相手にしたロールプレイトレーニング
       </p>
 
@@ -71,20 +80,38 @@ export function HomePage() {
         ▶ 新規商談作成
       </Link>
 
-      {loading && <p className="small" style={{ marginTop: 16 }}>読み込み中…</p>}
+      {loading && (
+        <p className="small" style={{ marginTop: 16 }}>
+          読み込み中…
+        </p>
+      )}
 
       {!loading && activePrograms.length > 0 && (
         <div style={{ marginTop: '25px', marginBottom: '15px' }}>
-          <p className="small" style={{ fontWeight: 'bold', margin: '0 0 10px 0', color: 'var(--color-ink-black)' }}>
+          <p
+            className="small"
+            style={{
+              fontWeight: 'bold',
+              margin: '0 0 10px 0',
+              color: 'var(--color-ink-black)',
+            }}
+          >
             進行中の商談
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+          >
             {activePrograms.map(({ registryId, industry, program }) => {
-              const isCompleted = program.completed_sessions >= program.total_sessions
+              const isCompleted =
+                program.completed_sessions >= program.total_sessions
               return (
                 <Link
                   key={registryId}
-                  to={isCompleted ? `/overall-review?program_id=${program.id}` : '/pre-session'}
+                  to={
+                    isCompleted
+                      ? `/overall-review?program_id=${program.id}`
+                      : '/pre-session'
+                  }
                   className="btn secondary"
                   style={{
                     display: 'flex',
@@ -101,13 +128,21 @@ export function HomePage() {
                 >
                   <div style={{ fontWeight: 'bold', fontSize: '15px' }}>
                     {isCompleted ? (
-                      <>🏆 {INDUSTRY_META[industry]?.label} - 商談シリーズ完了 (総評を見る)</>
+                      <>
+                        🏆 {INDUSTRY_META[industry]?.label} - 商談シリーズ完了
+                        (総評を見る)
+                      </>
                     ) : (
-                      <>⏱ {INDUSTRY_META[industry]?.label} - 進行中 ({program.completed_sessions + 1} /{' '}
-                      {program.total_sessions}回目)</>
+                      <>
+                        ⏱ {INDUSTRY_META[industry]?.label} - 進行中 (
+                        {program.completed_sessions + 1} /{' '}
+                        {program.total_sessions}回目)
+                      </>
                     )}
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '5px' }}>
+                  <div
+                    style={{ fontSize: '11px', opacity: 0.8, marginTop: '5px' }}
+                  >
                     作成日: {formatDate(program.created_at)}
                   </div>
                 </Link>
@@ -117,11 +152,22 @@ export function HomePage() {
         </div>
       )}
 
-      <Link to="/evaluations" className="btn primary" style={{ marginTop: '12px' }}>
+      <Link
+        to="/evaluations"
+        className="btn primary"
+        style={{ marginTop: '12px' }}
+      >
         評価履歴・総評一覧
       </Link>
 
-      <div style={{ borderTop: '1px solid #eee', marginTop: '30px', paddingTop: '15px', textAlign: 'center' }}>
+      <div
+        style={{
+          borderTop: '1px solid #eee',
+          marginTop: '30px',
+          paddingTop: '15px',
+          textAlign: 'center',
+        }}
+      >
         <button
           onClick={handleReset}
           style={{

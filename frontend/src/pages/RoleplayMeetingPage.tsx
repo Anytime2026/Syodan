@@ -79,7 +79,10 @@ export function RoleplayMeetingPage() {
     const onUnload = () => {
       if (!sessionId || ended) return
       const base = getApiBase()
-      fetch(`${base}/api/sessions/${sessionId}/abort`, { method: 'POST', keepalive: true })
+      fetch(`${base}/api/sessions/${sessionId}/abort`, {
+        method: 'POST',
+        keepalive: true,
+      })
     }
     window.addEventListener('beforeunload', onUnload)
     return () => window.removeEventListener('beforeunload', onUnload)
@@ -131,13 +134,21 @@ export function RoleplayMeetingPage() {
       <div className="meeting-shell">
         <div className="meeting-complete">
           <h2>セッションが終了しました</h2>
-          <p>{session.title ?? `第${session.session_number}回`} の処理をバックエンドで実行中です。</p>
+          <p>
+            {session.title ?? `第${session.session_number}回`}{' '}
+            の処理をバックエンドで実行中です。
+          </p>
           <Link to={`/evaluations/${sessionId}`}>評価詳細へ</Link>
           {allSessionsDone && showOverallReview && program && (
-            <Link to={`/overall-review?program_id=${program.id}`}>シリーズ総評へ</Link>
+            <Link to={`/overall-review?program_id=${program.id}`}>
+              シリーズ総評へ
+            </Link>
           )}
           {!allSessionsDone && program && (
-            <Link to="/pre-session" onClick={() => setCurrentProgramId(program.id)}>
+            <Link
+              to="/pre-session"
+              onClick={() => setCurrentProgramId(program.id)}
+            >
               次のセッションを設定
             </Link>
           )}
@@ -154,7 +165,12 @@ export function RoleplayMeetingPage() {
       sessionInfo={`第${session.session_number}回 — ${session.goal}`}
     >
       <div className="participant-grid">
-        <ParticipantTile name="あなた" role="営業担当" speaking={userSpeaking} avatarLabel="営" />
+        <ParticipantTile
+          name="あなた"
+          role="営業担当"
+          speaking={userSpeaking}
+          avatarLabel="営"
+        />
         <ParticipantTile
           name="顧客AI"
           role={session.goal ? '見込み顧客' : '顧客'}

@@ -1,9 +1,17 @@
-import type { CreateProgramInput, HearingSession, Program, SessionListItem } from './types'
+import type {
+  CreateProgramInput,
+  HearingSession,
+  Program,
+  SessionListItem,
+} from './types'
 
 /** 開発時は Vite プロキシ経由（同一オリジン）で CORS を回避 */
 export function getApiBase(): string {
   if (import.meta.env.DEV) return ''
-  return (import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '')
+  return (import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000').replace(
+    /\/$/,
+    '',
+  )
 }
 
 export function getWsBase(): string {
@@ -60,15 +68,21 @@ export function createSession(
 }
 
 export function startSession(sessionId: string): Promise<HearingSession> {
-  return request<HearingSession>(`/api/sessions/${sessionId}/start`, { method: 'POST' })
+  return request<HearingSession>(`/api/sessions/${sessionId}/start`, {
+    method: 'POST',
+  })
 }
 
 export function endSession(sessionId: string): Promise<HearingSession> {
-  return request<HearingSession>(`/api/sessions/${sessionId}/end`, { method: 'POST' })
+  return request<HearingSession>(`/api/sessions/${sessionId}/end`, {
+    method: 'POST',
+  })
 }
 
 export function abortSession(sessionId: string): Promise<HearingSession> {
-  return request<HearingSession>(`/api/sessions/${sessionId}/abort`, { method: 'POST' })
+  return request<HearingSession>(`/api/sessions/${sessionId}/abort`, {
+    method: 'POST',
+  })
 }
 
 export function getSession(sessionId: string): Promise<HearingSession> {
