@@ -13,7 +13,7 @@ from app.domain.enums import SessionStatus
 from app.domain.models import CustomerProfile, CustomerState, HearingSession, Program
 from app.integrations.aws_clients import TranscribeStreamSession
 from app.services.audio_pipeline import AudioPipeline
-from app.services.prompts import to_bedrock_messages
+from app.services.prompts import sanitize_customer_speech, to_bedrock_messages
 from app.api.routes import sessions as sessions_routes
 
 logger = logging.getLogger(__name__)
@@ -214,6 +214,7 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                         await websocket.send_json({"type": "turn_complete"})
                         continue
 
+                    ai_text = sanitize_customer_speech(ai_text)
                     sessions_routes.append_conversation(str(session_id), "ai", ai_text)
                     await websocket.send_json(
                         {"type": "transcript", "speaker": "ai", "text": ai_text}

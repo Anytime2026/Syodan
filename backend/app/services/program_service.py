@@ -118,6 +118,7 @@ class ProgramService:
                 selectinload(Program.overall_reviews),
             )
             .where(Program.id == program_id)
+            .execution_options(populate_existing=True)
         )
         return result.scalar_one_or_none()
 

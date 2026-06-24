@@ -7,6 +7,7 @@ from app.services.prompts import (
     awareness_behavior,
     build_chat_system_prompt,
     rapport_behavior,
+    sanitize_customer_speech,
     split_profile_data,
     to_bedrock_messages,
 )
@@ -112,6 +113,26 @@ def test_to_bedrock_messages_role_mapping() -> None:
         {"role": "user", "content": "こんにちは"},
         {"role": "assistant", "content": "よろしくお願いします"},
     ]
+
+
+def test_sanitize_customer_speech_removes_leading_stage_direction() -> None:
+    raw = "（少し間を置いて、メモを取るような仕草をしながら）コマツマナト、ですか。"
+    assert sanitize_customer_speech(raw) == "コマツマナト、ですか。"
+
+
+def test_sanitize_customer_speech_removes_bowing_stage_direction() -> None:
+    raw = "（少し間を置いて、軽く会釈しながら） あ、どうも。宮本です。"
+    assert sanitize_customer_speech(raw) == "あ、どうも。宮本です。"
+
+
+def test_sanitize_customer_speech_removes_expression_stage_direction() -> None:
+    raw = "（少し間を置いて、表情は変えずに） ...すみません、ちょっと聞き取りにくかったんですが、"
+    assert sanitize_customer_speech(raw) == "...すみません、ちょっと聞き取りにくかったんですが、"
+
+
+def test_sanitize_customer_speech_keeps_product_name_in_parens() -> None:
+    raw = "御社のサービス（コマツマナト）について教えてください。"
+    assert sanitize_customer_speech(raw) == raw
 
 
 def test_split_profile_data() -> None:

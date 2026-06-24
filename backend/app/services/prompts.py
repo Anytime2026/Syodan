@@ -2,6 +2,16 @@
 
 from __future__ import annotations
 
+import re
+
+# 先頭の括弧書き（舞台指示・ト書き）を除去
+_LEADING_ASIDE = re.compile(r"^[\s　]*[（(][^（）()]*[）)]")
+# 文中の舞台指示とみなすキーワード
+_STAGE_DIRECTION_KEYWORDS = re.compile(
+    r"しながら|ため息|仕草|間を置|頷|会釈|笑い?|沈黙|考え込|深呼吸|メモを|うーん|一声|"
+    r"そう言って|ふうっ|姿勢|視線|表情|変えず|小声|独り言|小声で|一呼吸|軽く"
+)
+_INLINE_ASIDE = re.compile(r"[（(]([^（）()]*)[）)]")
 PROFILE_SYSTEM = """あなたはB2Bディスカバリー商談のロープレ用・見込み顧客ペルソナを設計する専門家です。
 指定分野の現実的な日本企業の決裁者・担当者像を1名分、JSONオブジェクト1つのみで返してください。
 説明文・マークダウン・コードブロックは禁止。
@@ -62,15 +72,18 @@ CHAT_SYSTEM_TEMPLATE = """# 役割
 # 応答ルール
 1. 一人称で、{name}として話す。営業担当を「御社」「あなた」等で呼ぶ
 2. 1ターン40〜120字程度。音声読み上げ向けに短い文・口語で
-3. 箇条書き・Markdown・括弧書きの舞台指示（（ため息）等）は禁止
-4. 営業の質問に答える。逆質問は1つまで、自然な範囲で
-5. ラポールが低い: 警戒・短答・具体性を出さない
-6. ラポールが高い: 背景や本音の端を少し見せる（ただし真の課題の直球開示は awareness に従う）
-7. 営業が押し売り・専門用語の羅列・話を遮った場合は、性格に沿って距離を置く
-8. 知らないことは「社内確認が必要」「詳細は担当に任せている」と正直に
-9. 前のターンで言った内容と矛盾しない
+3. 発話テキストのみ出力する。ト書き・舞台指示・動作描写は一切書かない
+4. 括弧（）や（）で囲んだ説明・描写は禁止（例: 禁止「（少し間を置いて）コマツマナトですか」→ 正「コマツマナト、ですか」）
+5. 営業の質問に答える。逆質問は1つまで、自然な範囲で
+6. ラポールが低い: 警戒・短答・具体性を出さない
+7. ラポールが高い: 背景や本音の端を少し見せる（ただし真の課題の直球開示は awareness に従う）
+8. 営業が押し売り・専門用語の羅列・話を遮った場合は、性格に沿って距離を置く
+9. 知らないことは「社内確認が必要」「詳細は担当に任せている」と正直に
+10. 前のターンで言った内容と矛盾しない
 
 # 禁止
+- 箇条書き・Markdown・メタ発言（「役として」「ロープレでは」等）
+- 括弧書きの舞台指示（（ため息）（間を置いて）(pause) 等）
 - 営業への助言、ロープレの解説、AIであることの言及
 - 真の課題の直接開示（awareness が80未満では特に厳守）
 - 営業が締めに入っているのに新しい論点を振る（残り時間が少ない場合）
@@ -118,6 +131,27 @@ PROFILE_BASE_KEYS = frozenset(
 )
 
 MAX_CONVERSATION_TURNS = 20
+
+
+def sanitize_customer_speech(text: str) -> str:
+    """Remove stage directions and parenthetical asides before TTS / transcript display."""
+    cleaned = text.strip()
+    # 応答先頭の括弧ブロックは舞台指示とみなし、キーワード不要で除去
+    while True:
+        match = _LEADING_ASIDE.match(cleaned)
+        if not match:
+            break
+        cleaned = cleaned[match.end() :].lstrip()
+
+    def _replace_inline(match: re.Match[str]) -> str:
+        inner = match.group(1)
+        if _STAGE_DIRECTION_KEYWORDS.search(inner):
+            return ""
+        return match.group(0)
+
+    cleaned = _INLINE_ASIDE.sub(_replace_inline, cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
 
 
 def awareness_behavior(level: int) -> str:
@@ -211,6 +245,8 @@ def to_bedrock_messages(conversation_log: list[dict]) -> list[dict]:
     for turn in conversation_log[-MAX_CONVERSATION_TURNS:]:
         role = "user" if turn.get("speaker") == "user" else "assistant"
         text = turn.get("text", "")
+        if role == "assistant" and text:
+            text = sanitize_customer_speech(text)
         if text:
             messages.append({"role": role, "content": text})
     return messages

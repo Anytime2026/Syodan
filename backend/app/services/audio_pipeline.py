@@ -8,7 +8,7 @@ from queue import Queue
 from app.config import get_settings
 from app.domain.models import CustomerProfile, CustomerState
 from app.integrations.aws_clients import BedrockClient, PollyClient, TranscribeClient
-from app.services.prompts import build_chat_system_prompt
+from app.services.prompts import build_chat_system_prompt, sanitize_customer_speech
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,46 @@ _MIN_SYNTH_CHARS = 12
 # 初回チャンクは読点でも区切り、最小文字数も下げて「最初の音声が出るまで」を短縮する
 _FIRST_BOUNDARY = re.compile(r"[。．！？!?\n、，,]")
 _FIRST_MIN_CHARS = 4
+
+
+def _paren_depth(text: str) -> int:
+    depth = 0
+    for ch in text:
+        if ch in "（(":
+            depth += 1
+        elif ch in "）)":
+            depth = max(0, depth - 1)
+    return depth
+
+
+def split_sentences_for_tts(text: str) -> list[str]:
+    """Split sanitized speech into TTS chunks without breaking inside parentheses."""
+    sentences: list[str] = []
+    buffer = text
+    first_done = False
+    while buffer:
+        boundary = _SENTENCE_BOUNDARY if first_done else _FIRST_BOUNDARY
+        min_chars = _MIN_SYNTH_CHARS if first_done else _FIRST_MIN_CHARS
+        match = None
+        for candidate in boundary.finditer(buffer):
+            end = candidate.end()
+            if len(buffer[:end].strip()) < min_chars:
+                continue
+            if _paren_depth(buffer[:candidate.start()]) == 0:
+                match = candidate
+                break
+        if not match:
+            remainder = buffer.strip()
+            if remainder:
+                sentences.append(remainder)
+            break
+        end = match.end()
+        chunk = buffer[:end].strip()
+        if chunk:
+            sentences.append(chunk)
+        buffer = buffer[end:]
+        first_done = True
+    return sentences
 
 
 class AudioPipeline:
@@ -66,18 +106,27 @@ class AudioPipeline:
         messages: list[dict] | None = None,
         max_tokens: int = 400,
     ) -> str:
-        """Stream the LLM response, synthesizing speech sentence-by-sentence.
+        """Stream LLM tokens, then sanitize once and synthesize speech by sentence.
 
-        Runs synchronously (intended for asyncio.to_thread). LLM token generation
-        and Polly synthesis run on separate threads via a bounded queue, so the
-        model keeps generating the next sentence while the current one is being
-        synthesized. `on_audio` is invoked (in order) for each audio chunk so the
-        client can start playback early.
+        Sanitization runs on the complete utterance so partial parenthetical stage
+        directions are never sent to Polly mid-stream.
         """
         full_parts: list[str] = []
-        buffer = ""
-        first_done = False
-        # 文をキューに積み、別スレッドで順次合成する（LLM生成とTTSを並列化）
+        body_messages = messages if messages is not None else [{"role": "user", "content": user_text}]
+
+        for delta in self.bedrock.invoke_stream(
+            self.settings.bedrock_chat_model_id,
+            system_prompt,
+            user_text,
+            max_tokens=max_tokens,
+            messages=body_messages,
+        ):
+            full_parts.append(delta)
+
+        full_clean = sanitize_customer_speech("".join(full_parts).strip())
+        if not full_clean:
+            return ""
+
         sentence_queue: Queue[str | None] = Queue()
 
         def _consume() -> None:
@@ -91,43 +140,14 @@ class AudioPipeline:
 
         worker = threading.Thread(target=_consume, daemon=True)
         worker.start()
-
-        def _enqueue(text: str) -> None:
-            text = text.strip()
-            if text:
-                sentence_queue.put(text)
-
-        body_messages = messages if messages is not None else [{"role": "user", "content": user_text}]
-
         try:
-            for delta in self.bedrock.invoke_stream(
-                self.settings.bedrock_chat_model_id,
-                system_prompt,
-                user_text,
-                max_tokens=max_tokens,
-                messages=body_messages,
-            ):
-                full_parts.append(delta)
-                buffer += delta
-                while True:
-                    boundary = _SENTENCE_BOUNDARY if first_done else _FIRST_BOUNDARY
-                    min_chars = _MIN_SYNTH_CHARS if first_done else _FIRST_MIN_CHARS
-                    match = boundary.search(buffer)
-                    if not match:
-                        break
-                    end = match.end()
-                    candidate = buffer[:end]
-                    if len(candidate.strip()) < min_chars:
-                        break
-                    _enqueue(candidate)
-                    buffer = buffer[end:]
-                    first_done = True
-            _enqueue(buffer)
+            for sentence in split_sentences_for_tts(full_clean):
+                sentence_queue.put(sentence)
         finally:
             sentence_queue.put(None)
             worker.join()
 
-        return "".join(full_parts).strip()
+        return full_clean
 
 
 async def _transcode_to_pcm(audio_bytes: bytes, media_format: str = "webm") -> bytes:
