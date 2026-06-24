@@ -7,10 +7,16 @@ import { INDUSTRY_META } from '../types'
 
 const DEFAULT_GOAL = '現状の課題と予算感をヒアリングする'
 
-function parseProgramField(field: string): { industry: string; subField: string } {
+function parseProgramField(field: string): {
+  industry: string
+  subField: string
+} {
   const parts = field.split(' / ')
   if (parts.length >= 2) {
-    return { industry: parts[0].trim(), subField: parts.slice(1).join(' / ').trim() }
+    return {
+      industry: parts[0].trim(),
+      subField: parts.slice(1).join(' / ').trim(),
+    }
   }
   return { industry: field.trim(), subField: '一般' }
 }
@@ -265,7 +271,11 @@ export function PreSessionPage() {
                   }}
                 >
                   {disclosedInfo.map((item) => (
-                    <li key={item} className="small" style={{ marginBottom: 4 }}>
+                    <li
+                      key={item}
+                      className="small"
+                      style={{ marginBottom: 4 }}
+                    >
                       {item}
                     </li>
                   ))}

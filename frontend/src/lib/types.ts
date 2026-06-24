@@ -45,8 +45,8 @@ export type Program = {
   total_sessions: number
   status: string
   created_at: string
-    reveal_challenge: boolean
-    completed_sessions: number
+  reveal_challenge: boolean
+  completed_sessions: number
   customer_profile?: CustomerProfile | null
   customer_state?: CustomerState | null
   sessions?: SessionListItem[]
