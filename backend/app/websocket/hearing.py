@@ -13,6 +13,7 @@ from app.domain.enums import SessionStatus
 from app.domain.models import CustomerProfile, CustomerState, HearingSession, Program
 from app.integrations.aws_clients import TranscribeStreamSession
 from app.services.audio_pipeline import AudioPipeline
+from app.services.prompts import sanitize_customer_speech, to_bedrock_messages
 from app.api.routes import sessions as sessions_routes
 
 logger = logging.getLogger(__name__)
@@ -152,11 +153,13 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
 
                     remaining = _remaining_seconds(cached_session)
                     profile_hints = cached_program.profile_hints if cached_program else None
+                    history = sessions_routes.get_conversation_log(str(session_id))
                     system = pipeline.build_system_prompt(
                         cached_profile,
                         cached_state,
                         cached_session.goal,
                         remaining,
+                        cached_session.session_number,
                         profile_hints,
                     )
 
@@ -165,6 +168,9 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                         {"type": "transcript", "speaker": "user", "text": user_text}
                     )
                     last_partial_sent = ""
+
+                    messages = to_bedrock_messages(history)
+                    messages.append({"role": "user", "content": user_text})
 
                     loop = asyncio.get_running_loop()
                     audio_queue: asyncio.Queue[bytes | None] = asyncio.Queue()
@@ -184,7 +190,11 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                     ai_text = ""
                     try:
                         ai_text = await asyncio.to_thread(
-                            pipeline.stream_ai_audio, system, user_text, emit_audio
+                            pipeline.stream_ai_audio,
+                            system,
+                            user_text,
+                            emit_audio,
+                            messages,
                         )
                     except Exception as exc:
                         logger.exception("AI/TTS pipeline failed for session %s", session_id)
@@ -204,6 +214,7 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                         await websocket.send_json({"type": "turn_complete"})
                         continue
 
+                    ai_text = sanitize_customer_speech(ai_text)
                     sessions_routes.append_conversation(str(session_id), "ai", ai_text)
                     await websocket.send_json(
                         {"type": "transcript", "speaker": "ai", "text": ai_text}

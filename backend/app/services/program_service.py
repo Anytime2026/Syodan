@@ -16,16 +16,11 @@ from app.domain.schemas import (
     SessionListItem,
 )
 from app.integrations.aws_clients import BedrockClient
+from app.services.prompts import PROFILE_SYSTEM, split_profile_data
 
 logger = logging.getLogger(__name__)
 
-PROFILE_SYSTEM = """あなたは営業ロープレ用のB2B顧客ペルソナ生成器です。
-指定分野に沿った現実的な顧客プロファイルを返してください。
-出力はJSONオブジェクト1つのみ。説明文・マークダウン・コードブロックは禁止。
-キー: name, industry, company_size, role_title, surface_need, true_challenge, personality_type, initial_awareness(0-100整数)
-name は日本人のフルネーム（姓と名をスペース区切り、例: 田中 健太）。読みやすく一般的な名前にすること。難読・造語・カタカナのみの名前は避ける。
-文字列内の改行は使わず、ダブルクォートはエスケープすること。
-真の課題は表面ニーズの奥にある本質的課題とし、ユーザーには後で開示する前提で詳細に書いてください。"""
+_PROFILE_MAX_TOKENS = (1536, 2048, 2048)
 
 
 def _parse_llm_json(raw: str) -> dict:
@@ -79,10 +74,11 @@ class ProgramService:
         profile_data = await self._generate_profile(field, sub_field)
         if personality_type:
             profile_data["personality_type"] = personality_type
-        profile = CustomerProfile(program_id=program.id, **profile_data)
+        base_fields, persona_extras = split_profile_data(profile_data)
+        profile = CustomerProfile(program_id=program.id, persona_extras=persona_extras, **base_fields)
         state = CustomerState(
             program_id=program.id,
-            awareness_level=profile_data["initial_awareness"],
+            awareness_level=base_fields["initial_awareness"],
             rapport_level=30,
             disclosed_info=[],
             session_summaries=[],
@@ -100,19 +96,30 @@ class ProgramService:
         if sub_field:
             user_prompt += f"\nセクター（詳細分野）: {sub_field}"
         last_error: json.JSONDecodeError | None = None
-        for attempt in range(3):
+        prompt = user_prompt
+        for attempt, max_tokens in enumerate(_PROFILE_MAX_TOKENS, start=1):
             raw = self.bedrock.invoke(
                 settings.bedrock_analysis_model_id,
                 PROFILE_SYSTEM,
-                user_prompt,
-                max_tokens=800,
+                prompt,
+                max_tokens=max_tokens,
             )
             try:
                 return _parse_llm_json(raw)
             except json.JSONDecodeError as exc:
                 last_error = exc
-                logger.warning("Profile JSON parse failed (attempt %d): %s", attempt + 1, exc)
-        raise last_error  # type: ignore[misc]
+                logger.warning(
+                    "Profile JSON parse failed (attempt %d, max_tokens=%d): %s",
+                    attempt,
+                    max_tokens,
+                    exc,
+                )
+                prompt = (
+                    f"{user_prompt}\n\n"
+                    "【重要】前回の出力はJSONとして不完全でした。"
+                    "各文字列は指定字数以内に収め、閉じたJSONオブジェクト1つのみを返してください。"
+                )
+        raise ValueError("customer profile JSON could not be parsed") from last_error
 
     async def get_program(self, program_id: UUID) -> Program | None:
         result = await self.db.execute(
@@ -124,6 +131,7 @@ class ProgramService:
                 selectinload(Program.overall_reviews),
             )
             .where(Program.id == program_id)
+            .execution_options(populate_existing=True)
         )
         return result.scalar_one_or_none()
 
