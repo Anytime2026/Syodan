@@ -100,8 +100,14 @@ class SessionFinalizeService:
 
         if completed_count >= program.total_sessions:
             program.status = ProgramStatus.OVERALL_REVIEW_REQUESTED.value
+            from app.services.evaluation_service import EvaluationService
+
+            overall_token = EvaluationService.ensure_overall_review_token(program)
             await self.db.commit()
-            await self.hulft.send_overall_review_request(program_id=program.id)
+            await self.hulft.send_overall_review_request(
+                program_id=program.id,
+                overall_review_token=overall_token,
+            )
 
         return session
 
