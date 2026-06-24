@@ -5,7 +5,9 @@ interface Env {
 const PROXY_PREFIXES = ['/api', '/health', '/internal', '/ws']
 
 function shouldProxy(pathname: string): boolean {
-  return PROXY_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+  return PROXY_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  )
 }
 
 export const onRequest: PagesFunction<Env> = async (context) => {

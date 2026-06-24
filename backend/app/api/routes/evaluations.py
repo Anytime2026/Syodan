@@ -1,46 +1,56 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.db.session import get_db
-from app.domain.models import CustomerProfile, HearingSession
-from app.domain.schemas import EvaluationResponse, ReviewPageResponse
-from app.integrations.aws_clients import S3Client
+from app.domain.schemas import (
+    EvaluationResponse,
+    EvaluationSubmit,
+    OverallReviewPageResponse,
+    OverallReviewResponse,
+    ReviewPageResponse,
+)
+from app.services.evaluation_service import EvaluationService
 
 router = APIRouter(tags=["evaluations"])
 
 
+@router.get("/api/review/overall/{token}", response_model=OverallReviewPageResponse)
+async def get_overall_review_page(
+    token: str, db: AsyncSession = Depends(get_db)
+) -> OverallReviewPageResponse:
+    service = EvaluationService(db)
+    page = await service.get_overall_review_page(token)
+    if not page:
+        raise HTTPException(status_code=404, detail="Overall review page not found")
+    return page
+
+
+@router.post("/api/review/overall/{token}/reviews", response_model=OverallReviewResponse)
+async def submit_overall_review(
+    token: str, body: EvaluationSubmit, db: AsyncSession = Depends(get_db)
+) -> OverallReviewResponse:
+    service = EvaluationService(db)
+    try:
+        return await service.submit_overall_review(token, body.evaluator_id, body.content)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+
 @router.get("/api/review/{token}", response_model=ReviewPageResponse)
 async def get_review_page(token: str, db: AsyncSession = Depends(get_db)) -> ReviewPageResponse:
-    result = await db.execute(
-        select(HearingSession)
-        .options(selectinload(HearingSession.evaluations))
-        .where(HearingSession.review_token == token)
-    )
-    session = result.scalar_one_or_none()
-    if not session:
+    service = EvaluationService(db)
+    page = await service.get_review_page(token)
+    if not page:
         raise HTTPException(status_code=404, detail="Review page not found")
+    return page
 
-    profile_result = await db.execute(
-        select(CustomerProfile).where(CustomerProfile.program_id == session.program_id)
-    )
-    profile = profile_result.scalar_one_or_none()
 
-    from app.domain.models import Program
-
-    program_result = await db.execute(select(Program).where(Program.id == session.program_id))
-    program = program_result.scalar_one()
-
-    s3 = S3Client()
-
-    return ReviewPageResponse(
-        session_id=session.id,
-        program_field=program.field,
-        session_number=session.session_number,
-        goal=session.goal,
-        true_challenge=profile.true_challenge if profile else "",
-        formatted_transcript=session.formatted_transcript or session.transcript,
-        recording_url=s3.generate_presigned_url(session.recording_s3_key or ""),
-        evaluations=[EvaluationResponse.model_validate(e) for e in session.evaluations],
-    )
+@router.post("/api/review/{token}/evaluations", response_model=EvaluationResponse)
+async def submit_session_evaluation(
+    token: str, body: EvaluationSubmit, db: AsyncSession = Depends(get_db)
+) -> EvaluationResponse:
+    service = EvaluationService(db)
+    try:
+        return await service.submit_session_evaluation(token, body.evaluator_id, body.content)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e

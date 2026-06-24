@@ -1,4 +1,5 @@
 # Ko-fi — Style Reference
+
 > Warm café chalkboard on cream paper.
 
 **Theme:** light
@@ -7,19 +8,20 @@ Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream
 
 ## Tokens — Colors
 
-| Name | Value | Token | Role |
-|------|-------|-------|------|
-| Oat Cream | `#e9dfd2` | `--color-oat-cream` | Secondary surface — feature card backgrounds, warm button fills, tag backgrounds |
-| Morning Fog | `#e5e7eb` | `--color-morning-fog` | Page canvas, subtle borders, hairline dividers — the base everything sits on |
-| Ink Black | `#202020` | `--color-ink-black` | Primary text, dark filled buttons, dark icon fills |
-| Sticker Black | `#000000` | `--color-sticker-black` | Heavy borders on cards, images, and the logo wordmark — the signature outline that makes elements feel cut from paper |
-| Paper White | `#ffffff` | `--color-paper-white` | Card surfaces above the cream canvas, text on dark buttons, input field fills |
-| Kofi Blue | `#aac9f7` | `--color-kofi-blue` | Blue wash for highlight backgrounds, decorative bands, and soft emphasis behind content. Do not promote it to the primary CTA color |
-| Cobalt Pop | `#72a4f2` | `--color-cobalt-pop` | Primary action hover/pressed state, saturated Kofi Blue variant |
+| Name          | Value     | Token                   | Role                                                                                                                                |
+| ------------- | --------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Oat Cream     | `#e9dfd2` | `--color-oat-cream`     | Secondary surface — feature card backgrounds, warm button fills, tag backgrounds                                                    |
+| Morning Fog   | `#e5e7eb` | `--color-morning-fog`   | Page canvas, subtle borders, hairline dividers — the base everything sits on                                                        |
+| Ink Black     | `#202020` | `--color-ink-black`     | Primary text, dark filled buttons, dark icon fills                                                                                  |
+| Sticker Black | `#000000` | `--color-sticker-black` | Heavy borders on cards, images, and the logo wordmark — the signature outline that makes elements feel cut from paper               |
+| Paper White   | `#ffffff` | `--color-paper-white`   | Card surfaces above the cream canvas, text on dark buttons, input field fills                                                       |
+| Kofi Blue     | `#aac9f7` | `--color-kofi-blue`     | Blue wash for highlight backgrounds, decorative bands, and soft emphasis behind content. Do not promote it to the primary CTA color |
+| Cobalt Pop    | `#72a4f2` | `--color-cobalt-pop`    | Primary action hover/pressed state, saturated Kofi Blue variant                                                                     |
 
 ## Tokens — Typography
 
 ### bogue-black — Hero and section display headlines — a custom chunky rounded display face used only at 60px+ to stamp the page with a hand-set zine quality · `--font-bogue-black`
+
 - **Substitute:** Bowlby One, Lilita One, or Sniglet
 - **Weights:** 400
 - **Sizes:** 60px, 72px
@@ -27,12 +29,14 @@ Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream
 - **Role:** Hero and section display headlines — a custom chunky rounded display face used only at 60px+ to stamp the page with a hand-set zine quality
 
 ### DM Sans — All UI text: nav links, body copy, button labels, subheadings, card titles, input fields, and footer text — clean geometric sans carrying all functional typography · `--font-dm-sans`
+
 - **Weights:** 400, 600
 - **Sizes:** 14px, 16px, 20px, 24px, 30px
 - **Line height:** 1.20-1.50
 - **Role:** All UI text: nav links, body copy, button labels, subheadings, card titles, input fields, and footer text — clean geometric sans carrying all functional typography
 
 ### Font Awesome 6 Pro — Solid icon glyphs for category tags and feature markers · `--font-font-awesome-6-pro`
+
 - **Substitute:** Font Awesome 5 Free Solid
 - **Weights:** 900
 - **Sizes:** 20px
@@ -40,6 +44,7 @@ Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream
 - **Role:** Solid icon glyphs for category tags and feature markers
 
 ### Font Awesome 6 Brands — Brand/social icon glyphs · `--font-font-awesome-6-brands`
+
 - **Substitute:** Font Awesome 5 Brands
 - **Weights:** 400
 - **Sizes:** 20px
@@ -48,15 +53,15 @@ Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream
 
 ### Type Scale
 
-| Role | Size | Line Height | Letter Spacing | Token |
-|------|------|-------------|----------------|-------|
-| caption | 14px | 1.43 | — | `--text-caption` |
-| body | 16px | 1.5 | — | `--text-body` |
-| subheading | 20px | 1.4 | — | `--text-subheading` |
-| heading-sm | 24px | 1.33 | — | `--text-heading-sm` |
-| heading | 30px | 1.2 | — | `--text-heading` |
-| display | 60px | 1 | — | `--text-display` |
-| display-lg | 72px | 1 | — | `--text-display-lg` |
+| Role       | Size | Line Height | Letter Spacing | Token               |
+| ---------- | ---- | ----------- | -------------- | ------------------- |
+| caption    | 14px | 1.43        | —              | `--text-caption`    |
+| body       | 16px | 1.5         | —              | `--text-body`       |
+| subheading | 20px | 1.4         | —              | `--text-subheading` |
+| heading-sm | 24px | 1.33        | —              | `--text-heading-sm` |
+| heading    | 30px | 1.2         | —              | `--text-heading`    |
+| display    | 60px | 1           | —              | `--text-display`    |
+| display-lg | 72px | 1           | —              | `--text-display-lg` |
 
 ## Tokens — Spacing & Shapes
 
@@ -66,31 +71,31 @@ Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream
 
 ### Spacing Scale
 
-| Name | Value | Token |
-|------|-------|-------|
-| 4 | 4px | `--spacing-4` |
-| 8 | 8px | `--spacing-8` |
-| 12 | 12px | `--spacing-12` |
-| 16 | 16px | `--spacing-16` |
-| 20 | 20px | `--spacing-20` |
-| 24 | 24px | `--spacing-24` |
-| 28 | 28px | `--spacing-28` |
-| 32 | 32px | `--spacing-32` |
-| 40 | 40px | `--spacing-40` |
-| 80 | 80px | `--spacing-80` |
-| 96 | 96px | `--spacing-96` |
-| 128 | 128px | `--spacing-128` |
+| Name | Value | Token           |
+| ---- | ----- | --------------- |
+| 4    | 4px   | `--spacing-4`   |
+| 8    | 8px   | `--spacing-8`   |
+| 12   | 12px  | `--spacing-12`  |
+| 16   | 16px  | `--spacing-16`  |
+| 20   | 20px  | `--spacing-20`  |
+| 24   | 24px  | `--spacing-24`  |
+| 28   | 28px  | `--spacing-28`  |
+| 32   | 32px  | `--spacing-32`  |
+| 40   | 40px  | `--spacing-40`  |
+| 80   | 80px  | `--spacing-80`  |
+| 96   | 96px  | `--spacing-96`  |
+| 128  | 128px | `--spacing-128` |
 
 ### Border Radius
 
-| Element | Value |
-|---------|-------|
-| tags | 9999px |
-| cards | 40px |
-| inputs | 9999px |
-| buttons | 9999px |
-| feature-cards | 24px |
-| small-elements | 16px |
+| Element        | Value  |
+| -------------- | ------ |
+| tags           | 9999px |
+| cards          | 40px   |
+| inputs         | 9999px |
+| buttons        | 9999px |
+| feature-cards  | 24px   |
+| small-elements | 16px   |
 
 ### Layout
 
@@ -102,61 +107,73 @@ Ko-fi reads like a warm indie café menu printed on recycled card stock. A cream
 ## Components
 
 ### Pill Primary Button (Kofi Blue)
+
 **Role:** Primary call-to-action — the one button per view that drives conversion
 
 Filled Kofi Blue (#aac9f7) with #202020 text, 9999px pill radius, 20px vertical and 20-28px horizontal padding, DM Sans 16px weight 600. Sits on cream canvas where it reads as the single most important action. Hover/pressed shifts to Cobalt Pop (#72a4f2).
 
 ### Pill Dark Button
+
 **Role:** Secondary action in nav and high-contrast contexts
 
 Filled Ink Black (#202020) with #ffffff text, 9999px pill radius, 20px padding all sides, DM Sans 14-16px weight 600. Used for 'Sign up free' in the nav — the always-visible account action.
 
 ### Pill Outline Button (Learn More)
+
 **Role:** Tertiary action on feature cards and content sections
 
 Ink Black (#202020) text on white card surface, 9999px pill radius, 20px padding, no border. Label appears as a standalone pill. Used for 'Learn how Ko-fi works' on feature blocks.
 
 ### Sticker Card (Creator Profile)
+
 **Role:** Profile showcase card for creator directory and testimonials
 
 White (#ffffff) fill, 40px radius, 2-3px solid #000000 border. No shadow — the black border IS the elevation. Contains a full-bleed photo (also 40px radius) above creator info. The sticker effect is the signature visual moment of the whole system.
 
 ### Oat Feature Card
+
 **Role:** Large feature block like 'Payday your way'
 
 Oat Cream (#e9dfd2) fill, 24px radius, generous 40-80px padding, contains a bogue-black display heading, DM Sans body copy, and a pill outline button. Sits inside a white card frame on the cream canvas.
 
 ### Category Tag Pill
+
 **Role:** Filter and creator-type chip — 'Streamers', 'Artists', 'Writers', etc.
 
 White fill, 9999px pill radius, 20px horizontal padding, DM Sans 16px weight 400 in Ink Black. Active state gets a 2px Ink Black border. Each tag leads with a 20px Font Awesome solid icon in its natural brand color.
 
 ### Top Navigation Bar
+
 **Role:** Global site navigation
 
 Transparent over the cream canvas, 9999px pill for the dark 'Sign up free' button, nav links in DM Sans 16px weight 400. Logo is a chunky bogue-black 'Ko-fi' wordmark with a coffee-cup icon. No background bar — nav floats on the canvas. Padding 16-20px vertical.
 
 ### Pill Input Field
+
 **Role:** Email/name input for signup and search
 
 White (#ffffff) fill, 9999px pill radius, 28px horizontal padding, 2px Ink Black border, DM Sans 16px placeholder. Border thickens or shifts to Kofi Blue on focus. No sharp corners anywhere.
 
 ### Logo Wordmark Lockup
+
 **Role:** Brand identity mark in nav and footer
 
 bogue-black 'Ko-fi' text in Ink Black, paired with a rounded coffee-cup icon with a heart on the cup. The coffee cup fill is a warm orange-red (the brand's secondary signal). Surrounded by a 2px black sticker border when used as a standalone badge.
 
 ### Section Headline Block
+
 **Role:** Section opener with display heading and subtitle
 
 Centered bogue-black heading at 60px line-height 1.0, followed by DM Sans 20px subheading in Ink Black. Generous 40-64px bottom margin before content. Creates the 'chapter title' rhythm that structures the page.
 
 ### Creator Photo Tile
+
 **Role:** Image-first card for creator directory
 
 Photo fills a 40px-radius tile with a 2-3px #000000 border, white frame around the photo. No caption inside the tile — info lives in adjacent text. Photos are not cropped to square; they keep natural aspect within the rounded frame.
 
 ### Feature Illustration Block
+
 **Role:** Decorative hero artwork like the three character mascots
 
 Hand-drawn line illustrations with selective Kofi Blue accent fills, no background container, sits directly on the cream canvas. Characters are outlined in black, flat colored, playful proportions. The illustration IS the emotional hook of the hero.
@@ -164,6 +181,7 @@ Hand-drawn line illustrations with selective Kofi Blue accent fills, no backgrou
 ## Do's and Don'ts
 
 ### Do
+
 - Use 9999px pill radius for every button, tag, input, and nav CTA — sharp corners break the tactile language
 - Use bogue-black (or Bowlby One substitute) only for display headings 48px and above — DM Sans for everything else
 - Wrap all card and image surfaces in a 2-3px solid #000000 border instead of adding drop shadows — the sticker outline is the elevation system
@@ -173,6 +191,7 @@ Hand-drawn line illustrations with selective Kofi Blue accent fills, no backgrou
 - Pair every category tag with a leading Font Awesome solid icon to reinforce the playful, labeled-sticker feel
 
 ### Don't
+
 - Don't use drop shadows on cards, buttons, or images — the black border replaces elevation and shadows would muddy the craft aesthetic
 - Don't introduce additional chromatic accents beyond Kofi Blue and its hover state — the warm-neutral-plus-one-blue palette is the identity
 - Don't use DM Sans at 40px+ for headings — it loses the chunky display quality; switch to bogue-black or its substitute
@@ -183,12 +202,12 @@ Hand-drawn line illustrations with selective Kofi Blue accent fills, no backgrou
 
 ## Surfaces
 
-| Level | Name | Value | Purpose |
-|-------|------|-------|---------|
-| 1 | Canvas | `#e5e7eb` | Page background — warm light gray that softens the whole experience |
-| 2 | Oat Surface | `#e9dfd2` | Feature card and section backgrounds with extra warmth |
-| 3 | Paper Card | `#ffffff` | Elevated card surface sitting on the cream canvas |
-| 4 | Blue Wash | `#aac9f7` | Brand-tinted footer or highlight band — the warmest chromatic surface |
+| Level | Name        | Value     | Purpose                                                               |
+| ----- | ----------- | --------- | --------------------------------------------------------------------- |
+| 1     | Canvas      | `#e5e7eb` | Page background — warm light gray that softens the whole experience   |
+| 2     | Oat Surface | `#e9dfd2` | Feature card and section backgrounds with extra warmth                |
+| 3     | Paper Card  | `#ffffff` | Elevated card surface sitting on the cream canvas                     |
+| 4     | Blue Wash   | `#aac9f7` | Brand-tinted footer or highlight band — the warmest chromatic surface |
 
 ## Imagery
 
@@ -201,6 +220,7 @@ Max-width ~1200px centered container on a full-bleed cream canvas. Hero is cente
 ## Agent Prompt Guide
 
 Quick Color Reference:
+
 - canvas/background: #e5e7eb (Morning Fog)
 - text/primary: #202020 (Ink Black)
 - text/on-dark: #ffffff (Paper White)
@@ -249,10 +269,18 @@ Ko-fi deliberately avoids drop shadows. The system uses a 2-3px solid #000000 bo
   --color-cobalt-pop: #72a4f2;
 
   /* Typography — Font Families */
-  --font-bogue-black: 'bogue-black', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-font-awesome-6-pro: 'Font Awesome 6 Pro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-font-awesome-6-brands: 'Font Awesome 6 Brands', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bogue-black:
+    'bogue-black', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  --font-dm-sans:
+    'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  --font-font-awesome-6-pro:
+    'Font Awesome 6 Pro', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-font-awesome-6-brands:
+    'Font Awesome 6 Brands', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Typography — Scale */
   --text-caption: 14px;
@@ -332,10 +360,18 @@ Ko-fi deliberately avoids drop shadows. The system uses a 2-3px solid #000000 bo
   --color-cobalt-pop: #72a4f2;
 
   /* Typography */
-  --font-bogue-black: 'bogue-black', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-font-awesome-6-pro: 'Font Awesome 6 Pro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-font-awesome-6-brands: 'Font Awesome 6 Brands', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bogue-black:
+    'bogue-black', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  --font-dm-sans:
+    'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  --font-font-awesome-6-pro:
+    'Font Awesome 6 Pro', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-font-awesome-6-brands:
+    'Font Awesome 6 Brands', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Typography — Scale */
   --text-caption: 14px;

@@ -22,6 +22,7 @@ class Program(Base):
     profile_hints: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     materials_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     materials_filename: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    overall_review_token: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     customer_profile: Mapped["CustomerProfile | None"] = relationship(back_populates="program", uselist=False)
@@ -35,6 +36,7 @@ class CustomerProfile(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     program_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("programs.id"), unique=True)
+    name: Mapped[str] = mapped_column(String(64), default="")
     industry: Mapped[str] = mapped_column(Text)
     company_size: Mapped[str] = mapped_column(Text)
     role_title: Mapped[str] = mapped_column(Text)

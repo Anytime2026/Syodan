@@ -15,6 +15,7 @@ class ProgramCreate(BaseModel):
 
 
 class CustomerProfileResponse(BaseModel):
+    name: str = ""
     industry: str
     company_size: str
     role_title: str
@@ -88,8 +89,14 @@ class EvaluationResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class EvaluationSubmit(BaseModel):
+    evaluator_id: str = Field(min_length=1, max_length=128)
+    content: str = Field(min_length=1)
+
+
 class ReviewPageResponse(BaseModel):
     session_id: UUID
+    program_id: UUID
     program_field: str
     session_number: int
     goal: str
@@ -99,11 +106,11 @@ class ReviewPageResponse(BaseModel):
     evaluations: list[EvaluationResponse]
 
 
-class EvaluationArtifactRequest(BaseModel):
-    session_id: UUID | None = None
-    program_id: UUID | None = None
-    formatted_transcript: str
-    artifact_type: str = "session"
+class SessionSummaryForReview(BaseModel):
+    session_number: int
+    title: str | None
+    goal: str
+    formatted_transcript: str | None
 
 
 class OverallReviewResponse(BaseModel):
@@ -113,6 +120,23 @@ class OverallReviewResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class OverallReviewPageResponse(BaseModel):
+    program_id: UUID
+    program_field: str
+    total_sessions: int
+    true_challenge: str
+    session_summaries: list[dict]
+    sessions: list[SessionSummaryForReview]
+    overall_reviews: list[OverallReviewResponse]
+
+
+class EvaluationArtifactRequest(BaseModel):
+    session_id: UUID | None = None
+    program_id: UUID | None = None
+    formatted_transcript: str
+    artifact_type: str = "session"
 
 
 class ProgramDetailWithReviews(BaseModel):

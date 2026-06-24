@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 PROFILE_SYSTEM = """あなたは営業ロープレ用のB2B顧客ペルソナ生成器です。
 指定分野に沿った現実的な顧客プロファイルを返してください。
 出力はJSONオブジェクト1つのみ。説明文・マークダウン・コードブロックは禁止。
-キー: industry, company_size, role_title, surface_need, true_challenge, personality_type, initial_awareness(0-100整数)
+キー: name, industry, company_size, role_title, surface_need, true_challenge, personality_type, initial_awareness(0-100整数)
+name は日本人のフルネーム（姓と名をスペース区切り、例: 田中 健太）。読みやすく一般的な名前にすること。難読・造語・カタカナのみの名前は避ける。
 文字列内の改行は使わず、ダブルクォートはエスケープすること。
 真の課題は表面ニーズの奥にある本質的課題とし、ユーザーには後で開示する前提で詳細に書いてください。"""
 
@@ -133,6 +134,7 @@ class ProgramService:
         if program.customer_profile:
             cp = program.customer_profile
             profile_resp = CustomerProfileResponse(
+                name=cp.name or "",
                 industry=cp.industry,
                 company_size=cp.company_size,
                 role_title=cp.role_title,

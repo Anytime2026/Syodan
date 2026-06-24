@@ -60,7 +60,8 @@ export function EvaluationsPage() {
             industry: entry.industry,
             sessionNumber: session.session_number,
             title: session.title,
-            createdAt: session.ended_at ?? session.started_at ?? program.created_at,
+            createdAt:
+              session.ended_at ?? session.started_at ?? program.created_at,
           })
         }
 
@@ -80,7 +81,10 @@ export function EvaluationsPage() {
         }
       }
 
-      results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      results.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
       setItems(results)
       setLoading(false)
     })
@@ -108,25 +112,30 @@ export function EvaluationsPage() {
       {!loading && items.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {items.map((res) => {
-            const industryLabel = INDUSTRY_META[res.industry]?.label ?? '不明な業界'
+            const industryLabel =
+              INDUSTRY_META[res.industry]?.label ?? '不明な業界'
             const isOverall = res.type === 'overall'
             const sessionText =
               res.type === 'session'
-                ? res.title ?? `第${res.sessionNumber}回商談`
+                ? (res.title ?? `第${res.sessionNumber}回商談`)
                 : ''
 
             return (
               <Link
                 key={`${res.type}-${res.id}`}
                 to={
-                  isOverall ? `/overall-review?program_id=${res.programId}` : `/evaluations/${res.id}`
+                  isOverall
+                    ? `/overall-review?program_id=${res.programId}`
+                    : `/evaluations/${res.id}`
                 }
                 className="msg ai"
                 style={{
                   textDecoration: 'none',
                   display: 'block',
                   border: '2px solid var(--color-sticker-black)',
-                  background: isOverall ? 'var(--color-oat-cream)' : 'var(--color-paper-white)',
+                  background: isOverall
+                    ? 'var(--color-oat-cream)'
+                    : 'var(--color-paper-white)',
                   width: '100%',
                   margin: 0,
                   padding: '16px',
@@ -134,7 +143,13 @@ export function EvaluationsPage() {
                   boxShadow: 'none',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                  }}
+                >
                   <p
                     style={{
                       fontWeight: 'bold',
@@ -194,7 +209,11 @@ export function EvaluationsPage() {
         </div>
       )}
 
-      <button className="btn secondary" onClick={() => navigate('/')} style={{ marginTop: '24px' }}>
+      <button
+        className="btn secondary"
+        onClick={() => navigate('/')}
+        style={{ marginTop: '24px' }}
+      >
         ホームに戻る
       </button>
     </div>

@@ -7,11 +7,21 @@ import { RoleplayMeetingPage } from './pages/RoleplayMeetingPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { PreSessionPage } from './pages/PreSessionPage'
 import { OverallReviewPage } from './pages/OverallReviewPage'
+import { ReviewerEvaluationPage } from './pages/ReviewerEvaluationPage'
+import { ReviewerOverallReviewPage } from './pages/ReviewerOverallReviewPage'
 
 export const router = createBrowserRouter([
   {
     path: '/roleplay/:sessionId',
     element: <RoleplayMeetingPage />,
+  },
+  {
+    path: '/reviewer/evaluations/:token',
+    element: <ReviewerEvaluationPage />,
+  },
+  {
+    path: '/reviewer/overall-review/:token',
+    element: <ReviewerOverallReviewPage />,
   },
   {
     path: '/',

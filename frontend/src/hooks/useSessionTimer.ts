@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
-export function useSessionTimer(startedAt: string | null, limitMinutes: number) {
+export function useSessionTimer(
+  startedAt: string | null,
+  limitMinutes: number,
+) {
   const [remainingSec, setRemainingSec] = useState(limitMinutes * 60)
 
   useEffect(() => {
