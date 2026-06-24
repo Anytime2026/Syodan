@@ -107,7 +107,8 @@ export function SettingsPage() {
       setCurrentProgramId(program.id)
       navigate('/pre-session')
     } catch (err) {
-      const message = err instanceof Error ? err.message : '商談作成に失敗しました'
+      const message =
+        err instanceof Error ? err.message : '商談作成に失敗しました'
       setError(message)
     } finally {
       setLoading(false)
@@ -250,11 +251,22 @@ export function SettingsPage() {
             style={{ margin: '5px 0 10px', fontSize: '13px' }}
           />
 
-          <h3 style={{ marginTop: '20px', borderBottom: '2px solid var(--color-sticker-black)', paddingBottom: '8px', color: 'var(--color-ink-black)' }}>
+          <h3
+            style={{
+              marginTop: '20px',
+              borderBottom: '2px solid var(--color-sticker-black)',
+              paddingBottom: '8px',
+              color: 'var(--color-ink-black)',
+            }}
+          >
             3. 参考資料の添付 (任意)
           </h3>
-          <p className="small" style={{ marginBottom: '10px', color: 'var(--color-ink-gray)' }}>
-            商談でAI顧客に参照させたい製品概要や営業資料（PDF, TXT, MD）を添付できます。※最大10MB
+          <p
+            className="small"
+            style={{ marginBottom: '10px', color: 'var(--color-ink-gray)' }}
+          >
+            商談でAI顧客に参照させたい製品概要や営業資料（PDF, TXT,
+            MD）を添付できます。※最大10MB
           </p>
           <input
             type="file"
@@ -274,14 +286,14 @@ export function SettingsPage() {
                 setMaterialFile(null)
               }
             }}
-            style={{ 
-              fontSize: '13px', 
-              padding: '8px', 
-              background: '#fff', 
-              border: '2px solid var(--color-sticker-black)', 
-              borderRadius: '8px', 
-              width: '100%', 
-              boxSizing: 'border-box' 
+            style={{
+              fontSize: '13px',
+              padding: '8px',
+              background: '#fff',
+              border: '2px solid var(--color-sticker-black)',
+              borderRadius: '8px',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           />
         </div>

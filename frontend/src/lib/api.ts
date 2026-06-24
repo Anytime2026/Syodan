@@ -141,14 +141,20 @@ export const ACTIVE_PROGRAM_STATUSES = new Set([
   'overall_review_requested',
 ])
 
-export async function uploadProgramMaterial(programId: string, file: File): Promise<Program> {
+export async function uploadProgramMaterial(
+  programId: string,
+  file: File,
+): Promise<Program> {
   const formData = new FormData()
   formData.append('file', file)
 
-  const res = await fetch(`${getApiBase()}/api/programs/${programId}/upload-material`, {
-    method: 'POST',
-    body: formData,
-  })
+  const res = await fetch(
+    `${getApiBase()}/api/programs/${programId}/upload-material`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
 
   if (!res.ok) {
     const body = await res.text()
