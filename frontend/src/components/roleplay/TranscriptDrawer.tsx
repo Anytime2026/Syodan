@@ -2,12 +2,14 @@ import type { TranscriptMessage } from '../../lib/types'
 
 type TranscriptDrawerProps = {
   messages: TranscriptMessage[]
+  partialText?: string | null
   open: boolean
   onToggle: () => void
 }
 
 export function TranscriptDrawer({
   messages,
+  partialText,
   open,
   onToggle,
 }: TranscriptDrawerProps) {
@@ -24,6 +26,11 @@ export function TranscriptDrawer({
               {m.text}
             </li>
           ))}
+          {partialText && (
+            <li className="user partial">
+              <strong>あなた:</strong> {partialText}
+            </li>
+          )}
         </ul>
       )}
     </aside>

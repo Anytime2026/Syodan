@@ -1,4 +1,5 @@
 export type CustomerProfile = {
+  name: string
   industry: string
   company_size: string
   role_title: string
@@ -73,6 +74,7 @@ export type TranscriptMessage = {
 
 export type WsServerMessage =
   | { type: 'transcript'; speaker: 'user' | 'ai'; text: string }
+  | { type: 'transcript_partial'; text: string }
   | { type: 'turn_complete' }
   | { type: 'time_warning'; remaining_sec: number }
   | { type: 'session_ended'; reason: string }
@@ -84,4 +86,38 @@ export type CreateProgramInput = {
   personality_type?: string
   sub_field?: string
   it_knowledge_level?: string
+}
+
+export type ReviewPageData = {
+  session_id: string
+  program_id: string
+  program_field: string
+  session_number: number
+  goal: string
+  true_challenge: string
+  formatted_transcript: string | null
+  recording_url: string | null
+  evaluations: Evaluation[]
+}
+
+export type SessionSummaryForReview = {
+  session_number: number
+  title: string | null
+  goal: string
+  formatted_transcript: string | null
+}
+
+export type OverallReviewPageData = {
+  program_id: string
+  program_field: string
+  total_sessions: number
+  true_challenge: string
+  session_summaries: Array<{ session_number: number; summary: string }>
+  sessions: SessionSummaryForReview[]
+  overall_reviews: OverallReview[]
+}
+
+export type EvaluationSubmitInput = {
+  evaluator_id: string
+  content: string
 }

@@ -11,7 +11,9 @@ from app.config import get_settings
 from app.db.session import AsyncSessionLocal
 from app.domain.enums import SessionStatus
 from app.domain.models import CustomerProfile, CustomerState, HearingSession, Program
+from app.integrations.aws_clients import TranscribeStreamSession
 from app.services.audio_pipeline import AudioPipeline
+from app.services.prompts import sanitize_customer_speech, to_bedrock_messages
 from app.api.routes import sessions as sessions_routes
 
 logger = logging.getLogger(__name__)
@@ -26,6 +28,9 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
     audio_buffer = bytearray()
     ptt_active = False
     time_warning_sent = False
+    media_format = "pcm_s16le"
+    transcribe_session: TranscribeStreamSession | None = None
+    last_partial_sent = ""
 
     async with AsyncSessionLocal() as db:
         session = await _load_session(db, session_id)
@@ -36,10 +41,26 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
 
         profile = await _load_profile(db, session.program_id)
         state = await _load_state(db, session.program_id)
+        program = await _load_program(db, session.program_id)
         if not profile or not state:
             await websocket.send_json({"type": "error", "message": "Customer data missing"})
             await websocket.close()
             return
+
+    cached_session = session
+    cached_profile = profile
+    cached_state = state
+    cached_program = program
+
+    async def send_partial(text: str) -> None:
+        nonlocal last_partial_sent
+        if not text or text == last_partial_sent:
+            return
+        last_partial_sent = text
+        await websocket.send_json({"type": "transcript_partial", "text": text})
+
+    def on_partial(text: str) -> None:
+        asyncio.create_task(send_partial(text))
 
     try:
         while True:
@@ -49,8 +70,13 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
 
             if "bytes" in message and message["bytes"] is not None:
                 chunk = message["bytes"]
-                audio_buffer.extend(chunk)
                 sessions_routes.append_recording(str(session_id), chunk)
+                if transcribe_session is not None:
+                    await transcribe_session.feed(chunk)
+                    if transcribe_session.partial_text:
+                        await send_partial(transcribe_session.partial_text)
+                else:
+                    audio_buffer.extend(chunk)
                 continue
 
             if "text" not in message or message["text"] is None:
@@ -62,59 +88,113 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
             if msg_type == "ptt_start":
                 ptt_active = True
                 audio_buffer = bytearray()
+                last_partial_sent = ""
+                media_format = data.get("media_format", "pcm_s16le")
+                if media_format == "pcm_s16le":
+                    sample_rate = int(data.get("sample_rate", 16000))
+                    transcribe_session = TranscribeStreamSession(
+                        on_partial=on_partial,
+                        sample_rate=sample_rate,
+                    )
+                    await transcribe_session.start()
+                else:
+                    transcribe_session = None
                 continue
 
             if msg_type == "ptt_end":
                 ptt_active = False
-                if not audio_buffer:
-                    await websocket.send_json({"type": "error", "message": "No audio received"})
-                    await websocket.send_json({"type": "turn_complete"})
-                    continue
-
-                media_format = data.get("media_format", "webm")
+                turn_media_format = data.get("media_format", media_format)
 
                 try:
-                    async with AsyncSessionLocal() as db:
-                        session = await _load_session(db, session_id)
-                        state = await _load_state(db, session.program_id)  # type: ignore[union-attr]
-                        profile = await _load_profile(db, session.program_id)  # type: ignore[union-attr]
-                        program = await _load_program(db, session.program_id)  # type: ignore[union-attr]
-                        remaining = _remaining_seconds(session)  # type: ignore[arg-type]
-
-                    profile_hints = program.profile_hints if program else None
-                    system = pipeline.build_system_prompt(
-                        profile, state, session.goal, remaining, profile_hints  # type: ignore[arg-type]
-                    )
-
-                    try:
-                        user_text = await pipeline.transcribe_turn(bytes(audio_buffer), media_format)
-                    except Exception:
-                        logger.exception("STT failed for session %s", session_id)
-                        await websocket.send_json(
-                            {"type": "error", "message": "Speech recognition failed (STT). Check microphone audio."}
-                        )
-                        await websocket.send_json({"type": "turn_complete"})
-                        audio_buffer = bytearray()
-                        continue
-                    finally:
-                        audio_buffer = bytearray()
+                    if turn_media_format == "pcm_s16le" and transcribe_session is not None:
+                        try:
+                            user_text = await transcribe_session.finish()
+                        except Exception:
+                            logger.exception("Streaming STT failed for session %s", session_id)
+                            await websocket.send_json(
+                                {
+                                    "type": "error",
+                                    "message": "Speech recognition failed (STT). Check microphone audio.",
+                                }
+                            )
+                            await websocket.send_json({"type": "turn_complete"})
+                            transcribe_session = None
+                            continue
+                        finally:
+                            transcribe_session = None
+                    else:
+                        if not audio_buffer:
+                            await websocket.send_json({"type": "error", "message": "No audio received"})
+                            await websocket.send_json({"type": "turn_complete"})
+                            continue
+                        batch_format = turn_media_format if turn_media_format != "pcm_s16le" else "webm"
+                        try:
+                            user_text = await pipeline.transcribe_turn(
+                                bytes(audio_buffer), batch_format
+                            )
+                        except Exception:
+                            logger.exception("STT failed for session %s", session_id)
+                            await websocket.send_json(
+                                {
+                                    "type": "error",
+                                    "message": "Speech recognition failed (STT). Check microphone audio.",
+                                }
+                            )
+                            await websocket.send_json({"type": "turn_complete"})
+                            audio_buffer = bytearray()
+                            continue
+                        finally:
+                            audio_buffer = bytearray()
 
                     if not user_text.strip():
                         await websocket.send_json({"type": "error", "message": "No speech detected"})
                         await websocket.send_json({"type": "turn_complete"})
                         continue
 
+                    remaining = _remaining_seconds(cached_session)
+                    profile_hints = cached_program.profile_hints if cached_program else None
+                    history = sessions_routes.get_conversation_log(str(session_id))
+                    system = pipeline.build_system_prompt(
+                        cached_profile,
+                        cached_state,
+                        cached_session.goal,
+                        remaining,
+                        cached_session.session_number,
+                        profile_hints,
+                    )
+
                     sessions_routes.append_conversation(str(session_id), "user", user_text)
-                    await websocket.send_json({"type": "transcript", "speaker": "user", "text": user_text})
+                    await websocket.send_json(
+                        {"type": "transcript", "speaker": "user", "text": user_text}
+                    )
+                    last_partial_sent = ""
+
+                    messages = to_bedrock_messages(history)
+                    messages.append({"role": "user", "content": user_text})
 
                     loop = asyncio.get_running_loop()
+                    audio_queue: asyncio.Queue[bytes | None] = asyncio.Queue()
+
+                    async def audio_sender() -> None:
+                        while True:
+                            item = await audio_queue.get()
+                            if item is None:
+                                break
+                            await websocket.send_bytes(item)
+
+                    sender_task = asyncio.create_task(audio_sender())
 
                     def emit_audio(audio: bytes) -> None:
-                        asyncio.run_coroutine_threadsafe(websocket.send_bytes(audio), loop).result()
+                        asyncio.run_coroutine_threadsafe(audio_queue.put(audio), loop)
 
+                    ai_text = ""
                     try:
                         ai_text = await asyncio.to_thread(
-                            pipeline.stream_ai_audio, system, user_text, emit_audio
+                            pipeline.stream_ai_audio,
+                            system,
+                            user_text,
+                            emit_audio,
+                            messages,
                         )
                     except Exception as exc:
                         logger.exception("AI/TTS pipeline failed for session %s", session_id)
@@ -126,23 +206,29 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                         else:
                             detail = f"AI response failed: {err_msg[:200]}"
                         await websocket.send_json({"type": "error", "message": detail})
+                    finally:
+                        await audio_queue.put(None)
+                        await sender_task
+
+                    if not ai_text:
                         await websocket.send_json({"type": "turn_complete"})
                         continue
 
+                    ai_text = sanitize_customer_speech(ai_text)
                     sessions_routes.append_conversation(str(session_id), "ai", ai_text)
-                    await websocket.send_json({"type": "transcript", "speaker": "ai", "text": ai_text})
+                    await websocket.send_json(
+                        {"type": "transcript", "speaker": "ai", "text": ai_text}
+                    )
                     await websocket.send_json({"type": "turn_complete"})
                 except Exception:
                     logger.exception("Unexpected turn error for session %s", session_id)
-                    await websocket.send_json({"type": "error", "message": "Internal error during turn processing"})
+                    await websocket.send_json(
+                        {"type": "error", "message": "Internal error during turn processing"}
+                    )
                     await websocket.send_json({"type": "turn_complete"})
 
             if msg_type == "ping":
-                async with AsyncSessionLocal() as db:
-                    session = await _load_session(db, session_id)
-                    if not session:
-                        break
-                    remaining = _remaining_seconds(session)
+                remaining = _remaining_seconds(cached_session)
                 if (
                     not time_warning_sent
                     and remaining <= settings.session_time_warning_sec

@@ -12,12 +12,9 @@ from app.domain.enums import ProgramStatus, SessionStatus
 from app.domain.models import CustomerProfile, CustomerState, HearingSession, Program
 from app.integrations.aws_clients import BedrockClient, S3Client
 from app.services.hulft_client import HulftClient
+from app.services.prompts import ANALYSIS_SYSTEM
 
 logger = logging.getLogger(__name__)
-
-ANALYSIS_SYSTEM = """営業ロープレの会話を分析し、JSONのみ返してください。
-キー: awareness_level(0-100), rapport_level(0-100), disclosed_info(文字列配列), session_summary(文字列), title(短いセッションタイトル)
-気づき度は良いヒアリングで徐々に上がる想定。ラポール度も会話品質に応じて更新。"""
 
 
 class SessionFinalizeService:
@@ -100,18 +97,41 @@ class SessionFinalizeService:
 
         if completed_count >= program.total_sessions:
             program.status = ProgramStatus.OVERALL_REVIEW_REQUESTED.value
+            from app.services.evaluation_service import EvaluationService
+
+            overall_token = EvaluationService.ensure_overall_review_token(program)
             await self.db.commit()
-            await self.hulft.send_overall_review_request(program_id=program.id)
+            await self.hulft.send_overall_review_request(
+                program_id=program.id,
+                overall_review_token=overall_token,
+            )
 
         return session
 
     async def _analyze(self, session: HearingSession, transcript: str) -> dict:
         settings = get_settings()
-        prompt = (
-            f"回数: {session.session_number}\n"
-            f"目標: {session.goal}\n"
-            f"会話:\n{transcript}"
+        program = session.program
+        profile = program.customer_profile if program else None
+        state_result = await self.db.execute(
+            select(CustomerState).where(CustomerState.program_id == session.program_id)
         )
+        state = state_result.scalar_one_or_none()
+
+        prompt_parts = [
+            f"回数: {session.session_number}",
+            f"目標: {session.goal}",
+        ]
+        if state:
+            prompt_parts.append(f"前回 awareness: {state.awareness_level}")
+            prompt_parts.append(f"前回 rapport: {state.rapport_level}")
+            prompt_parts.append(
+                f"既出情報: {json.dumps(state.disclosed_info or [], ensure_ascii=False)}"
+            )
+        if profile:
+            prompt_parts.append(f"真の課題（判定基準・開示禁止）: {profile.true_challenge}")
+        prompt_parts.append(f"会話:\n{transcript}")
+        prompt = "\n".join(prompt_parts)
+
         raw = self.bedrock.invoke(settings.bedrock_analysis_model_id, ANALYSIS_SYSTEM, prompt, max_tokens=800)
         try:
             return json.loads(raw)
@@ -140,6 +160,7 @@ class SessionFinalizeService:
             .options(
                 selectinload(HearingSession.program).selectinload(Program.sessions),
                 selectinload(HearingSession.program).selectinload(Program.customer_profile),
+                selectinload(HearingSession.program).selectinload(Program.customer_state),
             )
             .where(HearingSession.id == session_id)
         )

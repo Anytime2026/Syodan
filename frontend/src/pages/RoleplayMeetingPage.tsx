@@ -121,6 +121,9 @@ export function RoleplayMeetingPage() {
     program?.status === 'overall_review_requested' ||
     program?.status === 'all_sessions_done'
 
+  const customerName = program?.customer_profile?.name
+  const customerRole = program?.customer_profile?.role_title ?? '見込み顧客'
+
   if (!session) {
     return (
       <div className="meeting-shell">
@@ -172,14 +175,15 @@ export function RoleplayMeetingPage() {
           avatarLabel="営"
         />
         <ParticipantTile
-          name="顧客AI"
-          role={session.goal ? '見込み顧客' : '顧客'}
+          name={customerName ? `${customerName} 様` : '顧客AI'}
+          role={customerRole}
           speaking={ws.aiSpeaking}
-          avatarLabel="顧"
+          avatarLabel={customerName ? customerName.charAt(0) : '顧'}
         />
       </div>
       <TranscriptDrawer
         messages={ws.transcripts}
+        partialText={ws.partialTranscript}
         open={transcriptOpen}
         onToggle={() => setTranscriptOpen((o) => !o)}
       />

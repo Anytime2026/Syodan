@@ -18,6 +18,7 @@ async def test_create_program_generates_customer_profile(client: AsyncClient) ->
     assert profile["true_challenge"] is None
     assert profile["industry"]
     assert profile["personality_type"]
+    assert profile.get("name")
     assert 0 <= profile["initial_awareness"] <= 100
 
 

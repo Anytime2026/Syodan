@@ -286,6 +286,11 @@
   color: #4caf50;
 }
 
+.transcript-list li.partial {
+  opacity: 0.55;
+  font-style: italic;
+}
+
 .setup-page {
   max-width: 560px;
 }

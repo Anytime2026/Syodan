@@ -13,15 +13,21 @@ router = APIRouter(prefix="/api/programs", tags=["programs"])
 @router.post("", response_model=ProgramResponse, status_code=status.HTTP_201_CREATED)
 async def create_program(body: ProgramCreate, db: AsyncSession = Depends(get_db)) -> ProgramResponse:
     service = ProgramService(db)
-    program = await service.create_program(
-        field=body.field,
-        total_sessions=body.total_sessions,
-        evaluator_ids=body.evaluator_ids,
-        user_id=body.user_id,
-        personality_type=body.personality_type,
-        sub_field=body.sub_field,
-        it_knowledge_level=body.it_knowledge_level,
-    )
+    try:
+        program = await service.create_program(
+            field=body.field,
+            total_sessions=body.total_sessions,
+            evaluator_ids=body.evaluator_ids,
+            user_id=body.user_id,
+            personality_type=body.personality_type,
+            sub_field=body.sub_field,
+            it_knowledge_level=body.it_knowledge_level,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="顧客プロフィールの生成に失敗しました。しばらく待って再試行してください。",
+        ) from exc
     loaded = await service.get_program(program.id)
     return service.to_response(loaded)  # type: ignore[arg-type]
 
