@@ -20,19 +20,23 @@ export function RoleplayMeetingPage() {
   const [transcriptOpen, setTranscriptOpen] = useState(true)
   const [userSpeaking, setUserSpeaking] = useState(false)
 
-  const handleSessionEnded = useCallback(async () => {
-    if (!sessionId || ended) return
-    setEnded(true)
-    try {
-      const updated = await endSession(sessionId)
-      setSession(updated)
-      const prog = await getProgram(updated.program_id)
-      setProgram(prog)
-    } catch {
-      /* already ended */
-    }
-    navigate(`/evaluations/${sessionId}`)
-  }, [sessionId, ended, navigate])
+  const handleSessionEnded = useCallback(
+    async (reason: string) => {
+      void reason
+      if (!sessionId || ended) return
+      setEnded(true)
+      try {
+        const updated = await endSession(sessionId)
+        setSession(updated)
+        const prog = await getProgram(updated.program_id)
+        setProgram(prog)
+      } catch {
+        /* already ended */
+      }
+      navigate(`/evaluations/${sessionId}`)
+    },
+    [sessionId, ended, navigate],
+  )
 
   const ws = useHearingWebSocket({
     sessionId: sessionId ?? '',
