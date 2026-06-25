@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ControlBar } from '../components/roleplay/ControlBar'
 import { MeetingShell } from '../components/roleplay/MeetingShell'
 import { ParticipantTile } from '../components/roleplay/ParticipantTile'
@@ -9,7 +9,6 @@ import { useHearingWebSocket } from '../hooks/useHearingWebSocket'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
 import { usePushToTalk } from '../hooks/usePushToTalk'
 import { endSession, getApiBase, getProgram, getSession } from '../lib/api'
-import { setCurrentProgramId } from '../lib/registry'
 import type { HearingSession, Program } from '../lib/types'
 
 export function RoleplayMeetingPage() {
@@ -21,22 +20,19 @@ export function RoleplayMeetingPage() {
   const [transcriptOpen, setTranscriptOpen] = useState(true)
   const [userSpeaking, setUserSpeaking] = useState(false)
 
-  const handleSessionEnded = useCallback(
-    async (reason: string) => {
-      if (!sessionId || ended) return
-      setEnded(true)
-      try {
-        const updated = await endSession(sessionId)
-        setSession(updated)
-        const prog = await getProgram(updated.program_id)
-        setProgram(prog)
-      } catch {
-        /* already ended */
-      }
-      navigate(`/evaluations/${sessionId}`)
-    },
-    [sessionId, ended, navigate],
-  )
+  const handleSessionEnded = useCallback(async () => {
+    if (!sessionId || ended) return
+    setEnded(true)
+    try {
+      const updated = await endSession(sessionId)
+      setSession(updated)
+      const prog = await getProgram(updated.program_id)
+      setProgram(prog)
+    } catch {
+      /* already ended */
+    }
+    navigate(`/evaluations/${sessionId}`)
+  }, [sessionId, ended, navigate])
 
   const ws = useHearingWebSocket({
     sessionId: sessionId ?? '',
@@ -111,14 +107,6 @@ export function RoleplayMeetingPage() {
     await stop()
     ws.pttEnd()
   }
-
-  const allSessionsDone =
-    program !== null && program.completed_sessions >= program.total_sessions
-  const showOverallReview =
-    program?.reveal_challenge ||
-    program?.status === 'closed' ||
-    program?.status === 'overall_review_requested' ||
-    program?.status === 'all_sessions_done'
 
   const customerName = program?.customer_profile?.name
   const customerRole = program?.customer_profile?.role_title ?? '見込み顧客'
