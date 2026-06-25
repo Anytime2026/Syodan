@@ -20,6 +20,8 @@ class Program(Base):
     status: Mapped[str] = mapped_column(String(32), default="created")
     evaluator_ids: Mapped[list] = mapped_column(JSON, default=list)
     profile_hints: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    materials_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    materials_filename: Mapped[str | None] = mapped_column(String(256), nullable=True)
     overall_review_token: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -42,6 +44,7 @@ class CustomerProfile(Base):
     true_challenge: Mapped[str] = mapped_column(Text)
     personality_type: Mapped[str] = mapped_column(Text)
     initial_awareness: Mapped[int] = mapped_column(Integer, default=20)
+    persona_extras: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     program: Mapped["Program"] = relationship(back_populates="customer_profile")
 

@@ -33,3 +33,36 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+  backend:
+    name: Backend (pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            backend/requirements.txt
+            backend/requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run tests
+        run: pytest tests/ -q
+        env:
+          APP_ENV: test
+          DATABASE_URL: sqlite+aiosqlite://
+          AWS_STUB_MODE: 'true'
+          HULFT_STUB_MODE: 'true'
+          INTERNAL_API_KEY: test-internal-key
+          CORS_ORIGINS: http://localhost:5173

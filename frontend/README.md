@@ -39,10 +39,27 @@
 
 ## 開発コマンド
 
+### AWS バックエンド接続（推奨）
+
+フロントは `localhost:5173`、API / WebSocket は AWS ECS ALB へプロキシします。手元で backend を起動する必要はありません。
+
 ```bash
 cd frontend
-npm.cmd install
-npm.cmd run dev
+npm.cmd install   # または pnpm install
+npm.cmd run dev   # または pnpm dev
+```
+
+設定は [`/.env.development`](./.env.development) の `VITE_DEV_BACKEND_URL` を参照してください。  
+ECS タスクの `CORS_ORIGINS` に `http://localhost:5173` と `http://127.0.0.1:5173` が含まれている必要があります。
+
+ブラウザ: `http://127.0.0.1:5173`
+
+### ローカル backend を使う場合（任意）
+
+```bash
+# backend ディレクトリで Postgres + uvicorn を起動後、
+# frontend/.env.development.local に以下を設定
+# VITE_DEV_BACKEND_URL=http://127.0.0.1:8000
 ```
 
 ## CI（GitHub Actions）

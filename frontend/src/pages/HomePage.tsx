@@ -117,7 +117,7 @@ export function HomePage() {
       </div>
 
       <Link to="/settings" className="btn primary" style={{ padding: '16px' }}>
-        ▶ 新規プログラム作成
+        ▶ 新規商談作成
       </Link>
 
       {showLoadingScreen && (

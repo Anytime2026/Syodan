@@ -103,7 +103,19 @@ class SessionService:
         return list(result.scalars().all())
 
     async def get_session_detail(self, session_id: UUID) -> HearingSession | None:
-        return await self._get_session(session_id)
+        existing = await self.db.get(HearingSession, session_id)
+        if existing is not None:
+            self.db.expire(existing, ["evaluations"])
+        result = await self.db.execute(
+            select(HearingSession)
+            .options(
+                selectinload(HearingSession.evaluations),
+                selectinload(HearingSession.program).selectinload(Program.customer_profile),
+            )
+            .where(HearingSession.id == session_id)
+            .execution_options(populate_existing=True)
+        )
+        return result.scalar_one_or_none()
 
     async def _get_program(self, program_id: UUID) -> Program | None:
         result = await self.db.execute(

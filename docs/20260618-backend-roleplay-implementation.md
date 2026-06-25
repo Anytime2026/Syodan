@@ -32,6 +32,19 @@
 
 ## ローカル開発
 
+### 推奨: フロントのみローカル + AWS バックエンド
+
+```bash
+cd frontend
+npm.cmd install
+npm.cmd run dev
+```
+
+`frontend/.env.development` の `VITE_DEV_BACKEND_URL` が ALB を指していること。  
+ブラウザは `http://127.0.0.1:5173`。API / WSS は Vite プロキシ経由で AWS ECS へ接続します。
+
+### オプション: フルローカル（backend も手元で起動）
+
 ```bash
 # バックエンド
 cd backend
@@ -42,7 +55,7 @@ uvicorn app.main:app --reload --port 8000
 
 # フロントエンド
 cd frontend
-copy .env.example .env
+# .env.development.local に VITE_DEV_BACKEND_URL=http://127.0.0.1:8000
 npm.cmd install
 npm.cmd run dev
 ```

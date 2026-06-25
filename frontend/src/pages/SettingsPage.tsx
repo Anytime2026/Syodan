@@ -107,7 +107,7 @@ export function SettingsPage() {
       navigate('/pre-session')
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'プログラム作成に失敗しました'
+        err instanceof Error ? err.message : '商談作成に失敗しました'
       setError(message)
     } finally {
       setLoading(false)
@@ -125,12 +125,12 @@ export function SettingsPage() {
   }
 
   return (
-    <PageShell
-      width="wide"
-      title="新規プログラム作成"
-      subtitle="AI顧客との商談シリーズを開始します"
-      illustration="/images/PC.svg"
-    >
+    <div className="card wide">
+      <h2>新規商談作成</h2>
+      <p className="small" style={{ marginBottom: 20 }}>
+        AI顧客との商談シリーズを開始します。PCサイズに合わせて広々と設定できます。
+      </p>
+
       <div className="settings-grid">
         <PageSection>
           <h3 className="page-section__heading">1. 基本商談設定</h3>
@@ -248,7 +248,7 @@ export function SettingsPage() {
           onClick={handleCreate}
           disabled={loading}
         >
-          ▶ プログラム作成
+          {loading ? '作成中…' : '▶ 商談作成'}
         </button>
       </PageActions>
     </PageShell>
