@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createSession, getProgram, startSession } from '../lib/api'
+import {
+  createSession,
+  getProgram,
+  startSession,
+  uploadProgramMaterial,
+} from '../lib/api'
 import { findRegistryEntry, getCurrentProgramId } from '../lib/registry'
 import type { Program } from '../lib/types'
 import { INDUSTRY_META } from '../types'
@@ -42,6 +47,7 @@ export function PreSessionPage() {
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [materialFile, setMaterialFile] = useState<File | null>(null)
 
   useEffect(() => {
     const programId = getCurrentProgramId()
@@ -69,6 +75,20 @@ export function PreSessionPage() {
     setStarting(true)
     setError(null)
     try {
+      if (materialFile) {
+        try {
+          await uploadProgramMaterial(program.id, materialFile)
+        } catch (uploadErr) {
+          const message =
+            uploadErr instanceof Error
+              ? uploadErr.message
+              : '資料のアップロードに失敗しました'
+          // AWS ECS が古いイメージのとき upload-material が 404 になる
+          if (message !== 'Not Found') {
+            throw uploadErr
+          }
+        }
+      }
       const session = await createSession(program.id, goal.trim(), timeLimit)
       await startSession(session.id)
       navigate(`/roleplay/${session.id}`)
@@ -293,6 +313,71 @@ export function PreSessionPage() {
         placeholder={DEFAULT_GOAL}
         style={{ marginBottom: 16 }}
       />
+
+      <div
+        style={{
+          background: 'var(--color-oat-cream)',
+          padding: 20,
+          borderRadius: '24px',
+          marginBottom: 20,
+          border: '2px solid var(--color-sticker-black)',
+        }}
+      >
+        <p
+          className="small"
+          style={{
+            margin: '0 0 8px 0',
+            color: 'var(--color-ink-black)',
+            fontWeight: 'bold',
+          }}
+        >
+          参考資料の添付 (任意)
+        </p>
+        <p
+          className="small"
+          style={{ marginBottom: 10, color: 'var(--color-ink-gray)' }}
+        >
+          商談でAI顧客に見せる製品概要や営業資料（PDF, TXT,
+          MD）を添付できます。※最大10MB
+        </p>
+        {program.materials_filename && !materialFile && (
+          <p className="small" style={{ marginBottom: 10, opacity: 0.9 }}>
+            現在の資料: {program.materials_filename}
+            <br />
+            <span style={{ opacity: 0.8 }}>
+              新しいファイルを選択すると上書きされます
+            </span>
+          </p>
+        )}
+        <input
+          type="file"
+          accept=".pdf,.txt,.md"
+          onChange={(e) => {
+            const file = e.target.files?.[0] || null
+            if (file) {
+              if (file.size > 10 * 1024 * 1024) {
+                setError('ファイルサイズは10MB以下にしてください。')
+                setMaterialFile(null)
+                e.target.value = ''
+              } else {
+                setError(null)
+                setMaterialFile(file)
+              }
+            } else {
+              setMaterialFile(null)
+            }
+          }}
+          style={{
+            fontSize: '13px',
+            padding: '8px',
+            background: '#fff',
+            border: '2px solid var(--color-sticker-black)',
+            borderRadius: '8px',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        />
+      </div>
 
       <div
         style={{

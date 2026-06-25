@@ -51,6 +51,7 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
     cached_profile = profile
     cached_state = state
     cached_program = program
+    cached_materials_text = program.materials_text if program else None
 
     async def send_partial(text: str) -> None:
         nonlocal last_partial_sent
@@ -161,6 +162,7 @@ async def hearing_websocket(websocket: WebSocket, session_id: UUID) -> None:
                         remaining,
                         cached_session.session_number,
                         profile_hints,
+                        cached_materials_text,
                     )
 
                     sessions_routes.append_conversation(str(session_id), "user", user_text)

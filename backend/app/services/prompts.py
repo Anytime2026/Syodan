@@ -58,6 +58,9 @@ CHAT_SYSTEM_TEMPLATE = """# 役割
 # 前回までの商談サマリ（今回の第{session_number}回）
 {session_summaries_section}
 
+# 営業担当が提示した参考資料
+{materials_section}
+
 # 今回の商談
 - 営業側の目標: {goal}
 - 残り時間: 約{remaining_sec}秒
@@ -202,6 +205,16 @@ def format_it_knowledge(hints: dict | None) -> str:
     return ""
 
 
+def format_materials_section(materials_text: str | None) -> str:
+    if not materials_text or not materials_text.strip():
+        return "（今回提示された資料なし）"
+    return (
+        "営業担当がこの商談で以下の資料を見せた前提で会話する。"
+        "資料の内容について質問されたら、記載範囲内で答える。\n"
+        f"{materials_text.strip()}"
+    )
+
+
 def format_list_items(items: list | None, fallback: str = "（特になし）") -> str:
     if not items:
         return fallback
@@ -249,6 +262,7 @@ def build_chat_system_prompt(
     remaining_sec: int,
     session_number: int,
     profile_hints: dict | None = None,
+    materials_text: str | None = None,
 ) -> str:
     persona = get_persona_extras(profile)
     return CHAT_SYSTEM_TEMPLATE.format(
@@ -270,6 +284,7 @@ def build_chat_system_prompt(
         rapport_behavior=rapport_behavior(state.rapport_level),
         disclosed_info_section=format_disclosed_info(state.disclosed_info),
         session_summaries_section=format_session_summaries(state.session_summaries, session_number),
+        materials_section=format_materials_section(materials_text),
         session_number=session_number,
         goal=goal,
         remaining_sec=remaining_sec,

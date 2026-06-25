@@ -46,6 +46,7 @@ class ProgramResponse(BaseModel):
     customer_profile: CustomerProfileResponse | None = None
     customer_state: CustomerStateResponse | None = None
     completed_sessions: int = 0
+    materials_filename: str | None = None
     sessions: list["SessionListItem"] = Field(default_factory=list)
     overall_reviews: list["OverallReviewResponse"] = Field(default_factory=list)
 

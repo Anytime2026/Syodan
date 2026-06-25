@@ -200,6 +200,51 @@ class ProgramService:
             customer_profile=profile_resp,
             customer_state=state_resp,
             completed_sessions=completed,
+            materials_filename=program.materials_filename,
             sessions=session_items,
             overall_reviews=overall_reviews,
         )
+
+    async def upload_material(self, program_id: UUID, filename: str, content: bytes) -> Program | None:
+        import io
+        import pypdf
+
+        program = await self.get_program(program_id)
+        if not program:
+            return None
+
+        ext = filename.split(".")[-1].lower() if "." in filename else ""
+        extracted_text = ""
+
+        if ext == "pdf":
+            try:
+                pdf_file = io.BytesIO(content)
+                reader = pypdf.PdfReader(pdf_file)
+                text_list = []
+                for page in reader.pages:
+                    t = page.extract_text()
+                    if t:
+                        text_list.append(t)
+                extracted_text = "\n".join(text_list)
+            except Exception as e:
+                logger.error(f"Failed to parse PDF {filename}: {e}")
+                raise ValueError("PDFファイルの解析に失敗しました。ファイルが破損しているか、テキストが含まれていない可能性があります。")
+            if not extracted_text.strip():
+                raise ValueError("PDFファイルからテキストを抽出できませんでした。スキャンされた画像PDFではないか、またはテキストが含まれているか確認してください。")
+        elif ext in ("txt", "md"):
+            try:
+                extracted_text = content.decode("utf-8", errors="ignore")
+                if not extracted_text.strip():
+                    raise ValueError("ファイルの中身が空であるか、テキストが含まれていません。")
+            except Exception as e:
+                logger.error(f"Failed to decode text file {filename}: {e}")
+                raise ValueError("テキストファイルの読み込みに失敗しました。")
+        else:
+            raise ValueError("サポートされていないファイル形式です。PDF、TXT、またはMDファイルのみアップロード可能です。")
+
+        program.materials_text = extracted_text
+        program.materials_filename = filename
+        await self.db.commit()
+        await self.db.refresh(program)
+        return program
+

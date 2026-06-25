@@ -153,6 +153,31 @@ def test_build_system_prompt_speech_only_rules() -> None:
     assert "括弧" in prompt
 
 
+def test_build_system_prompt_with_materials() -> None:
+    prompt = build_chat_system_prompt(
+        _make_profile(),
+        _make_state(),
+        goal="製品説明",
+        remaining_sec=600,
+        session_number=1,
+        materials_text="当社製品は月額9,800円で提供しています。",
+    )
+    assert "営業担当が提示した参考資料" in prompt
+    assert "月額9,800円" in prompt
+    assert "記載範囲内で答える" in prompt
+
+
+def test_build_system_prompt_without_materials() -> None:
+    prompt = build_chat_system_prompt(
+        _make_profile(),
+        _make_state(),
+        goal="初回ヒアリング",
+        remaining_sec=600,
+        session_number=1,
+    )
+    assert "（今回提示された資料なし）" in prompt
+
+
 def test_split_profile_data() -> None:
     data = {
         "name": "田中 健太",

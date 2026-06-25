@@ -75,6 +75,7 @@ class AudioPipeline:
         remaining_sec: int,
         session_number: int,
         profile_hints: dict | None = None,
+        materials_text: str | None = None,
     ) -> str:
         return build_chat_system_prompt(
             profile,
@@ -83,6 +84,7 @@ class AudioPipeline:
             remaining_sec,
             session_number,
             profile_hints,
+            materials_text,
         )
 
     async def transcribe_turn(self, audio_bytes: bytes, media_format: str = "webm") -> str:
