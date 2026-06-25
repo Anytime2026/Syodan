@@ -38,7 +38,7 @@ export function ControlBar({
           if (recording) onPttUp()
         }}
       >
-        {recording ? '話しています…' : processing ? 'AI応答中…' : '押して話す'}
+        {recording ? '話しています…' : processing ? 'AI応答中…' : '押して話す（Space）'}
       </button>
       <span className="connection-status">
         {connected ? '接続中' : '接続待ち'}

@@ -9,6 +9,7 @@ import '../components/roleplay/roleplay.css'
 import { useHearingWebSocket } from '../hooks/useHearingWebSocket'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
+import { usePttKeyboard } from '../hooks/usePttKeyboard'
 import { usePushToTalk } from '../hooks/usePushToTalk'
 import { endSession, getApiBase, getProgram, getSession } from '../lib/api'
 import type { HearingSession, Program } from '../lib/types'
@@ -104,17 +105,26 @@ export function RoleplayMeetingPage() {
     navigate(`/evaluations/${sessionId}`)
   }
 
-  async function handlePttDown() {
+  const handlePttDown = useCallback(async () => {
     setUserSpeaking(true)
     ws.pttStart()
     await start()
-  }
+  }, [ws, start])
 
-  async function handlePttUp() {
+  const handlePttUp = useCallback(async () => {
     setUserSpeaking(false)
     await stop()
     ws.pttEnd()
-  }
+  }, [ws, stop])
+
+  const pttDisabled = !ws.connected || ws.processing
+
+  usePttKeyboard({
+    enabled: Boolean(session) && !ended,
+    disabled: pttDisabled,
+    onPttDown: handlePttDown,
+    onPttUp: handlePttUp,
+  })
 
   const customerName = program?.customer_profile?.name
   const customerRole = program?.customer_profile?.role_title ?? '見込み顧客'
