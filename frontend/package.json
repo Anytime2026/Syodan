@@ -14,6 +14,7 @@
     "ci:fix": "npm run format && npm run lint:fix && npm run ci",
     "pages:deploy": "npm run build && wrangler pages deploy dist --project-name syodan-frontend --branch main --commit-dirty=true",
     "pages:dev": "wrangler pages dev dist",
+    "aws:deploy": "powershell -ExecutionPolicy Bypass -File scripts/aws/deploy.ps1",
     "preview": "vite preview"
   },
   "dependencies": {
