@@ -35,6 +35,10 @@ class Settings(BaseSettings):
 
     session_time_warning_sec: int = 120
 
+    slack_bot_token: str | None = None
+    slack_feedback_channels: str | None = None
+    slack_stub_mode: bool = True
+
     @model_validator(mode="after")
     def disable_aws_stub_in_production(self) -> "Settings":
         if self.app_env == "production":

@@ -139,6 +139,14 @@ class EvaluationArtifactRequest(BaseModel):
     artifact_type: str = "session"
 
 
+class FeedbackCreate(BaseModel):
+    message: str = Field(min_length=1, max_length=4000)
+
+
+class FeedbackResponse(BaseModel):
+    ok: bool = True
+
+
 class ProgramDetailWithReviews(BaseModel):
     id: UUID
     status: str

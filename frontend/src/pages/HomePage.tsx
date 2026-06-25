@@ -134,6 +134,9 @@ export function HomePage() {
       )}
 
       <footer className="page-footer">
+        <Link to="/feedback" className="page-footer__link">
+          フィードバックを送る
+        </Link>
         <button
           type="button"
           className="page-footer__link"

@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
+import { FeedbackPage } from './pages/FeedbackPage'
 import { EvaluationDetailPage } from './pages/EvaluationDetailPage'
 import { EvaluationsPage } from './pages/EvaluationsPage'
 import { HomePage } from './pages/HomePage'
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
       { path: 'evaluations', element: <EvaluationsPage /> },
       { path: 'evaluations/:id', element: <EvaluationDetailPage /> },
       { path: 'overall-review', element: <OverallReviewPage /> },
+      { path: 'feedback', element: <FeedbackPage /> },
     ],
   },
 ])
