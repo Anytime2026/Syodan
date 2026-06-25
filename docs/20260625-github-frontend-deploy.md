@@ -29,8 +29,10 @@ npm run aws:deploy
 |----------|------|
 | ポリシー | `syodan-github-frontend-deploy` |
 | ロール | `syodan-github-frontend-deploy` |
-| 信頼 | `Anytime2026/Syodan` の `refs/heads/main` のみ |
+| 信頼 | `Anytime2026/SalesGym`（旧 `Syodan`）の `refs/heads/main` のみ |
 
 定義 JSON: `backend/scripts/syodan-github-frontend-deploy-*.json`
 
-詳細なインフラ手順: [`20260625-aws-frontend-s3-cloudfront-deploy.md`](./20260625-aws-frontend-s3-cloudfront-deploy.md)（feat ブランチで作成済みの場合は main マージ後に参照）
+手動実行: GitHub → Actions → **Deploy Frontend** → **Run workflow**（`workflow_dispatch`）
+
+詳細なインフラ手順: [`20260625-aws-frontend-s3-cloudfront-deploy.md`](./20260625-aws-frontend-s3-cloudfront-deploy.md)（別途参照）
