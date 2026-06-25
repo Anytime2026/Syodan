@@ -36,6 +36,14 @@ export function EvaluationDetailPage() {
     (s) => s.session_number === session.session_number,
   )?.summary
 
+  const allSessionsDone =
+    program !== null && program.completed_sessions >= program.total_sessions
+  const showOverallReview =
+    program?.reveal_challenge ||
+    program?.status === 'closed' ||
+    program?.status === 'overall_review_requested' ||
+    program?.status === 'all_sessions_done'
+
   return (
     <div className="card wide" style={{ maxWidth: '800px' }}>
       <h2>商談評価詳細</h2>
@@ -249,9 +257,28 @@ export function EvaluationDetailPage() {
         >
           一覧に戻る
         </Link>
-        <Link to="/" className="btn primary" style={{ flex: 1, margin: 0 }}>
-          ホームに戻る
-        </Link>
+        {allSessionsDone && showOverallReview ? (
+          <>
+            <Link
+              to="/"
+              className="btn secondary"
+              style={{ flex: 1, margin: 0 }}
+            >
+              ホームに戻る
+            </Link>
+            <Link
+              to={`/overall-review?program_id=${program.id}`}
+              className="btn primary"
+              style={{ flex: 1, margin: 0 }}
+            >
+              総合評価へ
+            </Link>
+          </>
+        ) : (
+          <Link to="/" className="btn primary" style={{ flex: 1, margin: 0 }}>
+            ホームに戻る
+          </Link>
+        )}
       </div>
     </div>
   )
