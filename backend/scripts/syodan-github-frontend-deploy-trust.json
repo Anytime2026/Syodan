@@ -12,7 +12,10 @@
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:Anytime2026/Syodan:ref:refs/heads/main"
+          "token.actions.githubusercontent.com:sub": [
+            "repo:Anytime2026/SalesGym:ref:refs/heads/main",
+            "repo:Anytime2026/Syodan:ref:refs/heads/main"
+          ]
         }
       }
     }
