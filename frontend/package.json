@@ -9,7 +9,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "ci": "npm run format:check && npm run lint",
+    "ci:fix": "npm run format && npm run lint:fix && npm run ci",
     "pages:deploy": "npm run build && wrangler pages deploy dist --project-name syodan-frontend --branch main --commit-dirty=true",
     "pages:dev": "wrangler pages dev dist",
     "preview": "vite preview"

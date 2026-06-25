@@ -55,8 +55,8 @@
 }
 
 .info-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(5.5em, auto) 1fr;
   align-items: baseline;
   gap: var(--space-md);
   padding: 10px 0;
@@ -80,7 +80,7 @@
 }
 
 .info-row__value {
-  text-align: right;
+  text-align: left;
   color: var(--color-label);
   font-weight: 500;
 }

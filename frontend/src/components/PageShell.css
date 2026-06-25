@@ -65,8 +65,11 @@
 }
 
 .page-shell__illustration {
-  width: min(120px, 32vw);
-  height: auto;
+  height: min(88px, 22vw);
+  width: auto;
+  max-width: min(132px, 34vw);
+  object-fit: contain;
+  object-position: center;
   flex-shrink: 0;
 }
 

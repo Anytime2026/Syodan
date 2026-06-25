@@ -133,12 +133,10 @@ export function RoleplayMeetingPage() {
 
   if (ended) {
     return (
-      <div className="meeting-shell">
-        <div className="meeting-complete">
-          <h2>セッションが終了しました</h2>
-          <p>評価詳細画面へ移動しています。しばらくお待ちください…</p>
-        </div>
-      </div>
+      <LoadingScreen
+        message="セッションを終了しています"
+        hint="評価画面へ移動します。しばらくお待ちください…"
+      />
     )
   }
 

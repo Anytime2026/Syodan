@@ -131,30 +131,25 @@ export function EvaluationDetailPage() {
       <PageActions>
         <Button variant="gray" className="btn--shrink" to="/evaluations">
           一覧に戻る
-        </Link>
+        </Button>
         {allSessionsDone && showOverallReview ? (
           <>
-            <Link
-              to="/"
-              className="btn secondary"
-              style={{ flex: 1, margin: 0 }}
-            >
+            <Button variant="tinted" className="btn--grow" to="/">
               ホームに戻る
-            </Link>
-            <Link
+            </Button>
+            <Button
+              className="btn--grow"
               to={`/overall-review?program_id=${program.id}`}
-              className="btn primary"
-              style={{ flex: 1, margin: 0 }}
             >
               総合評価へ
-            </Link>
+            </Button>
           </>
         ) : (
-          <Link to="/" className="btn primary" style={{ flex: 1, margin: 0 }}>
+          <Button className="btn--grow" to="/">
             ホームに戻る
-          </Link>
+          </Button>
         )}
-      </div>
-    </div>
+      </PageActions>
+    </PageShell>
   )
 }
