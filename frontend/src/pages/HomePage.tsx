@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageSection, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { ACTIVE_PROGRAM_STATUSES, getProgram } from '../lib/api'
 import {
@@ -86,46 +87,21 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="page-features" aria-hidden="true">
-        <div className="page-feature">
-          <img
-            className="page-feature__icon"
-            src="/images/danbell.svg"
-            alt=""
-            draggable={false}
-          />
-          <p className="page-feature__label">反復トレーニング</p>
-        </div>
-        <div className="page-feature">
-          <img
-            className="page-feature__icon"
-            src="/images/board.svg"
-            alt=""
-            draggable={false}
-          />
-          <p className="page-feature__label">リアルな商談体験</p>
-        </div>
-        <div className="page-feature">
-          <img
-            className="page-feature__icon"
-            src="/images/kouseizu.svg"
-            alt=""
-            draggable={false}
-          />
-          <p className="page-feature__label">段階的に成長</p>
-        </div>
+      <div className="page-cta-stack">
+        <Button to="/settings" size="large" autoWidth>
+          新規商談作成
+        </Button>
+        <Button to="/evaluations" variant="tinted" autoWidth>
+          評価履歴・総評一覧
+        </Button>
       </div>
-
-      <Link to="/settings" className="btn primary" style={{ padding: '16px' }}>
-        ▶ 新規商談作成
-      </Link>
 
       {showLoadingScreen && (
         <LoadingScreen variant="inline" showLogo={false} message="読み込み中" />
       )}
 
       {!loading && activePrograms.length > 0 && (
-        <PageSection>
+        <PageSection variant="paper">
           <p className="page-section__label">進行中のプログラム</p>
           <div className="page-list">
             {activePrograms.map(({ registryId, industry, program }) => {
@@ -143,18 +119,9 @@ export function HomePage() {
                   onClick={() => setCurrentProgramId(registryId)}
                 >
                   <p className="page-list__item-title">
-                    {isCompleted ? (
-                      <>
-                        {INDUSTRY_META[industry]?.label} - 商談シリーズ完了
-                        (総評を見る)
-                      </>
-                    ) : (
-                      <>
-                        {INDUSTRY_META[industry]?.label} - 進行中 (
-                        {program.completed_sessions + 1} /{' '}
-                        {program.total_sessions}回目)
-                      </>
-                    )}
+                    {isCompleted
+                      ? `${INDUSTRY_META[industry]?.label} — 商談シリーズ完了`
+                      : `${INDUSTRY_META[industry]?.label} — 第 ${program.completed_sessions + 1} / ${program.total_sessions} 回`}
                   </p>
                   <p className="page-list__item-meta">
                     作成日: {formatDate(program.created_at)}
@@ -165,10 +132,6 @@ export function HomePage() {
           </div>
         </PageSection>
       )}
-
-      <Link to="/evaluations" className="btn primary">
-        評価履歴・総評一覧
-      </Link>
 
       <footer className="page-footer">
         <button

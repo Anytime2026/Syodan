@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageActions, PageEmpty, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { EVALUABLE_SESSION_STATUSES, getProgram } from '../lib/api'
 import { loadRegistry } from '../lib/registry'
@@ -143,8 +144,8 @@ export function EvaluationsPage() {
                 <div className="page-list__item-row">
                   <p className="page-list__item-title">
                     {isOverall
-                      ? `${industryLabel} - 商談シリーズ完了 (総評)`
-                      : `${industryLabel} - ${sessionText}`}
+                      ? `${industryLabel} — 商談シリーズ完了（総評）`
+                      : `${industryLabel} — ${sessionText}`}
                   </p>
                   {isOverall && (
                     <span className="page-badge">シリーズ完了</span>
@@ -157,12 +158,9 @@ export function EvaluationsPage() {
                       ? `全${res.totalSessions}回のアプローチ評価`
                       : `実施日: ${formatDate(res.createdAt)}`}
                   </p>
-                  <p
-                    className="page-list__item-meta"
-                    style={{ fontWeight: 700, opacity: 1 }}
-                  >
-                    {isOverall ? '全体総評を見る ＞' : '詳細評価 ＞'}
-                  </p>
+                  <span className="page-list__item-chevron">
+                    {isOverall ? '全体総評' : '詳細評価'}
+                  </span>
                 </div>
               </Link>
             )
@@ -171,9 +169,9 @@ export function EvaluationsPage() {
       )}
 
       <PageActions>
-        <button className="btn secondary" onClick={() => navigate('/')}>
+        <Button variant="gray" onClick={() => navigate('/')}>
           ホームに戻る
-        </button>
+        </Button>
       </PageActions>
     </PageShell>
   )

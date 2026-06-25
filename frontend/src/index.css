@@ -1,38 +1,80 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lilita+One&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+@import './components/ui/Button.css';
 
 :root {
-  /* Colors */
-  --color-oat-cream: #e9dfd2;
-  --color-morning-fog: #e5e7eb;
-  --color-ink-black: #202020;
-  --color-sticker-black: #000000;
-  --color-paper-white: #ffffff;
-  --color-kofi-blue: #aac9f7;
-  --color-cobalt-pop: #72a4f2;
+  /* Apple HIG-inspired semantic colors */
+  --color-label: #1c1c1e;
+  --color-secondary-label: rgba(60, 60, 67, 0.66);
+  --color-tertiary-label: rgba(60, 60, 67, 0.4);
+  --color-accent: #007aff;
+  --color-accent-pressed: #005ecb;
+  --color-accent-tint: rgba(0, 122, 255, 0.12);
+  --color-destructive: #ff3b30;
+  --color-destructive-pressed: #d70015;
+  --color-fill: rgba(120, 120, 128, 0.16);
+  --color-secondary-fill: rgba(120, 120, 128, 0.08);
+  --color-separator: rgba(60, 60, 67, 0.22);
+  --color-background: #f2f2f7;
+  --color-secondary-background: #ffffff;
+  --color-grouped-background: #f2f2f7;
+  --color-elevated: #ffffff;
 
-  /* Typography — Font Families */
-  --font-bogue-black:
-    'Lilita One', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
-  --font-dm-sans:
-    'DM Sans', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  /* Brand accents (bear illustrations palette) */
+  --color-brand-blue: #72a4f2;
+  --color-brand-blue-light: #aac9f7;
+  --color-brand-cream: #f5f0ea;
 
-  /* Border Radius */
+  /* Typography — system stack per HIG */
+  --font-system:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Segoe UI', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+
+  --text-large-title: clamp(1.625rem, 4.5vw, 2rem);
+  --text-title-2: clamp(1.25rem, 3.5vw, 1.375rem);
+  --text-title-3: 1.0625rem;
+  --text-headline: 1.0625rem;
+  --text-body: 1.0625rem;
+  --text-callout: 1rem;
+  --text-subhead: 0.9375rem;
+  --text-footnote: 0.8125rem;
+  --text-caption: 0.75rem;
+
+  /* Spacing scale (8pt grid) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* Radius — continuous corners */
+  --radius-button: 10px;
+  --radius-input: 10px;
+  --radius-card: 12px;
+  --radius-large: 16px;
   --radius-tags: 9999px;
-  --radius-cards: 40px;
-  --radius-inputs: 9999px;
-  --radius-buttons: 9999px;
-  --radius-feature-cards: 24px;
-  --radius-small-elements: 16px;
 
-  /* Surfaces */
-  --surface-canvas: var(--color-morning-fog);
-  --surface-oat-surface: var(--color-oat-cream);
-  --surface-paper-card: var(--color-paper-white);
-  --surface-blue-wash: var(--color-kofi-blue);
+  /* Legacy aliases */
+  --color-ink-black: var(--color-label);
+  --color-morning-fog: var(--color-grouped-background);
+  --color-oat-cream: var(--color-brand-cream);
+  --color-paper-white: var(--color-secondary-background);
+  --color-kofi-blue: var(--color-brand-blue-light);
+  --color-cobalt-pop: var(--color-brand-blue);
+  --surface-canvas: var(--color-background);
+  --surface-paper-card: var(--color-elevated);
+  --font-dm-sans: var(--font-system);
 
-  font-family: var(--font-dm-sans);
-  line-height: 1.5;
-  color: var(--color-ink-black);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-elevated:
+    0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  font-family: var(--font-system);
+  line-height: 1.47;
+  color: var(--color-label);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 * {
@@ -42,10 +84,11 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--surface-canvas);
-  font-family: var(--font-dm-sans);
-  line-height: 1.5;
-  color: var(--color-ink-black);
+  background: var(--color-background);
+  font-family: var(--font-system);
+  font-size: var(--text-body);
+  line-height: 1.47;
+  color: var(--color-label);
 }
 
 #root {
@@ -53,8 +96,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
 }
 
 h1,
@@ -63,128 +104,97 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-bogue-black);
-  color: var(--color-ink-black);
+  font-family: var(--font-system);
+  color: var(--color-label);
   margin-top: 0;
-  font-weight: 400; /* Lilita One looks best with regular weight */
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* 共通カード（レガシー互換 — 新規は PageShell を使用） */
+/* Legacy card — prefer PageShell */
 .card {
-  background: var(--surface-paper-card);
+  background: var(--color-elevated);
   width: 100%;
-  max-width: min(420px, calc(100vw - 24px));
-  border-radius: var(--radius-cards);
+  max-width: min(420px, calc(100vw - 32px));
+  border-radius: var(--radius-large);
   padding: clamp(20px, 4vw, 28px);
-  border: 3px solid var(--color-sticker-black);
   margin: clamp(12px, 3vw, 20px);
-  box-shadow: none;
+  box-shadow: var(--shadow-elevated);
 }
 
-/* ボタン共通 */
-.btn {
-  width: 100%;
-  padding: 14px 24px;
-  margin: 10px 0;
-  border: 2px solid var(--color-sticker-black);
-  border-radius: var(--radius-buttons);
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: 0.15s ease-in-out;
-  text-decoration: none;
-  font-weight: 600;
-  font-family: var(--font-dm-sans);
+.card.wide {
+  max-width: min(900px, calc(100vw - 32px));
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-/* 色定義 */
-.primary {
-  background: var(--color-kofi-blue);
-  color: var(--color-ink-black);
-}
-.primary:hover {
-  background: var(--color-cobalt-pop);
-}
-
-.secondary {
-  background: var(--color-oat-cream);
-  color: var(--color-ink-black);
-}
-.secondary:hover {
-  background: #dbcdc0; /* slightly darker warm oat */
-}
-
-.cta {
-  background: var(--color-cobalt-pop);
-  color: var(--color-ink-black);
-}
-.cta:hover {
-  background: var(--color-kofi-blue);
-}
-
-/* 入力 */
+/* Form controls — HIG grouped style */
 input,
 textarea,
 select {
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0 16px;
-  border-radius: var(--radius-inputs);
-  border: 2px solid var(--color-sticker-black);
-  background: var(--surface-paper-card);
+  min-height: 44px;
+  padding: 10px 14px;
+  margin: 0;
+  border-radius: var(--radius-input);
+  border: none;
+  background: var(--color-secondary-fill);
   font-family: inherit;
-  color: inherit;
-  font-size: 15px;
+  font-size: var(--text-body);
+  color: var(--color-label);
   transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 textarea {
-  border-radius: var(--radius-feature-cards);
+  min-height: 88px;
+  resize: vertical;
+  line-height: 1.45;
+  border-radius: var(--radius-card);
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238E8E93' d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: var(--color-cobalt-pop);
+  background: var(--color-secondary-background);
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-tertiary-label);
 }
 
 label {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: var(--text-subhead);
+  font-weight: 600;
   display: block;
-  margin-top: 10px;
-  color: var(--color-ink-black);
+  color: var(--color-label);
 }
 
 .small {
-  font-size: 12px;
-  color: #555;
+  font-size: var(--text-footnote);
+  color: var(--color-secondary-label);
+  line-height: 1.45;
 }
 
-/* 入力グループ */
+/* Input group (mic button etc.) */
 .input-group {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .input-group input {
-  margin: 0;
   flex: 1;
 }
 
@@ -192,117 +202,93 @@ label {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: none;
+  background: var(--color-fill);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  transition: 0.2s;
+  transition: background-color 0.15s ease;
   padding: 0;
   flex-shrink: 0;
 }
 
 .mic-btn:hover {
-  background: #f0f0f0;
+  background: var(--color-secondary-fill);
 }
 
 .mic-btn.active {
-  background: #ff4b4b;
+  background: var(--color-destructive);
   color: #fff;
-  border-color: #ff4b4b;
-  animation: pulse 1.5s infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mic-btn.active {
+    animation: pulse 1.5s infinite;
+  }
 }
 
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
+  0%,
   100% {
     transform: scale(1);
   }
+  50% {
+    transform: scale(1.06);
+  }
 }
 
-/* チャット */
+/* Legacy chat */
 .chat {
   height: 350px;
   overflow-y: auto;
-  border: 1px solid #eee;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  padding: var(--space-md);
+  border-radius: var(--radius-card);
+  margin-bottom: var(--space-md);
   display: flex;
   flex-direction: column;
-  background: #fafafa;
+  background: var(--color-grouped-background);
 }
 
 .msg {
   padding: 10px 14px;
-  margin: 8px 0;
-  border-radius: 12px;
+  margin: 6px 0;
+  border-radius: 18px;
   max-width: 85%;
   word-wrap: break-word;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--text-subhead);
+  line-height: 1.45;
 }
 
 .ai {
-  background: #fff;
+  background: var(--color-secondary-background);
   align-self: flex-start;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  border-bottom-left-radius: 2px;
+  box-shadow: var(--shadow-card);
+  border-bottom-left-radius: 4px;
 }
 
 .user {
-  background: #dff7ff;
+  background: var(--color-accent);
+  color: #fff;
   align-self: flex-end;
   margin-left: auto;
-  border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 4px;
 }
 
-/* PC用広幅・レイアウト */
-.card.wide {
-  max-width: min(900px, calc(100vw - 24px));
-}
-
-@media (max-width: 480px) {
-  .btn {
-    font-size: 15px;
-    padding: 13px 20px;
-  }
-}
-
-.settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-  .settings-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-}
-
-/* ZOOM風UIスタイル */
+/* Zoom / roleplay UI — dark meeting surface */
 .zoom-container {
   background: #1a1a1a;
   color: #fff;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: var(--radius-large);
+  padding: var(--space-xl);
   max-width: 1100px;
   width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 20px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-  margin: 20px;
+  gap: var(--space-xl);
+  box-shadow: var(--shadow-elevated);
+  margin: var(--space-xl);
   height: 650px;
   position: relative;
 }
@@ -344,7 +330,7 @@ label {
 
 .zoom-video-tile {
   background: #2b2b2b;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -359,8 +345,8 @@ label {
 }
 
 .zoom-video-tile.speaking {
-  border-color: #4caf50;
-  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  border-color: #34c759;
+  box-shadow: 0 0 15px rgba(52, 199, 89, 0.4);
 }
 
 .zoom-video-tile video {
@@ -382,7 +368,6 @@ label {
   justify-content: center;
   font-weight: bold;
   border: 2px solid #555;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .zoom-participant-name {
@@ -409,7 +394,7 @@ label {
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #4caf50;
+  color: #34c759;
   backdrop-filter: blur(4px);
   z-index: 10;
 }
@@ -417,7 +402,7 @@ label {
 .waveform-dot {
   width: 3px;
   height: 10px;
-  background: #4caf50;
+  background: #34c759;
   border-radius: 2px;
   animation: wave 1s ease-in-out infinite;
 }
@@ -443,8 +428,8 @@ label {
 .zoom-subtitles {
   background: rgba(0, 0, 0, 0.8);
   padding: 14px 20px;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: var(--radius-card);
+  font-size: var(--text-callout);
   min-height: 54px;
   text-align: center;
   color: #fff;
@@ -452,7 +437,6 @@ label {
   border: 1px solid rgba(255, 255, 255, 0.15);
   word-break: break-all;
   font-weight: 500;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   line-height: 1.4;
 }
 
@@ -461,7 +445,7 @@ label {
   justify-content: center;
   gap: 15px;
   align-items: center;
-  padding: 12px 0 0 0;
+  padding: 12px 0 0;
   border-top: 1px solid #333;
 }
 
@@ -482,34 +466,28 @@ label {
 
 .zoom-ctrl-btn:hover {
   background: #444;
-  border-color: #555;
-  transform: scale(1.05);
 }
 
 .zoom-ctrl-btn.active {
-  background: #e53935;
-  border-color: #e53935;
+  background: #ff3b30;
+  border-color: #ff3b30;
 }
 
 .zoom-ctrl-btn.end-call {
-  background: #d32f2f;
-  border-color: #d32f2f;
+  background: #ff3b30;
+  border-color: #ff3b30;
   border-radius: 24px;
   width: auto;
   padding: 0 24px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   gap: 8px;
-}
-
-.zoom-ctrl-btn.end-call:hover {
-  background: #b71c1c;
 }
 
 .zoom-chat-sidebar {
   width: 320px;
   background: #222;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   display: flex;
   flex-direction: column;
   border: 1px solid #333;
@@ -520,7 +498,7 @@ label {
 .zoom-chat-header {
   padding: 15px;
   border-bottom: 1px solid #333;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
   color: #eee;
   background: #2a2a2a;
@@ -537,7 +515,7 @@ label {
 
 .zoom-chat-message {
   padding: 10px 14px;
-  border-radius: 12px;
+  border-radius: 18px;
   font-size: 13.5px;
   max-width: 85%;
   line-height: 1.4;
@@ -548,14 +526,14 @@ label {
   background: #2a2d31;
   color: #f1f1f1;
   align-self: flex-start;
-  border-bottom-left-radius: 2px;
+  border-bottom-left-radius: 4px;
 }
 
 .zoom-chat-message.user {
-  background: #e91e63;
+  background: #007aff;
   color: #fff;
   align-self: flex-end;
-  border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 4px;
 }
 
 .zoom-chat-input-area {
@@ -573,22 +551,18 @@ label {
   color: #fff;
   padding: 10px 14px;
   border-radius: 20px;
-  margin: 0;
   font-size: 13.5px;
   flex: 1;
+  min-height: 36px;
 }
 
 .zoom-chat-input-area input:focus {
-  border-color: #e91e63;
-  outline: none;
-}
-
-.zoom-chat-input-area input::placeholder {
-  color: #777;
+  border-color: #007aff;
+  box-shadow: none;
 }
 
 .zoom-send-btn {
-  background: #e91e63;
+  background: #007aff;
   color: white;
   border: none;
   border-radius: 50%;
@@ -598,13 +572,7 @@ label {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
-  transition: transform 0.2s;
   flex-shrink: 0;
-}
-
-.zoom-send-btn:hover {
-  transform: scale(1.05);
 }
 
 .zoom-chat-mic-btn {
@@ -618,13 +586,20 @@ label {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .zoom-chat-mic-btn.active {
-  background: #ff4b4b;
-  border-color: #ff4b4b;
-  animation: pulse 1.5s infinite;
+  background: #ff3b30;
+  border-color: #ff3b30;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -4,11 +4,14 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: clamp(8px, 2vw, 16px) 0;
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0)
+    env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
 }
 
 .layout__main {
   width: 100%;
+  max-width: 960px;
   display: flex;
   justify-content: center;
+  padding: clamp(8px, 2vw, 20px) clamp(16px, 4vw, 24px);
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageActions, PageSection, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { getProgram } from '../lib/api'
 import { findRegistryEntry, getCurrentProgramId } from '../lib/registry'
@@ -38,9 +39,7 @@ export function OverallReviewPage() {
         illustration="/images/!-bear.svg"
       >
         <PageActions>
-          <Link to="/" className="btn primary">
-            ホームに戻る
-          </Link>
+          <Button to="/">ホームに戻る</Button>
         </PageActions>
       </PageShell>
     )
@@ -64,60 +63,27 @@ export function OverallReviewPage() {
       <PageSection variant="blue">
         <p className="page-section__label">顧客の「真の課題」</p>
         {program.reveal_challenge && trueChallenge ? (
-          <p
-            style={{
-              margin: 0,
-              fontSize: 14,
-              lineHeight: '1.6',
-              color: 'var(--color-ink-black)',
-            }}
-          >
-            {trueChallenge}
-          </p>
+          <p className="review-block__body">{trueChallenge}</p>
         ) : (
-          <p
-            className="small"
-            style={{ margin: 0, color: 'var(--color-ink-black)' }}
-          >
+          <p className="small" style={{ margin: 0 }}>
             全回完了後、先輩総評が完了すると真の課題が開示されます。
           </p>
         )}
       </PageSection>
 
-      <PageSection>
+      <PageSection variant="paper">
         <h3 className="page-section__heading">先輩によるシリーズ総評</h3>
         {overallReviews.length > 0 ? (
           overallReviews.map((review) => (
-            <div
-              key={review.id}
-              style={{
-                fontSize: 14,
-                lineHeight: 1.6,
-                color: 'var(--color-ink-black)',
-                whiteSpace: 'pre-wrap',
-                marginBottom: 16,
-                paddingBottom: 16,
-                borderBottom: '1px solid var(--color-sticker-black)',
-              }}
-            >
-              <p
-                className="small"
-                style={{
-                  fontWeight: 'bold',
-                  color: 'var(--color-ink-black)',
-                  margin: '0 0 8px',
-                }}
-              >
-                {review.evaluator_id}
+            <div key={review.id} className="review-block">
+              <p className="review-block__author">{review.evaluator_id}</p>
+              <p className="review-block__body">
+                {review.content || '（評価内容なし）'}
               </p>
-              {review.content || '（評価内容なし）'}
             </div>
           ))
         ) : (
-          <p
-            className="small"
-            style={{ margin: 0, color: 'var(--color-ink-black)' }}
-          >
+          <p className="small" style={{ margin: 0 }}>
             先輩総評はまだ届いていません。HULFT
             経由で反映されるまでお待ちください。
           </p>
@@ -126,15 +92,12 @@ export function OverallReviewPage() {
 
       {program.customer_state?.session_summaries &&
         program.customer_state.session_summaries.length > 0 && (
-          <PageSection variant="paper">
+          <PageSection variant="oat">
             <h3 className="page-section__heading">各回サマリ</h3>
-            <ul style={{ paddingLeft: 20, margin: 0 }}>
+            <ul className="summary-list">
               {program.customer_state.session_summaries.map((s) => (
-                <li
-                  key={s.session_number}
-                  style={{ marginBottom: 10, fontSize: 13.5, lineHeight: 1.5 }}
-                >
-                  <b>第 {s.session_number} 回:</b> {s.summary}
+                <li key={s.session_number}>
+                  <strong>第 {s.session_number} 回:</strong> {s.summary}
                 </li>
               ))}
             </ul>
@@ -142,12 +105,12 @@ export function OverallReviewPage() {
         )}
 
       <PageActions>
-        <Link to="/evaluations" className="btn secondary btn--shrink">
+        <Button variant="gray" className="btn--shrink" to="/evaluations">
           評価履歴へ戻る
-        </Link>
-        <Link to="/" className="btn primary btn--shrink">
+        </Button>
+        <Button className="btn--shrink" to="/">
           トップに戻る
-        </Link>
+        </Button>
       </PageActions>
     </PageShell>
   )

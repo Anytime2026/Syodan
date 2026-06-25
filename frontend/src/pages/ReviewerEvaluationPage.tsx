@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageSection, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
+import { InputField, TextAreaField } from '../components/ui/Form'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { getReviewPage, submitSessionEvaluation } from '../lib/api'
 import type { ReviewPageData } from '../lib/types'
@@ -76,136 +78,75 @@ export function ReviewerEvaluationPage() {
       brandLink={false}
     >
       <PageSection variant="blue">
-        <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '14px' }}>
-          真の課題（先輩のみ表示）
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: '13.5px',
-            lineHeight: 1.6,
-            whiteSpace: 'pre-wrap',
-          }}
-        >
+        <p className="page-section__label">真の課題（先輩のみ表示）</p>
+        <p className="review-block__body">
           {page.true_challenge || '（未設定）'}
         </p>
       </PageSection>
 
       {page.recording_url && (
-        <div style={{ marginBottom: 20 }}>
-          <p style={{ fontWeight: 'bold', marginBottom: 8 }}>録音</p>
+        <PageSection variant="paper">
+          <p className="page-section__label">録音</p>
           <audio controls src={page.recording_url} style={{ width: '100%' }} />
-        </div>
+        </PageSection>
       )}
 
-      <div style={{ marginBottom: 20 }}>
-        <p style={{ fontWeight: 'bold', marginBottom: 8 }}>文字起こし</p>
-        <div
-          style={{
-            background: 'var(--color-morning-fog)',
-            padding: 15,
-            borderRadius: '16px',
-            border: '2px solid var(--color-sticker-black)',
-            maxHeight: '320px',
-            overflowY: 'auto',
-            fontSize: '13.5px',
-            lineHeight: 1.6,
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {page.formatted_transcript || '（文字起こしなし）'}
+      <PageSection variant="paper">
+        <p className="page-section__label">文字起こし</p>
+        <div className="chat-log" style={{ maxHeight: 320 }}>
+          <p className="review-block__body" style={{ whiteSpace: 'pre-wrap' }}>
+            {page.formatted_transcript || '（文字起こしなし）'}
+          </p>
         </div>
-      </div>
+      </PageSection>
 
       {page.evaluations.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
-          <h3 style={{ marginTop: 0 }}>提出済みの評価</h3>
+        <PageSection variant="oat">
+          <h3 className="page-section__heading">提出済みの評価</h3>
           {page.evaluations.map((ev) => (
-            <div
-              key={ev.id}
-              style={{
-                background: 'var(--color-oat-cream)',
-                padding: 14,
-                borderRadius: '12px',
-                border: '2px solid var(--color-sticker-black)',
-                marginBottom: 10,
-              }}
-            >
-              <p
-                style={{
-                  margin: '0 0 6px',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                }}
-              >
-                {ev.evaluator_id}
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '13.5px',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {ev.content}
-              </p>
+            <div key={ev.id} className="review-block">
+              <p className="review-block__author">{ev.evaluator_id}</p>
+              <p className="review-block__body">{ev.content}</p>
             </div>
           ))}
-        </div>
+        </PageSection>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <h3 style={{ marginTop: 0 }}>評価を入力</h3>
-        <label className="small" style={{ display: 'block', marginBottom: 6 }}>
-          あなたの名前
-        </label>
-        <input
-          type="text"
-          value={evaluatorId}
-          onChange={(e) => setEvaluatorId(e.target.value)}
-          placeholder="例: 田中先輩"
-          maxLength={128}
-          required
-          style={{
-            width: '100%',
-            marginBottom: 12,
-            padding: '10px 12px',
-            borderRadius: '12px',
-            border: '2px solid var(--color-sticker-black)',
-          }}
-        />
-        <label className="small" style={{ display: 'block', marginBottom: 6 }}>
-          評価内容
-        </label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="この回のロープレについてフィードバックを記入してください"
-          required
-          rows={6}
-          style={{
-            width: '100%',
-            marginBottom: 12,
-            padding: '10px 12px',
-            borderRadius: '12px',
-            border: '2px solid var(--color-sticker-black)',
-            resize: 'vertical',
-          }}
-        />
-        {submitError && (
-          <p style={{ color: 'crimson', margin: '0 0 12px', fontSize: '13px' }}>
-            {submitError}
-          </p>
-        )}
-        {submitSuccess && (
-          <p style={{ color: 'green', margin: '0 0 12px', fontSize: '13px' }}>
-            評価を送信しました
-          </p>
-        )}
-        <button type="submit" className="btn primary" disabled={submitting}>
-          {submitting ? '送信中…' : '評価を送信'}
-        </button>
-      </form>
+      <PageSection variant="paper">
+        <form onSubmit={handleSubmit} className="form-stack">
+          <h3 className="page-section__heading">評価を入力</h3>
+          <InputField
+            label="あなたの名前"
+            type="text"
+            value={evaluatorId}
+            onChange={(e) => setEvaluatorId(e.target.value)}
+            placeholder="例: 田中先輩"
+            maxLength={128}
+            required
+          />
+          <TextAreaField
+            label="評価内容"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="この回のロープレについてフィードバックを記入してください"
+            required
+            rows={6}
+          />
+          {submitError && (
+            <div className="alert-banner alert-banner--error" role="alert">
+              {submitError}
+            </div>
+          )}
+          {submitSuccess && (
+            <div className="alert-banner alert-banner--info" role="status">
+              評価を送信しました
+            </div>
+          )}
+          <Button type="submit" disabled={submitting}>
+            {submitting ? '送信中…' : '評価を送信'}
+          </Button>
+        </form>
+      </PageSection>
     </PageShell>
   )
 }

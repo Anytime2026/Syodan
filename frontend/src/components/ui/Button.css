@@ -1,0 +1,132 @@
+.btn {
+  --btn-min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--btn-min-height);
+  padding: 10px 20px;
+  margin: 0;
+  border: none;
+  border-radius: var(--radius-button);
+  font-family: inherit;
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Filled — primary action (HIG Prominent) */
+.btn--filled,
+.btn.cta,
+.btn.primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.btn--filled:hover:not(:disabled),
+.btn.cta:hover:not(:disabled),
+.btn.primary:hover:not(:disabled) {
+  background: var(--color-accent-pressed);
+}
+
+/* Tinted — secondary emphasis */
+.btn--tinted,
+.btn.secondary {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
+}
+
+.btn--tinted:hover:not(:disabled),
+.btn.secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+/* Gray — neutral secondary */
+.btn--gray {
+  background: var(--color-fill);
+  color: var(--color-label);
+}
+
+.btn--gray:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-label) 12%, var(--color-fill));
+}
+
+/* Plain — text button */
+.btn--plain {
+  background: transparent;
+  color: var(--color-accent);
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.btn--plain:hover:not(:disabled) {
+  background: var(--color-secondary-fill);
+}
+
+/* Destructive */
+.btn--destructive {
+  background: var(--color-destructive);
+  color: #fff;
+}
+
+.btn--destructive:hover:not(:disabled) {
+  background: var(--color-destructive-pressed);
+}
+
+/* Size variants */
+.btn--compact {
+  min-height: 36px;
+  padding: 8px 14px;
+  font-size: var(--text-subhead);
+}
+
+.btn--large {
+  min-height: 50px;
+  padding: 14px 24px;
+  font-size: var(--text-headline);
+}
+
+/* Layout helpers for PageActions */
+.btn--grow {
+  flex: 1 1 auto;
+}
+
+.btn--shrink {
+  flex: 0 1 auto;
+}
+
+@media (min-width: 480px) {
+  .btn--auto {
+    width: auto;
+    min-width: 120px;
+  }
+}

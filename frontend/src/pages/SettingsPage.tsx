@@ -2,6 +2,12 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageActions, PageSection, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
+import {
+  InputField,
+  SelectField,
+  TextAreaField,
+} from '../components/ui/Form'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { createProgram } from '../lib/api'
 import { addRegistryEntry, setCurrentProgramId } from '../lib/registry'
@@ -125,18 +131,18 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="card wide">
-      <h2>新規商談作成</h2>
-      <p className="small" style={{ marginBottom: 20 }}>
-        AI顧客との商談シリーズを開始します。PCサイズに合わせて広々と設定できます。
-      </p>
-
+    <PageShell
+      width="wide"
+      title="新規商談作成"
+      subtitle="AI顧客との商談シリーズを開始します。業界や顧客設定を選んでください。"
+      illustration="/images/PC.svg"
+    >
       <div className="settings-grid">
-        <PageSection>
-          <h3 className="page-section__heading">1. 基本商談設定</h3>
+        <PageSection variant="paper">
+          <h3 className="page-section__heading">基本商談設定</h3>
 
-          <label>業界</label>
-          <select
+          <SelectField
+            label="業界"
             value={industry}
             onChange={(e) => handleIndustryChange(e.target.value as Industry)}
           >
@@ -145,10 +151,10 @@ export function SettingsPage() {
                 {meta.label}
               </option>
             ))}
-          </select>
+          </SelectField>
 
-          <label>分野 (セクター)</label>
-          <select
+          <SelectField
+            label="分野（セクター）"
             value={subIndustrySelect}
             onChange={(e) => handleSubIndustrySelectChange(e.target.value)}
           >
@@ -157,23 +163,20 @@ export function SettingsPage() {
                 {preset}
               </option>
             ))}
-          </select>
+          </SelectField>
 
           {isCustomSubIndustry && (
-            <div style={{ marginTop: '-8px', marginBottom: '16px' }}>
-              <label className="small">直接入力する分野名</label>
-              <input
-                type="text"
-                placeholder="例: 精密医療機器、バイオテクノロジーなど"
-                value={subIndustryCustom}
-                onChange={(e) => setSubIndustryCustom(e.target.value)}
-                style={{ margin: 0, fontSize: '13px' }}
-              />
-            </div>
+            <InputField
+              label="直接入力する分野名"
+              type="text"
+              placeholder="例: 精密医療機器、バイオテクノロジーなど"
+              value={subIndustryCustom}
+              onChange={(e) => setSubIndustryCustom(e.target.value)}
+            />
           )}
 
-          <label>総ヒアリング回数</label>
-          <select
+          <SelectField
+            label="総ヒアリング回数"
             value={totalSessions}
             onChange={(e) => setTotalSessions(parseInt(e.target.value))}
           >
@@ -182,31 +185,26 @@ export function SettingsPage() {
                 {num} 回
               </option>
             ))}
-          </select>
+          </SelectField>
 
-          <label>1回あたりの制限時間 (分)</label>
-          <input
+          <InputField
+            label="1回あたりの制限時間（分）"
             type="number"
             value={timeLimit}
-            min="1"
-            max="30"
+            min={1}
+            max={30}
             onChange={(e) => setTimeLimit(parseInt(e.target.value))}
-            style={{ fontSize: '14px', margin: '8px 0 0 0' }}
+            hint="1〜30分の間で指定できます。回を追うごとに顧客の「真の課題」に近づく練習ができます。"
           />
-
-          <p className="small" style={{ marginTop: 15, lineHeight: '1.4' }}>
-            ※回を追うごとに顧客の「真の課題」に近づく練習ができます。制限時間は1〜30分の間で指定可能です。
-          </p>
         </PageSection>
 
-        <PageSection>
-          <h3 className="page-section__heading">2. AI顧客の人物設定 (任意)</h3>
+        <PageSection variant="paper">
+          <h3 className="page-section__heading">AI顧客の人物設定（任意）</h3>
 
-          <label style={{ marginTop: '5px' }}>IT知識レベル</label>
-          <select
+          <SelectField
+            label="IT知識レベル"
             value={customerItLevel}
             onChange={(e) => setCustomerItLevel(e.target.value)}
-            style={{ margin: '5px 0 15px', fontSize: '13px' }}
           >
             <option value="ITが苦手（専門用語やシステム用語は通じない）">
               ITが苦手（専門用語やシステム用語は通じない）
@@ -217,39 +215,35 @@ export function SettingsPage() {
             <option value="ITに強い（システム用語やインフラの話もある程度理解できる）">
               ITに強い（システム用語やインフラの話もある程度理解できる）
             </option>
-          </select>
+          </SelectField>
 
-          <label style={{ marginTop: '5px' }}>性格タイプ</label>
-          <textarea
+          <TextAreaField
+            label="性格タイプ"
             placeholder="例: 細かい数値にこだわる、結論ファースト、せっかちで要点を急ぐ"
             value={personalityType}
             onChange={(e) => setPersonalityType(e.target.value)}
             rows={4}
-            style={{ margin: '5px 0 10px', fontSize: '13px' }}
           />
         </PageSection>
       </div>
 
       {error && (
-        <p className="small" style={{ color: '#c62828', marginTop: 12 }}>
+        <div className="alert-banner alert-banner--error" role="alert">
           {error}
-        </p>
+        </div>
       )}
 
       <PageActions>
-        <button
-          className="btn secondary btn--shrink"
-          onClick={() => navigate('/')}
-        >
+        <Button variant="gray" className="btn--shrink" onClick={() => navigate('/')}>
           戻る
-        </button>
-        <button
-          className="btn cta btn--grow"
+        </Button>
+        <Button
+          className="btn--grow"
           onClick={handleCreate}
           disabled={loading}
         >
-          {loading ? '作成中…' : '▶ 商談作成'}
-        </button>
+          {loading ? '作成中…' : '商談作成'}
+        </Button>
       </PageActions>
     </PageShell>
   )

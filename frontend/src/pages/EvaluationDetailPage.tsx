@@ -1,7 +1,8 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageActions, PageSection, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { getProgram, getSession } from '../lib/api'
 import { findRegistryEntry } from '../lib/registry'
@@ -37,9 +38,9 @@ export function EvaluationDetailPage() {
         illustration="/images/!-bear.svg"
       >
         <PageActions>
-          <Link to="/evaluations" className="btn secondary">
+          <Button variant="gray" to="/evaluations">
             一覧に戻る
-          </Link>
+          </Button>
         </PageActions>
       </PageShell>
     )
@@ -56,7 +57,7 @@ export function EvaluationDetailPage() {
     <PageShell
       width="wide"
       title="商談評価詳細"
-      subtitle={`${industryLabel} - 第 ${session.session_number} 回商談`}
+      subtitle={`${industryLabel} — 第 ${session.session_number} 回商談`}
       illustration="/images/Thinking_Bear.svg"
     >
       <p className="small" style={{ margin: 0 }}>
@@ -67,19 +68,7 @@ export function EvaluationDetailPage() {
 
       <PageSection variant="paper">
         <p className="page-section__label">会話履歴</p>
-        <div
-          style={{
-            background: 'var(--color-morning-fog)',
-            padding: '15px',
-            borderRadius: '24px',
-            border: '2px solid var(--color-sticker-black)',
-            maxHeight: '260px',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-          }}
-        >
+        <div className="chat-log">
           {session.transcript ? (
             session.transcript.split('\n').map((line, idx) => {
               const isUser = line.startsWith('営業:')
@@ -90,33 +79,9 @@ export function EvaluationDetailPage() {
               return (
                 <div
                   key={idx}
-                  style={{
-                    alignSelf: isUser ? 'flex-end' : 'flex-start',
-                    maxWidth: '85%',
-                    background: isUser
-                      ? 'var(--color-kofi-blue)'
-                      : 'var(--color-paper-white)',
-                    color: 'var(--color-ink-black)',
-                    padding: '10px 14px',
-                    borderRadius: '12px',
-                    borderBottomRightRadius: isUser ? '2px' : '12px',
-                    borderBottomLeftRadius: isUser ? '12px' : '2px',
-                    boxShadow: 'none',
-                    border: '2px solid var(--color-sticker-black)',
-                    fontSize: '13.5px',
-                    lineHeight: '1.4',
-                  }}
+                  className={`chat-bubble ${isUser ? 'chat-bubble--user' : 'chat-bubble--ai'}`}
                 >
-                  <div
-                    style={{
-                      fontSize: '10px',
-                      opacity: 0.8,
-                      fontWeight: 'bold',
-                      marginBottom: '3px',
-                    }}
-                  >
-                    {sender}
-                  </div>
+                  <span className="chat-bubble__sender">{sender}</span>
                   {content}
                 </div>
               )
@@ -130,62 +95,25 @@ export function EvaluationDetailPage() {
       </PageSection>
 
       {sessionSummary && (
-        <PageSection>
+        <PageSection variant="oat">
           <h3 className="page-section__heading">セッション要約</h3>
-          <p
-            style={{
-              margin: 0,
-              fontSize: '13.5px',
-              lineHeight: '1.6',
-              color: 'var(--color-ink-black)',
-            }}
-          >
-            {sessionSummary}
-          </p>
+          <p className="review-block__body">{sessionSummary}</p>
         </PageSection>
       )}
 
-      <PageSection>
+      <PageSection variant="paper">
         <h3 className="page-section__heading">先輩からの評価</h3>
         {session.evaluations && session.evaluations.length > 0 ? (
           session.evaluations.map((ev) => (
-            <div
-              key={ev.id}
-              style={{
-                background: 'var(--color-paper-white)',
-                padding: 14,
-                borderRadius: '16px',
-                marginBottom: 10,
-                border: '2px solid var(--color-sticker-black)',
-              }}
-            >
-              <p
-                className="small"
-                style={{
-                  margin: '0 0 6px',
-                  fontWeight: 'bold',
-                  color: 'var(--color-ink-black)',
-                }}
-              >
-                {ev.evaluator_id}
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '13.5px',
-                  lineHeight: 1.6,
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
+            <div key={ev.id} className="review-block">
+              <p className="review-block__author">{ev.evaluator_id}</p>
+              <p className="review-block__body">
                 {ev.content || '（評価内容なし）'}
               </p>
             </div>
           ))
         ) : (
-          <p
-            className="small"
-            style={{ margin: 0, color: 'var(--color-ink-black)' }}
-          >
+          <p className="small" style={{ margin: 0 }}>
             先輩評価はまだ届いていません。HULFT
             経由で反映されるまでお待ちください。
           </p>
@@ -193,12 +121,12 @@ export function EvaluationDetailPage() {
       </PageSection>
 
       <PageActions>
-        <Link to="/evaluations" className="btn secondary btn--shrink">
+        <Button variant="gray" className="btn--shrink" to="/evaluations">
           一覧に戻る
-        </Link>
-        <Link to="/" className="btn primary btn--shrink">
+        </Button>
+        <Button className="btn--shrink" to="/">
           ホームに戻る
-        </Link>
+        </Button>
       </PageActions>
     </PageShell>
   )

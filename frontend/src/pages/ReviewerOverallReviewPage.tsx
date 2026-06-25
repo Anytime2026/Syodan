@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PageSection, PageShell } from '../components/PageShell'
+import { Button } from '../components/ui/Button'
+import { InputField, TextAreaField } from '../components/ui/Form'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { getOverallReviewPage, submitOverallReview } from '../lib/api'
 import type { OverallReviewPageData } from '../lib/types'
@@ -88,188 +90,106 @@ export function ReviewerOverallReviewPage() {
       brandLink={false}
     >
       <PageSection variant="blue">
-        <p style={{ margin: '0 0 6px', fontWeight: 'bold', fontSize: '14px' }}>
-          真の課題（先輩のみ表示）
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: '13.5px',
-            lineHeight: 1.6,
-            whiteSpace: 'pre-wrap',
-          }}
-        >
+        <p className="page-section__label">真の課題（先輩のみ表示）</p>
+        <p className="review-block__body">
           {page.true_challenge || '（未設定）'}
         </p>
       </PageSection>
 
       {page.session_summaries.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
-          <h3 style={{ marginTop: 0 }}>各回サマリ</h3>
-          {page.session_summaries.map((s) => (
-            <div
-              key={s.session_number}
-              style={{
-                background: 'var(--color-oat-cream)',
-                padding: 12,
-                borderRadius: '12px',
-                border: '2px solid var(--color-sticker-black)',
-                marginBottom: 8,
-              }}
-            >
-              <p
-                style={{
-                  margin: '0 0 4px',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                }}
-              >
-                第 {s.session_number} 回
-              </p>
-              <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.5 }}>
-                {s.summary}
-              </p>
-            </div>
-          ))}
-        </div>
+        <PageSection variant="oat">
+          <h3 className="page-section__heading">各回サマリ</h3>
+          <ul className="summary-list">
+            {page.session_summaries.map((s) => (
+              <li key={s.session_number}>
+                <strong>第 {s.session_number} 回:</strong> {s.summary}
+              </li>
+            ))}
+          </ul>
+        </PageSection>
       )}
 
-      <div style={{ marginBottom: 24 }}>
-        <h3 style={{ marginTop: 0 }}>各回の記録</h3>
-        {page.sessions.map((s) => (
-          <div
-            key={s.session_number}
-            style={{
-              border: '2px solid var(--color-sticker-black)',
-              borderRadius: '12px',
-              marginBottom: 8,
-              overflow: 'hidden',
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => toggleSession(s.session_number)}
-              style={{
-                width: '100%',
-                textAlign: 'left',
-                padding: '12px 14px',
-                background: 'var(--color-morning-fog)',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '13.5px',
-              }}
-            >
-              第 {s.session_number} 回: {s.title ?? s.goal}{' '}
-              {expandedSessions.has(s.session_number) ? '▲' : '▼'}
-            </button>
-            {expandedSessions.has(s.session_number) && (
-              <div
-                style={{
-                  padding: 14,
-                  fontSize: '13.5px',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                <p style={{ margin: '0 0 8px' }}>
-                  <strong>目標:</strong> {s.goal}
-                </p>
-                {s.formatted_transcript ?? '（文字起こしなし）'}
+      <PageSection variant="paper">
+        <h3 className="page-section__heading">各回の記録</h3>
+        <div className="disclosure-list">
+          {page.sessions.map((s) => {
+            const expanded = expandedSessions.has(s.session_number)
+            return (
+              <div key={s.session_number} className="disclosure">
+                <button
+                  type="button"
+                  className="disclosure__trigger"
+                  onClick={() => toggleSession(s.session_number)}
+                  aria-expanded={expanded}
+                >
+                  <span>
+                    第 {s.session_number} 回: {s.title ?? s.goal}
+                  </span>
+                  <span className="disclosure__chevron">
+                    {expanded ? '閉じる' : '開く'}
+                  </span>
+                </button>
+                {expanded && (
+                  <div className="disclosure__panel">
+                    <p style={{ margin: '0 0 8px' }}>
+                      <strong>目標:</strong> {s.goal}
+                    </p>
+                    {s.formatted_transcript ?? '（文字起こしなし）'}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+            )
+          })}
+        </div>
+      </PageSection>
 
       {page.overall_reviews.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
-          <h3 style={{ marginTop: 0 }}>提出済みの総評</h3>
+        <PageSection variant="oat">
+          <h3 className="page-section__heading">提出済みの総評</h3>
           {page.overall_reviews.map((review) => (
-            <div
-              key={review.id}
-              style={{
-                background: 'var(--color-oat-cream)',
-                padding: 14,
-                borderRadius: '12px',
-                border: '2px solid var(--color-sticker-black)',
-                marginBottom: 10,
-              }}
-            >
-              <p
-                style={{
-                  margin: '0 0 6px',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                }}
-              >
-                {review.evaluator_id}
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '13.5px',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {review.content}
-              </p>
+            <div key={review.id} className="review-block">
+              <p className="review-block__author">{review.evaluator_id}</p>
+              <p className="review-block__body">{review.content}</p>
             </div>
           ))}
-        </div>
+        </PageSection>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <h3 style={{ marginTop: 0 }}>総評を入力</h3>
-        <label className="small" style={{ display: 'block', marginBottom: 6 }}>
-          あなたの名前
-        </label>
-        <input
-          type="text"
-          value={evaluatorId}
-          onChange={(e) => setEvaluatorId(e.target.value)}
-          placeholder="例: 田中先輩"
-          maxLength={128}
-          required
-          style={{
-            width: '100%',
-            marginBottom: 12,
-            padding: '10px 12px',
-            borderRadius: '12px',
-            border: '2px solid var(--color-sticker-black)',
-          }}
-        />
-        <label className="small" style={{ display: 'block', marginBottom: 6 }}>
-          総評
-        </label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="シリーズ全体を通じたフィードバックを記入してください"
-          required
-          rows={8}
-          style={{
-            width: '100%',
-            marginBottom: 12,
-            padding: '10px 12px',
-            borderRadius: '12px',
-            border: '2px solid var(--color-sticker-black)',
-            resize: 'vertical',
-          }}
-        />
-        {submitError && (
-          <p style={{ color: 'crimson', margin: '0 0 12px', fontSize: '13px' }}>
-            {submitError}
-          </p>
-        )}
-        {submitSuccess && (
-          <p style={{ color: 'green', margin: '0 0 12px', fontSize: '13px' }}>
-            総評を送信しました
-          </p>
-        )}
-        <button type="submit" className="btn primary" disabled={submitting}>
-          {submitting ? '送信中…' : '総評を送信'}
-        </button>
-      </form>
+      <PageSection variant="paper">
+        <form onSubmit={handleSubmit} className="form-stack">
+          <h3 className="page-section__heading">総評を入力</h3>
+          <InputField
+            label="あなたの名前"
+            type="text"
+            value={evaluatorId}
+            onChange={(e) => setEvaluatorId(e.target.value)}
+            placeholder="例: 田中先輩"
+            maxLength={128}
+            required
+          />
+          <TextAreaField
+            label="総評"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="シリーズ全体を通じたフィードバックを記入してください"
+            required
+            rows={8}
+          />
+          {submitError && (
+            <div className="alert-banner alert-banner--error" role="alert">
+              {submitError}
+            </div>
+          )}
+          {submitSuccess && (
+            <div className="alert-banner alert-banner--info" role="status">
+              総評を送信しました
+            </div>
+          )}
+          <Button type="submit" disabled={submitting}>
+            {submitting ? '送信中…' : '総評を送信'}
+          </Button>
+        </form>
+      </PageSection>
     </PageShell>
   )
 }
