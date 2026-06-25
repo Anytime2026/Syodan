@@ -65,6 +65,13 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
+export function submitFeedback(message: string): Promise<{ ok: boolean }> {
+  return request<{ ok: boolean }>('/api/feedback', {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  })
+}
+
 export function createProgram(input: CreateProgramInput): Promise<Program> {
   return request<Program>('/api/programs', {
     method: 'POST',

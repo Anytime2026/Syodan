@@ -7,6 +7,7 @@ os.environ.setdefault("AWS_STUB_MODE", "true")
 os.environ.setdefault("HULFT_STUB_MODE", "true")
 os.environ.setdefault("INTERNAL_API_KEY", "test-internal-key")
 os.environ.setdefault("CORS_ORIGINS", "http://localhost:5173")
+os.environ.setdefault("SLACK_STUB_MODE", "true")
 
 import pytest
 from httpx import ASGITransport, AsyncClient

@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import evaluations, health, internal, programs, sessions
+from app.api.routes import evaluations, feedback, health, internal, programs, sessions
 from app.config import get_settings
 from app.db.session import get_engine
 from app.domain.models import Base
@@ -40,6 +40,7 @@ def create_app() -> FastAPI:
     app.include_router(programs.router)
     app.include_router(sessions.router)
     app.include_router(evaluations.router)
+    app.include_router(feedback.router)
     app.include_router(internal.router)
     app.include_router(hearing.router)
 
