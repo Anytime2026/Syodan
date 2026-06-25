@@ -1,11 +1,13 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
+from app.domain.enums import ProgramStatus
+from app.domain.models import Program
 from app.domain.schemas import SessionCreate, SessionListItem, SessionResponse
-from app.services.program_service import ProgramService
 from app.services.session_finalize import SessionFinalizeService
 from app.services.session_service import SessionService
 
@@ -39,9 +41,9 @@ async def get_session(session_id: UUID, db: AsyncSession = Depends(get_db)) -> S
     session = await service.get_session_detail(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
-    program_service = ProgramService(db)
-    program = await program_service.get_program(session.program_id)
-    reveal = program_service.to_response(program).reveal_challenge if program else False  # type: ignore[arg-type]
+    result = await db.execute(select(Program.status).where(Program.id == session.program_id))
+    program_status = result.scalar_one_or_none()
+    reveal = program_status == ProgramStatus.CLOSED.value
     return service.to_response(session, reveal_challenge=reveal)
 
 
@@ -91,3 +93,7 @@ def append_recording(session_id: str, chunk: bytes) -> None:
 def append_conversation(session_id: str, speaker: str, text: str) -> None:
     log = _conversation_logs.setdefault(session_id, [])
     log.append({"speaker": speaker, "text": text})
+
+
+def get_conversation_log(session_id: str) -> list[dict]:
+    return list(_conversation_logs.get(session_id, []))

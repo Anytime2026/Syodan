@@ -7,6 +7,29 @@ import { INDUSTRY_META } from '../types'
 
 const DEFAULT_GOAL = '現状の課題と予算感をヒアリングする'
 
+function parseProgramField(field: string): {
+  industry: string
+  subField: string
+} {
+  const parts = field.split(' / ')
+  if (parts.length >= 2) {
+    return {
+      industry: parts[0].trim(),
+      subField: parts.slice(1).join(' / ').trim(),
+    }
+  }
+  return { industry: field.trim(), subField: '一般' }
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <p className="small" style={{ margin: '6px 0 0', opacity: 0.9 }}>
+      <span style={{ fontWeight: 'bold' }}>{label}: </span>
+      {value}
+    </p>
+  )
+}
+
 export function PreSessionPage() {
   const navigate = useNavigate()
   const [program, setProgram] = useState<Program | null>(null)
@@ -108,7 +131,20 @@ export function PreSessionPage() {
 
   const meta = registryIndustry ? INDUSTRY_META[registryIndustry] : null
   const profile = program.customer_profile
+  const customerState = program.customer_state
   const nextSessionNumber = program.completed_sessions + 1
+  const parsedField = parseProgramField(program.field)
+  const industryLabel = meta?.label ?? parsedField.industry
+  const subFieldLabel = subIndustry || parsedField.subField
+
+  const priorSummaries =
+    nextSessionNumber > 1
+      ? (customerState?.session_summaries ?? []).filter(
+          (s) => s.session_number < nextSessionNumber,
+        )
+      : []
+  const disclosedInfo =
+    nextSessionNumber > 1 ? (customerState?.disclosed_info ?? []) : []
 
   return (
     <div className="card wide" style={{ maxWidth: '800px' }}>
@@ -149,14 +185,14 @@ export function PreSessionPage() {
                 {profile.role_title}
               </p>
             )}
-            <p className="small" style={{ margin: 0, opacity: 0.9 }}>
-              {profile.industry} / {profile.company_size} (分野:{' '}
-              {subIndustry || program.field})
-            </p>
+            <InfoRow label="業界" value={industryLabel} />
+            <InfoRow label="分野" value={subFieldLabel} />
+            <InfoRow label="規模" value={profile.company_size} />
+            {profile.surface_need && (
+              <InfoRow label="表層ニーズ" value={profile.surface_need} />
+            )}
             {profile.personality_type && (
-              <p className="small" style={{ margin: '8px 0 0', opacity: 0.85 }}>
-                性格: {profile.personality_type}
-              </p>
+              <InfoRow label="性格" value={profile.personality_type} />
             )}
           </>
         ) : meta ? (
@@ -166,16 +202,88 @@ export function PreSessionPage() {
             >
               {meta.personName} {meta.honorific}
             </p>
-            <p className="small" style={{ margin: 0, opacity: 0.9 }}>
-              {meta.company} / {meta.role} (分野: {subIndustry || '一般'})
-            </p>
+            <InfoRow label="会社" value={meta.company} />
+            <InfoRow label="役職" value={meta.role} />
+            <InfoRow label="業界" value={industryLabel} />
+            <InfoRow label="分野" value={subFieldLabel} />
           </>
         ) : (
-          <p className="small" style={{ margin: '5px 0 0' }}>
-            {program.field}
-          </p>
+          <>
+            <InfoRow label="業界" value={industryLabel} />
+            <InfoRow label="分野" value={subFieldLabel} />
+          </>
         )}
       </div>
+
+      {nextSessionNumber > 1 &&
+        (priorSummaries.length > 0 || disclosedInfo.length > 0) && (
+          <div
+            style={{
+              background: 'var(--color-oat-cream)',
+              padding: 20,
+              borderRadius: '24px',
+              marginBottom: 20,
+              border: '2px solid var(--color-sticker-black)',
+            }}
+          >
+            <p
+              className="small"
+              style={{
+                margin: '0 0 8px 0',
+                color: 'var(--color-ink-black)',
+                fontWeight: 'bold',
+              }}
+            >
+              前回までの経緯
+            </p>
+            {priorSummaries.length > 0 && (
+              <div style={{ marginBottom: disclosedInfo.length > 0 ? 12 : 0 }}>
+                <p
+                  className="small"
+                  style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}
+                >
+                  各回サマリ
+                </p>
+                {priorSummaries.map((s) => (
+                  <p
+                    key={s.session_number}
+                    className="small"
+                    style={{ margin: '0 0 6px 0', opacity: 0.9 }}
+                  >
+                    第 {s.session_number} 回: {s.summary}
+                  </p>
+                ))}
+              </div>
+            )}
+            {disclosedInfo.length > 0 && (
+              <div>
+                <p
+                  className="small"
+                  style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}
+                >
+                  開示済み情報
+                </p>
+                <ul
+                  style={{
+                    margin: 0,
+                    paddingLeft: '1.2em',
+                    opacity: 0.9,
+                  }}
+                >
+                  {disclosedInfo.map((item) => (
+                    <li
+                      key={item}
+                      className="small"
+                      style={{ marginBottom: 4 }}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
       <label>今回の目標</label>
       <textarea

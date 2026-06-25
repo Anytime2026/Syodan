@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import re
 import threading
@@ -7,8 +6,9 @@ from collections.abc import Callable
 from queue import Queue
 
 from app.config import get_settings
-from app.domain.models import CustomerProfile, CustomerState, HearingSession
+from app.domain.models import CustomerProfile, CustomerState
 from app.integrations.aws_clients import BedrockClient, PollyClient, TranscribeClient
+from app.services.prompts import build_chat_system_prompt, sanitize_customer_speech
 
 logger = logging.getLogger(__name__)
 
@@ -19,29 +19,45 @@ _MIN_SYNTH_CHARS = 12
 _FIRST_BOUNDARY = re.compile(r"[。．！？!?\n、，,]")
 _FIRST_MIN_CHARS = 4
 
-CHAT_SYSTEM_TEMPLATE = """あなたはB2B商談の見込み顧客としてロールプレイします。
-プロファイルの名前で自己紹介・応答してください（例: 田中 健太）。
-性格・業界・役職・表面ニーズ・真の課題・現在の気づき度に沿って自然な日本語で応答してください。
-営業担当の質問に対し、一度に長すぎず、リアルな会話調で答えてください。
-真の課題を直接明かさないでください。気づき度が低いほど課題認識は曖昧に。
-残り時間が少ない場合は会話を締めに向かうが、相手が締め中なら協調的に続けてください。
 
-【参考資料について】
-提供されている「参考資料（事前インプット）」がある場合、これは営業担当から事前に送付された製品仕様や営業資料等の参考情報です。あなたは既にこの内容を把握している前提でロールプレイを行ってください。営業担当から「送った資料」「添付ファイル」「事前テキスト」などの言及があった場合は、この参考資料を指していると理解し、その内容に沿って受け答えをしてください。
-{materials_section}
-【顧客プロファイル】
-{profile_json}
+def _paren_depth(text: str) -> int:
+    depth = 0
+    for ch in text:
+        if ch in "（(":
+            depth += 1
+        elif ch in "）)":
+            depth = max(0, depth - 1)
+    return depth
 
-【現在の状態】
-{state_json}
 
-【今回の目標（営業側）】
-{goal}
-
-【残り秒数】
-{remaining_sec}
-"""
-
+def split_sentences_for_tts(text: str) -> list[str]:
+    """Split sanitized speech into TTS chunks without breaking inside parentheses."""
+    sentences: list[str] = []
+    buffer = text
+    first_done = False
+    while buffer:
+        boundary = _SENTENCE_BOUNDARY if first_done else _FIRST_BOUNDARY
+        min_chars = _MIN_SYNTH_CHARS if first_done else _FIRST_MIN_CHARS
+        match = None
+        for candidate in boundary.finditer(buffer):
+            end = candidate.end()
+            if len(buffer[:end].strip()) < min_chars:
+                continue
+            if _paren_depth(buffer[:candidate.start()]) == 0:
+                match = candidate
+                break
+        if not match:
+            remainder = buffer.strip()
+            if remainder:
+                sentences.append(remainder)
+            break
+        end = match.end()
+        chunk = buffer[:end].strip()
+        if chunk:
+            sentences.append(chunk)
+        buffer = buffer[end:]
+        first_done = True
+    return sentences
 
 
 class AudioPipeline:
@@ -57,39 +73,17 @@ class AudioPipeline:
         state: CustomerState,
         goal: str,
         remaining_sec: int,
+        session_number: int,
         profile_hints: dict | None = None,
         materials_text: str | None = None,
     ) -> str:
-        profile_data: dict = {
-            "name": profile.name,
-            "industry": profile.industry,
-            "company_size": profile.company_size,
-            "role_title": profile.role_title,
-            "surface_need": profile.surface_need,
-            "true_challenge": profile.true_challenge,
-            "personality_type": profile.personality_type,
-        }
-        if profile_hints and profile_hints.get("it_knowledge_level"):
-            profile_data["it_knowledge_level"] = profile_hints["it_knowledge_level"]
-        profile_json = json.dumps(profile_data, ensure_ascii=False)
-        state_json = json.dumps(
-            {
-                "awareness_level": state.awareness_level,
-                "rapport_level": state.rapport_level,
-                "disclosed_info": state.disclosed_info,
-            },
-            ensure_ascii=False,
-        )
-        materials_section = ""
-        if materials_text:
-            materials_section = f"\n【参考資料（事前インプット）】\n{materials_text}\n"
-
-        return CHAT_SYSTEM_TEMPLATE.format(
-            materials_section=materials_section,
-            profile_json=profile_json,
-            state_json=state_json,
-            goal=goal,
-            remaining_sec=remaining_sec,
+        return build_chat_system_prompt(
+            profile,
+            state,
+            goal,
+            remaining_sec,
+            session_number,
+            profile_hints,
         )
 
     async def transcribe_turn(self, audio_bytes: bytes, media_format: str = "webm") -> str:
@@ -110,20 +104,30 @@ class AudioPipeline:
         system_prompt: str,
         user_text: str,
         on_audio: Callable[[bytes], None],
+        messages: list[dict] | None = None,
         max_tokens: int = 400,
     ) -> str:
-        """Stream the LLM response, synthesizing speech sentence-by-sentence.
+        """Stream LLM tokens, then sanitize once and synthesize speech by sentence.
 
-        Runs synchronously (intended for asyncio.to_thread). LLM token generation
-        and Polly synthesis run on separate threads via a bounded queue, so the
-        model keeps generating the next sentence while the current one is being
-        synthesized. `on_audio` is invoked (in order) for each audio chunk so the
-        client can start playback early.
+        Sanitization runs on the complete utterance so partial parenthetical stage
+        directions are never sent to Polly mid-stream.
         """
         full_parts: list[str] = []
-        buffer = ""
-        first_done = False
-        # 文をキューに積み、別スレッドで順次合成する（LLM生成とTTSを並列化）
+        body_messages = messages if messages is not None else [{"role": "user", "content": user_text}]
+
+        for delta in self.bedrock.invoke_stream(
+            self.settings.bedrock_chat_model_id,
+            system_prompt,
+            user_text,
+            max_tokens=max_tokens,
+            messages=body_messages,
+        ):
+            full_parts.append(delta)
+
+        full_clean = sanitize_customer_speech("".join(full_parts).strip())
+        if not full_clean:
+            return ""
+
         sentence_queue: Queue[str | None] = Queue()
 
         def _consume() -> None:
@@ -137,40 +141,14 @@ class AudioPipeline:
 
         worker = threading.Thread(target=_consume, daemon=True)
         worker.start()
-
-        def _enqueue(text: str) -> None:
-            text = text.strip()
-            if text:
-                sentence_queue.put(text)
-
         try:
-            for delta in self.bedrock.invoke_stream(
-                self.settings.bedrock_chat_model_id,
-                system_prompt,
-                user_text,
-                max_tokens=max_tokens,
-            ):
-                full_parts.append(delta)
-                buffer += delta
-                while True:
-                    boundary = _SENTENCE_BOUNDARY if first_done else _FIRST_BOUNDARY
-                    min_chars = _MIN_SYNTH_CHARS if first_done else _FIRST_MIN_CHARS
-                    match = boundary.search(buffer)
-                    if not match:
-                        break
-                    end = match.end()
-                    candidate = buffer[:end]
-                    if len(candidate.strip()) < min_chars:
-                        break
-                    _enqueue(candidate)
-                    buffer = buffer[end:]
-                    first_done = True
-            _enqueue(buffer)
+            for sentence in split_sentences_for_tts(full_clean):
+                sentence_queue.put(sentence)
         finally:
             sentence_queue.put(None)
             worker.join()
 
-        return "".join(full_parts).strip()
+        return full_clean
 
 
 async def _transcode_to_pcm(audio_bytes: bytes, media_format: str = "webm") -> bytes:
