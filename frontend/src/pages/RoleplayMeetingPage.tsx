@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ControlBar } from '../components/roleplay/ControlBar'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { MeetingShell } from '../components/roleplay/MeetingShell'
@@ -11,7 +11,6 @@ import { useDeferredLoading } from '../hooks/useDeferredLoading'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
 import { usePushToTalk } from '../hooks/usePushToTalk'
 import { endSession, getApiBase, getProgram, getSession } from '../lib/api'
-import { setCurrentProgramId } from '../lib/registry'
 import type { HearingSession, Program } from '../lib/types'
 
 export function RoleplayMeetingPage() {
@@ -27,6 +26,7 @@ export function RoleplayMeetingPage() {
 
   const handleSessionEnded = useCallback(
     async (reason: string) => {
+      void reason
       if (!sessionId || ended) return
       setEnded(true)
       try {
@@ -37,11 +37,9 @@ export function RoleplayMeetingPage() {
       } catch {
         /* already ended */
       }
-      if (reason === 'timeout') {
-        /* stay on complete screen */
-      }
+      navigate(`/evaluations/${sessionId}`)
     },
-    [sessionId, ended],
+    [sessionId, ended, navigate],
   )
 
   const ws = useHearingWebSocket({
@@ -103,6 +101,7 @@ export function RoleplayMeetingPage() {
     } catch {
       /* ignore */
     }
+    navigate(`/evaluations/${sessionId}`)
   }
 
   async function handlePttDown() {
@@ -116,14 +115,6 @@ export function RoleplayMeetingPage() {
     await stop()
     ws.pttEnd()
   }
-
-  const allSessionsDone =
-    program !== null && program.completed_sessions >= program.total_sessions
-  const showOverallReview =
-    program?.reveal_challenge ||
-    program?.status === 'closed' ||
-    program?.status === 'overall_review_requested' ||
-    program?.status === 'all_sessions_done'
 
   const customerName = program?.customer_profile?.name
   const customerRole = program?.customer_profile?.role_title ?? '見込み顧客'
@@ -145,25 +136,7 @@ export function RoleplayMeetingPage() {
       <div className="meeting-shell">
         <div className="meeting-complete">
           <h2>セッションが終了しました</h2>
-          <p>
-            {session.title ?? `第${session.session_number}回`}{' '}
-            の処理をバックエンドで実行中です。
-          </p>
-          <Link to={`/evaluations/${sessionId}`}>評価詳細へ</Link>
-          {allSessionsDone && showOverallReview && program && (
-            <Link to={`/overall-review?program_id=${program.id}`}>
-              シリーズ総評へ
-            </Link>
-          )}
-          {!allSessionsDone && program && (
-            <Link
-              to="/pre-session"
-              onClick={() => setCurrentProgramId(program.id)}
-            >
-              次のセッションを設定
-            </Link>
-          )}
-          <Link to="/evaluations">評価一覧へ</Link>
+          <p>評価詳細画面へ移動しています。しばらくお待ちください…</p>
         </div>
       </div>
     )

@@ -53,6 +53,14 @@ export function EvaluationDetailPage() {
     (s) => s.session_number === session.session_number,
   )?.summary
 
+  const allSessionsDone =
+    program !== null && program.completed_sessions >= program.total_sessions
+  const showOverallReview =
+    program?.reveal_challenge ||
+    program?.status === 'closed' ||
+    program?.status === 'overall_review_requested' ||
+    program?.status === 'all_sessions_done'
+
   return (
     <PageShell
       width="wide"
@@ -123,11 +131,30 @@ export function EvaluationDetailPage() {
       <PageActions>
         <Button variant="gray" className="btn--shrink" to="/evaluations">
           一覧に戻る
-        </Button>
-        <Button className="btn--shrink" to="/">
-          ホームに戻る
-        </Button>
-      </PageActions>
-    </PageShell>
+        </Link>
+        {allSessionsDone && showOverallReview ? (
+          <>
+            <Link
+              to="/"
+              className="btn secondary"
+              style={{ flex: 1, margin: 0 }}
+            >
+              ホームに戻る
+            </Link>
+            <Link
+              to={`/overall-review?program_id=${program.id}`}
+              className="btn primary"
+              style={{ flex: 1, margin: 0 }}
+            >
+              総合評価へ
+            </Link>
+          </>
+        ) : (
+          <Link to="/" className="btn primary" style={{ flex: 1, margin: 0 }}>
+            ホームに戻る
+          </Link>
+        )}
+      </div>
+    </div>
   )
 }
