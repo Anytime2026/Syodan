@@ -56,6 +56,25 @@ async def test_abort_session_allows_retry_same_round(client: AsyncClient) -> Non
 
 
 @pytest.mark.asyncio
+async def test_end_empty_session_allows_next_session(client: AsyncClient) -> None:
+    """会話なしで終了しても次回セッションを開始できる"""
+    program = await create_program(client)
+    session = await create_and_start_session(client, program["id"])
+
+    ended = await client.post(f"/api/sessions/{session['id']}/end")
+    assert ended.status_code == 200
+    assert ended.json()["status"] == "evaluation_requested"
+    assert ended.json()["title"]
+
+    next_session = await client.post(
+        f"/api/programs/{program['id']}/sessions",
+        json={"goal": "2回目", "time_limit_minutes": 15},
+    )
+    assert next_session.status_code == 201
+    assert next_session.json()["session_number"] == 2
+
+
+@pytest.mark.asyncio
 async def test_cannot_start_two_sessions_in_parallel(client: AsyncClient) -> None:
     program = await create_program(client)
     s1 = await create_and_start_session(client, program["id"])

@@ -13,7 +13,13 @@ import { isMicrophoneGranted } from '../hooks/useMicrophonePermission'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
 import { usePttKeyboard } from '../hooks/usePttKeyboard'
 import { usePushToTalk } from '../hooks/usePushToTalk'
-import { endSession, getApiBase, getProgram, getSession } from '../lib/api'
+import {
+  abortSession,
+  endSession,
+  getApiBase,
+  getProgram,
+  getSession,
+} from '../lib/api'
 import type { HearingSession, Program } from '../lib/types'
 
 export function RoleplayMeetingPage() {
@@ -45,7 +51,11 @@ export function RoleplayMeetingPage() {
         const prog = await getProgram(updated.program_id)
         setProgram(prog)
       } catch {
-        /* already ended */
+        try {
+          await abortSession(sessionId)
+        } catch {
+          /* already ended or aborted */
+        }
       }
       navigate(`/evaluations/${sessionId}`)
     },
@@ -95,6 +105,13 @@ export function RoleplayMeetingPage() {
     return () => window.removeEventListener('beforeunload', onUnload)
   }, [sessionId, ended])
 
+  useEffect(() => {
+    return () => {
+      if (!sessionId || ended) return
+      void abortSession(sessionId)
+    }
+  }, [sessionId, ended])
+
   async function handleEnd() {
     if (!sessionId) return
     setEnded(true)
@@ -104,7 +121,11 @@ export function RoleplayMeetingPage() {
       const prog = await getProgram(updated.program_id)
       setProgram(prog)
     } catch {
-      /* ignore */
+      try {
+        await abortSession(sessionId)
+      } catch {
+        /* ignore */
+      }
     }
     navigate(`/evaluations/${sessionId}`)
   }
