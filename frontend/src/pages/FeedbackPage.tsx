@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { PageActions, PageSection, PageShell } from '../components/PageShell'
+import { Link } from 'react-router-dom'
+import { PageSection, PageShell } from '../components/PageShell'
 import { Button } from '../components/ui/Button'
 import { TextAreaField } from '../components/ui/Form'
 import { submitFeedback } from '../lib/api'
 
 export function FeedbackPage() {
-  const navigate = useNavigate()
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -35,6 +34,9 @@ export function FeedbackPage() {
       title="フィードバック"
       subtitle="ご意見・ご要望をお聞かせください"
     >
+      <Link to="/" className="page-back-link">
+        &lt; 戻る
+      </Link>
       <PageSection variant="paper">
         <form onSubmit={handleSubmit} className="form-stack">
           <TextAreaField
@@ -61,12 +63,6 @@ export function FeedbackPage() {
           </Button>
         </form>
       </PageSection>
-
-      <PageActions>
-        <Button variant="gray" className="btn--shrink" onClick={() => navigate('/')}>
-          戻る
-        </Button>
-      </PageActions>
     </PageShell>
   )
 }
