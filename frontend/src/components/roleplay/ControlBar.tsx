@@ -1,21 +1,48 @@
+import { useRef } from 'react'
+
 type ControlBarProps = {
   recording: boolean
   processing: boolean
+  aiSpeaking: boolean
   connected: boolean
   onPttDown: () => void
   onPttUp: () => void
   onEnd: () => void
 }
 
+const isTouchDevice =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(pointer: coarse)').matches
+
+function pttLabel(
+  recording: boolean,
+  processing: boolean,
+  aiSpeaking: boolean,
+): string {
+  if (recording) return '話しています…'
+  if (aiSpeaking) return 'AI話し中…'
+  if (processing) return 'AI応答中…'
+  return isTouchDevice ? '押して話す' : '押して話す（Space）'
+}
+
 export function ControlBar({
   recording,
   processing,
+  aiSpeaking,
   connected,
   onPttDown,
   onPttUp,
   onEnd,
 }: ControlBarProps) {
-  const disabled = !connected || processing
+  const disabled = !connected || processing || aiSpeaking
+  const pttButtonRef = useRef<HTMLButtonElement>(null)
+
+  const releaseCapture = (pointerId: number) => {
+    const button = pttButtonRef.current
+    if (button?.hasPointerCapture(pointerId)) {
+      button.releasePointerCapture(pointerId)
+    }
+  }
 
   return (
     <footer className="control-bar">
@@ -23,26 +50,32 @@ export function ControlBar({
         終了
       </button>
       <button
+        ref={pttButtonRef}
         type="button"
         className={`control-btn ptt-btn ${recording ? 'active' : ''}`}
         disabled={disabled}
         onPointerDown={(e) => {
+          if (disabled) return
           e.preventDefault()
+          e.currentTarget.setPointerCapture(e.pointerId)
           onPttDown()
         }}
         onPointerUp={(e) => {
           e.preventDefault()
+          releaseCapture(e.pointerId)
           onPttUp()
         }}
-        onPointerLeave={() => {
-          if (recording) onPttUp()
+        onPointerCancel={(e) => {
+          releaseCapture(e.pointerId)
+          onPttUp()
+        }}
+        onPointerLeave={(e) => {
+          if (!recording) return
+          if (e.currentTarget.hasPointerCapture(e.pointerId)) return
+          onPttUp()
         }}
       >
-        {recording
-          ? '話しています…'
-          : processing
-            ? 'AI応答中…'
-            : '押して話す（Space）'}
+        {pttLabel(recording, processing, aiSpeaking)}
       </button>
       <span className="connection-status">
         {connected ? '接続中' : '接続待ち'}

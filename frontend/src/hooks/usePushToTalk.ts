@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 
 const TARGET_SAMPLE_RATE = 16000
 const CHUNK_SAMPLES = 4096 // ~256ms at 16kHz
@@ -6,6 +6,7 @@ const CHUNK_SAMPLES = 4096 // ~256ms at 16kHz
 type UsePushToTalkOptions = {
   onChunk: (chunk: ArrayBuffer) => void | Promise<void>
   disabled?: boolean
+  pressedRef?: RefObject<boolean>
 }
 
 function floatTo16BitPcm(input: Float32Array): ArrayBuffer {
@@ -36,24 +37,41 @@ function downsampleBuffer(
   return result
 }
 
-export function usePushToTalk({ onChunk, disabled }: UsePushToTalkOptions) {
+function isStreamUsable(stream: MediaStream | null): stream is MediaStream {
+  return Boolean(
+    stream?.active &&
+      stream.getAudioTracks().some((track) => track.readyState === 'live'),
+  )
+}
+
+export function usePushToTalk({
+  onChunk,
+  disabled,
+  pressedRef,
+}: UsePushToTalkOptions) {
   const [recording, setRecording] = useState(false)
   const streamRef = useRef<MediaStream | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const processorRef = useRef<ScriptProcessorNode | null>(null)
   const pendingRef = useRef<Float32Array[]>([])
   const sampleCountRef = useRef(0)
+  const startingRef = useRef(false)
 
-  const stopTracks = useCallback(() => {
+  const disconnectProcessor = useCallback(() => {
     processorRef.current?.disconnect()
     processorRef.current = null
     audioContextRef.current?.close().catch(() => {})
     audioContextRef.current = null
-    streamRef.current?.getTracks().forEach((t) => t.stop())
-    streamRef.current = null
     pendingRef.current = []
     sampleCountRef.current = 0
+    setRecording(false)
   }, [])
+
+  const releaseStream = useCallback(() => {
+    disconnectProcessor()
+    streamRef.current?.getTracks().forEach((track) => track.stop())
+    streamRef.current = null
+  }, [disconnectProcessor])
 
   const flushChunk = useCallback(
     async (samples: Float32Array) => {
@@ -63,49 +81,80 @@ export function usePushToTalk({ onChunk, disabled }: UsePushToTalkOptions) {
     [onChunk],
   )
 
-  const start = useCallback(async () => {
-    if (disabled || recording) return
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    streamRef.current = stream
+  const start = useCallback(async (): Promise<boolean> => {
+    if (disabled || recording || startingRef.current) return false
+    startingRef.current = true
 
-    const context = new AudioContext()
-    audioContextRef.current = context
-    const inputRate = context.sampleRate
-
-    const source = context.createMediaStreamSource(stream)
-    const processor = context.createScriptProcessor(CHUNK_SAMPLES, 1, 1)
-    processorRef.current = processor
-
-    processor.onaudioprocess = (event) => {
-      const input = event.inputBuffer.getChannelData(0)
-      const downsampled = downsampleBuffer(input, inputRate, TARGET_SAMPLE_RATE)
-      pendingRef.current.push(downsampled)
-      sampleCountRef.current += downsampled.length
-
-      if (sampleCountRef.current >= CHUNK_SAMPLES) {
-        const merged = new Float32Array(sampleCountRef.current)
-        let offset = 0
-        for (const part of pendingRef.current) {
-          merged.set(part, offset)
-          offset += part.length
+    try {
+      let stream = streamRef.current
+      if (!isStreamUsable(stream)) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+          streamRef.current = stream
+        } catch {
+          startingRef.current = false
+          return false
         }
-        const chunk = merged.subarray(0, CHUNK_SAMPLES)
-        const remainder = merged.subarray(CHUNK_SAMPLES)
-        pendingRef.current = remainder.length > 0 ? [remainder] : []
-        sampleCountRef.current = remainder.length
-        void flushChunk(chunk)
       }
+
+      if (pressedRef && !pressedRef.current) {
+        startingRef.current = false
+        return false
+      }
+
+      const context = new AudioContext()
+      audioContextRef.current = context
+      const inputRate = context.sampleRate
+
+      const source = context.createMediaStreamSource(stream)
+      const processor = context.createScriptProcessor(CHUNK_SAMPLES, 1, 1)
+      processorRef.current = processor
+
+      processor.onaudioprocess = (event) => {
+        const input = event.inputBuffer.getChannelData(0)
+        const downsampled = downsampleBuffer(input, inputRate, TARGET_SAMPLE_RATE)
+        pendingRef.current.push(downsampled)
+        sampleCountRef.current += downsampled.length
+
+        if (sampleCountRef.current >= CHUNK_SAMPLES) {
+          const merged = new Float32Array(sampleCountRef.current)
+          let offset = 0
+          for (const part of pendingRef.current) {
+            merged.set(part, offset)
+            offset += part.length
+          }
+          const chunk = merged.subarray(0, CHUNK_SAMPLES)
+          const remainder = merged.subarray(CHUNK_SAMPLES)
+          pendingRef.current = remainder.length > 0 ? [remainder] : []
+          sampleCountRef.current = remainder.length
+          void flushChunk(chunk)
+        }
+      }
+
+      source.connect(processor)
+      processor.connect(context.destination)
+
+      if (pressedRef && !pressedRef.current) {
+        disconnectProcessor()
+        startingRef.current = false
+        return false
+      }
+
+      setRecording(true)
+      startingRef.current = false
+      return true
+    } catch {
+      disconnectProcessor()
+      startingRef.current = false
+      return false
     }
+  }, [disabled, recording, flushChunk, pressedRef, disconnectProcessor])
 
-    source.connect(processor)
-    processor.connect(context.destination)
-    setRecording(true)
-  }, [disabled, recording, flushChunk])
-
-  const stop = useCallback((): Promise<void> => {
+  const stop = useCallback((): Promise<boolean> => {
     return new Promise((resolve) => {
-      if (!recording && !processorRef.current) {
-        resolve()
+      const wasActive = recording || processorRef.current !== null
+      if (!wasActive) {
+        resolve(false)
         return
       }
 
@@ -115,7 +164,7 @@ export function usePushToTalk({ onChunk, disabled }: UsePushToTalkOptions) {
       }
 
       if (sampleCountRef.current > 0 && pendingRef.current.length > 0) {
-        const total = pendingRef.current.reduce((n, p) => n + p.length, 0)
+        const total = pendingRef.current.reduce((n, part) => n + part.length, 0)
         const merged = new Float32Array(total)
         let offset = 0
         for (const part of pendingRef.current) {
@@ -123,20 +172,18 @@ export function usePushToTalk({ onChunk, disabled }: UsePushToTalkOptions) {
           offset += part.length
         }
         void flushChunk(merged).finally(() => {
-          stopTracks()
-          setRecording(false)
-          resolve()
+          disconnectProcessor()
+          resolve(wasActive)
         })
         return
       }
 
-      stopTracks()
-      setRecording(false)
-      resolve()
+      disconnectProcessor()
+      resolve(wasActive)
     })
-  }, [recording, flushChunk, stopTracks])
+  }, [recording, flushChunk, disconnectProcessor])
 
-  useEffect(() => () => stopTracks(), [stopTracks])
+  useEffect(() => () => releaseStream(), [releaseStream])
 
   return { recording, start, stop }
 }

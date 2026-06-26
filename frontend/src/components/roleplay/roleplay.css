@@ -354,3 +354,100 @@
   font-weight: 600;
   text-decoration: underline;
 }
+
+.mic-permission-gate {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: #111214;
+  color: #e2e8f0;
+}
+
+.mic-permission-card {
+  max-width: 400px;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #1a1c20;
+  border: 1px solid #2d3139;
+  text-align: center;
+}
+
+.mic-permission-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+  color: #ffffff;
+}
+
+.mic-permission-card p {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #9da2ab;
+}
+
+.mic-permission-btn {
+  width: 100%;
+  min-height: 48px;
+}
+
+@media (max-width: 576px) {
+  .meeting-header {
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 0.5rem;
+  }
+
+  .meeting-info {
+    flex-basis: 100%;
+    order: 3;
+    font-size: 12px;
+  }
+
+  .participant-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+    align-content: start;
+  }
+
+  .participant-tile {
+    aspect-ratio: 16 / 9;
+  }
+
+  .control-bar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ptt-btn {
+    flex: 1 1 100%;
+    order: -1;
+    min-width: 0;
+    min-height: 56px;
+    font-size: 15px;
+  }
+
+  .end-btn {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .connection-status {
+    flex: 1;
+    text-align: right;
+  }
+
+  .transcript-drawer {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-height: 30vh;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}

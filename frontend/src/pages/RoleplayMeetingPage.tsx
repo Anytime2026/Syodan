@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ControlBar } from '../components/roleplay/ControlBar'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { MeetingShell } from '../components/roleplay/MeetingShell'
+import { MicPermissionGate } from '../components/roleplay/MicPermissionGate'
 import { ParticipantTile } from '../components/roleplay/ParticipantTile'
 import { TranscriptDrawer } from '../components/roleplay/TranscriptDrawer'
 import '../components/roleplay/roleplay.css'
 import { useHearingWebSocket } from '../hooks/useHearingWebSocket'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
+import { isMicrophoneGranted } from '../hooks/useMicrophonePermission'
 import { usePingInterval, useSessionTimer } from '../hooks/useSessionTimer'
 import { usePttKeyboard } from '../hooks/usePttKeyboard'
 import { usePushToTalk } from '../hooks/usePushToTalk'
@@ -22,6 +24,9 @@ export function RoleplayMeetingPage() {
   const [ended, setEnded] = useState(false)
   const [transcriptOpen, setTranscriptOpen] = useState(true)
   const [userSpeaking, setUserSpeaking] = useState(false)
+  const [micReady, setMicReady] = useState(isMicrophoneGranted)
+  const pttPressedRef = useRef(false)
+  const pttActiveRef = useRef(false)
   const sessionLoading = !session && Boolean(sessionId)
   const showLoadingScreen = useDeferredLoading(sessionLoading)
 
@@ -45,7 +50,7 @@ export function RoleplayMeetingPage() {
 
   const ws = useHearingWebSocket({
     sessionId: sessionId ?? '',
-    enabled: Boolean(sessionId) && !ended,
+    enabled: Boolean(sessionId) && !ended && micReady,
     onSessionEnded: handleSessionEnded,
   })
 
@@ -59,6 +64,7 @@ export function RoleplayMeetingPage() {
   const { recording, start, stop } = usePushToTalk({
     onChunk: ws.sendAudioChunk,
     disabled: ws.processing || ws.aiSpeaking || ended,
+    pressedRef: pttPressedRef,
   })
 
   useEffect(() => {
@@ -106,21 +112,34 @@ export function RoleplayMeetingPage() {
   }
 
   const handlePttDown = useCallback(async () => {
-    setUserSpeaking(true)
+    pttPressedRef.current = true
+    void ws.primeAudioPlayback()
+    const ok = await start()
+    if (!ok || !pttPressedRef.current) {
+      setUserSpeaking(false)
+      if (ok) await stop()
+      return
+    }
     ws.pttStart()
-    await start()
-  }, [ws, start])
+    pttActiveRef.current = true
+    setUserSpeaking(true)
+  }, [ws, start, stop])
 
   const handlePttUp = useCallback(async () => {
+    pttPressedRef.current = false
     setUserSpeaking(false)
-    await stop()
-    ws.pttEnd()
+    const wasActive = await stop()
+    if (pttActiveRef.current || wasActive) {
+      ws.pttEnd()
+      pttActiveRef.current = false
+    }
   }, [ws, stop])
 
-  const pttDisabled = !ws.connected || ws.processing
+  const pttDisabled =
+    !ws.connected || ws.processing || ws.aiSpeaking
 
   usePttKeyboard({
-    enabled: Boolean(session) && !ended,
+    enabled: Boolean(session) && !ended && micReady,
     disabled: pttDisabled,
     onPttDown: handlePttDown,
     onPttUp: handlePttUp,
@@ -148,6 +167,10 @@ export function RoleplayMeetingPage() {
         hint="評価画面へ移動します。しばらくお待ちください…"
       />
     )
+  }
+
+  if (!micReady) {
+    return <MicPermissionGate onGranted={() => setMicReady(true)} />
   }
 
   return (
@@ -180,6 +203,7 @@ export function RoleplayMeetingPage() {
       <ControlBar
         recording={recording}
         processing={ws.processing}
+        aiSpeaking={ws.aiSpeaking}
         connected={ws.connected}
         onPttDown={handlePttDown}
         onPttUp={handlePttUp}

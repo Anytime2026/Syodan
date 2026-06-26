@@ -5,6 +5,7 @@ import { PageActions, PageSection, PageShell } from '../components/PageShell'
 import { Button } from '../components/ui/Button'
 import { InfoRow, TextAreaField } from '../components/ui/Form'
 import { useDeferredLoading } from '../hooks/useDeferredLoading'
+import { requestMicrophoneAccess } from '../hooks/useMicrophonePermission'
 import {
   createSession,
   getProgram,
@@ -73,6 +74,12 @@ export function PreSessionPage() {
     setStarting(true)
     setError(null)
     try {
+      const mic = await requestMicrophoneAccess()
+      if (!mic.ok) {
+        setError(mic.error ?? 'マイクの許可が必要です')
+        return
+      }
+
       if (materialFile) {
         try {
           await uploadProgramMaterial(program.id, materialFile)
