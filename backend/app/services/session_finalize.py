@@ -33,6 +33,8 @@ class SessionFinalizeService:
         session = await self._load_session(session_id)
         if not session:
             raise ValueError("Session not found")
+        if session.status == SessionStatus.EVALUATION_REQUESTED.value:
+            return session
         if session.status != SessionStatus.IN_PROGRESS.value:
             raise ValueError("Session is not in progress")
 
@@ -51,7 +53,14 @@ class SessionFinalizeService:
         session.conversation_log = conversation_log
         session.ended_at = datetime.now(UTC)
 
-        analysis = await self._analyze(session, transcript)
+        if conversation_log:
+            analysis = await self._analyze(session, transcript)
+        else:
+            analysis = {
+                "disclosed_info": [],
+                "session_summary": "会話なしで終了しました。",
+                "title": f"第{session.session_number}回（会話なし）",
+            }
         await self._update_customer_state(session.program_id, analysis, session.session_number)
 
         session.title = analysis.get("title", f"第{session.session_number}回ヒアリング")

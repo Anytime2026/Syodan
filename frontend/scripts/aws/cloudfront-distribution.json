@@ -126,10 +126,17 @@
       }
     ]
   },
+  "Aliases": {
+    "Quantity": 2,
+    "Items": ["sales-gym.org", "www.sales-gym.org"]
+  },
   "Enabled": true,
   "HttpVersion": "http2and3",
   "PriceClass": "PriceClass_200",
   "ViewerCertificate": {
-    "CloudFrontDefaultCertificate": true
+    "ACMCertificateArn": "arn:aws:acm:us-east-1:542000445970:certificate/2570152a-fd50-4389-9724-3bd295d85b70",
+    "SSLSupportMethod": "sni-only",
+    "MinimumProtocolVersion": "TLSv1.2_2021",
+    "CertificateSource": "acm"
   }
 }
