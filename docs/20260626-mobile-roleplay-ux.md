@@ -34,3 +34,12 @@ cd frontend && npm run build
 1. PreSession から開始 → ロールプレイで許可ダイアログが出ないこと
 2. AI応答後に顧客タイルの話し中表示が消えること
 3. デスクトップで Space キー PTT が動作すること
+
+## 追記（2026-06-26）モバイルレイアウト
+
+字幕とPTTの重なりを解消:
+- `meeting-stage` でコンテンツ領域とコントロールバーを分離（重なりなし）
+- モバイルでは字幕をフロー内配置（absolute廃止）、初期状態は閉じる
+- PTTを画面最下部・親指ゾーンに固定（60px、safe-area対応）
+- 参加者タイルは2列コンパクト表示で縦スペースを確保
+- [Apple HIG](https://developer.apple.com/design/human-interface-guidelines) に沿いタップ領域44pt以上・主要操作の視覚的階層を明確化

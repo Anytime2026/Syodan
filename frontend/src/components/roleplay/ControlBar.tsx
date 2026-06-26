@@ -22,7 +22,7 @@ function pttLabel(
   if (recording) return '話しています…'
   if (aiSpeaking) return 'AI話し中…'
   if (processing) return 'AI応答中…'
-  return isTouchDevice ? '押して話す' : '押して話す（Space）'
+  return isTouchDevice ? '押し続けて話す' : '押して話す（Space）'
 }
 
 export function ControlBar({
@@ -45,15 +45,24 @@ export function ControlBar({
   }
 
   return (
-    <footer className="control-bar">
-      <button type="button" className="control-btn end-btn" onClick={onEnd}>
-        終了
-      </button>
+    <footer className="control-bar" aria-label="会話操作">
+      <div className="control-bar-secondary">
+        <button type="button" className="control-btn end-btn" onClick={onEnd}>
+          終了
+        </button>
+        <span
+          className={`connection-status ${connected ? 'connected' : ''}`}
+          aria-live="polite"
+        >
+          {connected ? '接続中' : '接続待ち'}
+        </span>
+      </div>
       <button
         ref={pttButtonRef}
         type="button"
         className={`control-btn ptt-btn ${recording ? 'active' : ''}`}
         disabled={disabled}
+        aria-label={pttLabel(recording, processing, aiSpeaking)}
         onPointerDown={(e) => {
           if (disabled) return
           e.preventDefault()
@@ -77,9 +86,6 @@ export function ControlBar({
       >
         {pttLabel(recording, processing, aiSpeaking)}
       </button>
-      <span className="connection-status">
-        {connected ? '接続中' : '接続待ち'}
-      </span>
     </footer>
   )
 }

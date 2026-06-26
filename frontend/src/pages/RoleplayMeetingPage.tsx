@@ -22,7 +22,11 @@ export function RoleplayMeetingPage() {
   const [session, setSession] = useState<HearingSession | null>(null)
   const [program, setProgram] = useState<Program | null>(null)
   const [ended, setEnded] = useState(false)
-  const [transcriptOpen, setTranscriptOpen] = useState(true)
+  const [transcriptOpen, setTranscriptOpen] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      !window.matchMedia('(max-width: 576px)').matches,
+  )
   const [userSpeaking, setUserSpeaking] = useState(false)
   const [micReady, setMicReady] = useState(isMicrophoneGranted)
   const pttPressedRef = useRef(false)
@@ -179,36 +183,42 @@ export function RoleplayMeetingPage() {
       timerWarning={warning}
       sessionInfo={`第${session.session_number}回 — ${session.goal}`}
     >
-      <div className="participant-grid">
-        <ParticipantTile
-          name="あなた"
-          role="営業担当"
-          speaking={userSpeaking}
-          avatarLabel="営"
-        />
-        <ParticipantTile
-          name={customerName ? `${customerName} 様` : '顧客AI'}
-          role={customerRole}
-          speaking={ws.aiSpeaking}
-          avatarLabel={customerName ? customerName.charAt(0) : '顧'}
+      <div className="meeting-stage">
+        <div className="meeting-content-area">
+          <div className="participant-grid">
+            <ParticipantTile
+              name="あなた"
+              role="営業担当"
+              speaking={userSpeaking}
+              avatarLabel="営"
+            />
+            <ParticipantTile
+              name={customerName ? `${customerName} 様` : '顧客AI'}
+              role={customerRole}
+              speaking={ws.aiSpeaking}
+              avatarLabel={customerName ? customerName.charAt(0) : '顧'}
+            />
+          </div>
+          <TranscriptDrawer
+            messages={ws.transcripts}
+            partialText={ws.partialTranscript}
+            open={transcriptOpen}
+            onToggle={() => setTranscriptOpen((o) => !o)}
+          />
+          {ws.lastError && (
+            <p className="meeting-error setup-error">{ws.lastError}</p>
+          )}
+        </div>
+        <ControlBar
+          recording={recording}
+          processing={ws.processing}
+          aiSpeaking={ws.aiSpeaking}
+          connected={ws.connected}
+          onPttDown={handlePttDown}
+          onPttUp={handlePttUp}
+          onEnd={handleEnd}
         />
       </div>
-      <TranscriptDrawer
-        messages={ws.transcripts}
-        partialText={ws.partialTranscript}
-        open={transcriptOpen}
-        onToggle={() => setTranscriptOpen((o) => !o)}
-      />
-      {ws.lastError && <p className="setup-error">{ws.lastError}</p>}
-      <ControlBar
-        recording={recording}
-        processing={ws.processing}
-        aiSpeaking={ws.aiSpeaking}
-        connected={ws.connected}
-        onPttDown={handlePttDown}
-        onPttUp={handlePttUp}
-        onEnd={handleEnd}
-      />
     </MeetingShell>
   )
 }
