@@ -1,8 +1,11 @@
 .meeting-shell {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   max-width: 100%;
+  max-height: 100dvh;
   overflow: hidden;
+  overscroll-behavior: none;
   display: flex;
   flex-direction: column;
   background: #111214;
@@ -517,11 +520,24 @@
 }
 
 @media (max-width: 576px) {
+  .meeting-shell {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
   .meeting-header {
     flex-wrap: wrap;
     padding: 10px 16px;
     padding-top: calc(10px + env(safe-area-inset-top, 0px));
     gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .meeting-stage {
+    overflow: hidden;
   }
 
   .meeting-info {
@@ -536,17 +552,20 @@
   }
 
   .participant-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
     gap: 8px;
     padding: 10px 12px;
-    align-content: center;
+    align-content: stretch;
     flex: 1 1 auto;
     min-height: 0;
+    overflow: hidden;
   }
 
   .participant-tile {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: unset;
     min-height: 0;
+    height: 100%;
     border-radius: 12px;
   }
 
